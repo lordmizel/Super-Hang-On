@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# Directories
+Debug/
+SDL/
+SDL_gfx/
+SDL_image/
+SDL_mixer/

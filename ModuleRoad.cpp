@@ -18,7 +18,6 @@ ModuleRoad::ModuleRoad(const int &index)
 	}
 }
 
-
 ModuleRoad::~ModuleRoad()
 {
 }
