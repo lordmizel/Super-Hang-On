@@ -11,7 +11,7 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneMap.h"
 #include "ModuleSceneMusic.h"
-#include "ModuleSceneSpace.h"
+#include "ModuleSceneRace.h"
 #include "ModulePlayer.h"
 
 using namespace std;
@@ -30,7 +30,7 @@ Application::Application()
 	modules.push_back(scene_intro = new ModuleSceneIntro(false));
 	modules.push_back(scene_map = new ModuleSceneMap(false));
 	modules.push_back(scene_music = new ModuleSceneMusic(false));
-	modules.push_back(scene_space = new ModuleSceneSpace(false));
+	modules.push_back(scene_race = new ModuleSceneRace(false));
 	modules.push_back(player = new ModulePlayer(false));
 
 	// Modules to draw on top of game logic

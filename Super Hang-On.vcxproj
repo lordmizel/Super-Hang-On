@@ -36,7 +36,7 @@
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleSceneMap.h" />
     <ClInclude Include="ModuleSceneMusic.h" />
-    <ClInclude Include="ModuleSceneSpace.h" />
+    <ClInclude Include="ModuleSceneRace.h" />
     <ClInclude Include="ModuleTextures.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="Point.h" />
@@ -56,7 +56,7 @@
     <ClCompile Include="ModuleSceneIntro.cpp" />
     <ClCompile Include="ModuleSceneMap.cpp" />
     <ClCompile Include="ModuleSceneMusic.cpp" />
-    <ClCompile Include="ModuleSceneSpace.cpp" />
+    <ClCompile Include="ModuleSceneRace.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
   </ItemGroup>

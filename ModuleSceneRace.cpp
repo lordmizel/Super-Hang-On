@@ -6,25 +6,26 @@
 #include "ModulePlayer.h"
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
-#include "ModuleSceneSpace.h"
+#include "ModuleSceneRace.h"
 #include "ModuleRoad.h"
 
 
-ModuleSceneSpace::ModuleSceneSpace(bool active) : Module(active)
+ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 {}
 
-ModuleSceneSpace::~ModuleSceneSpace()
+ModuleSceneRace::~ModuleSceneRace()
 {}
 
 // Load assets
-bool ModuleSceneSpace::Start()
+bool ModuleSceneRace::Start()
 {
-	LOG("Loading space scene");
+	LOG("Loading race scene");
 	
 	//background = App->textures->Load("rtype/background.png", 0, 0, 0);
 	for (int i = 0; i < 50; i++) {
 		roads.push_back(ModuleRoad(i));
 	}
+
 	App->player->Enable();
 	App->particles->Enable();
 	App->collision->Enable();
@@ -38,9 +39,9 @@ bool ModuleSceneSpace::Start()
 }
 
 // UnLoad assets
-bool ModuleSceneSpace::CleanUp()
+bool ModuleSceneRace::CleanUp()
 {
-	LOG("Unloading space scene");
+	LOG("Unloading race scene");
 
  	App->textures->Unload(background);
 	App->player->Disable();
@@ -51,7 +52,7 @@ bool ModuleSceneSpace::CleanUp()
 }
 
 // Update: draw background
-update_status ModuleSceneSpace::Update()
+update_status ModuleSceneRace::Update()
 {
 	// Move camera forward -----------------------------
 	int scroll_speed = 1;

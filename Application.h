@@ -19,7 +19,7 @@ class ModulePlayer;
 class ModuleSceneIntro;
 class ModuleSceneMap;
 class ModuleSceneMusic;
-class ModuleSceneSpace;
+class ModuleSceneRace;
 
 class Application
 {
@@ -47,7 +47,7 @@ public:
 	ModuleSceneIntro* scene_intro;
 	ModuleSceneMap* scene_map;
 	ModuleSceneMusic* scene_music;
-	ModuleSceneSpace* scene_space;
+	ModuleSceneRace* scene_race;
 
 private:
 

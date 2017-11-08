@@ -1,5 +1,5 @@
-#ifndef __MODULESCENESPACE_H__
-#define __MODULESCENESPACE_H__
+#ifndef __MODULESCENERACE_H__
+#define __MODULESCENERACE_H__
 
 #include <vector>
 #include "Module.h"
@@ -8,11 +8,11 @@ struct SDL_Texture;
 
 class ModuleRoad;
 
-class ModuleSceneSpace : public Module
+class ModuleSceneRace : public Module
 {
 public:
-	ModuleSceneSpace(bool active = true);
-	~ModuleSceneSpace();
+	ModuleSceneRace(bool active = true);
+	~ModuleSceneRace();
 
 	bool Start();
 	update_status Update();
