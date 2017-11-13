@@ -7,11 +7,18 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleSceneRace.h"
+#include "ModuleScore.h"
 #include "ModuleRoad.h"
 
 
 ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
-{}
+{
+	//Background
+	backdrop.x = 330;
+	backdrop.y = 256;
+	backdrop.w = 320;
+	backdrop.h = 128;
+}
 
 ModuleSceneRace::~ModuleSceneRace()
 {}
@@ -21,7 +28,7 @@ bool ModuleSceneRace::Start()
 {
 	LOG("Loading race scene");
 	
-	//background = App->textures->Load("rtype/background.png", 0, 0, 0);
+	graphics = App->textures->Load("backgrounds.png", 0, 0, 0);
 	for (int i = 0; i < 50; i++) {
 		roads.push_back(ModuleRoad(i));
 	}
@@ -30,7 +37,9 @@ bool ModuleSceneRace::Start()
 	App->particles->Enable();
 	App->collision->Enable();
 
-	App->audio->PlayMusic(App->audio->musicChosen, 1.0f);
+	scoreBoard = new ModuleScore(true);											//ELIMINAR ESTO!!!!
+
+	//App->audio->PlayMusic(App->audio->musicChosen, 1.0f);
 	
 	// TODO 15: create some colliders for the walls
 	// solution wall coords: {0, 224, 3930, 16} {1375, 0, 111, 96} {1375, 145, 111, 96}
@@ -43,7 +52,7 @@ bool ModuleSceneRace::CleanUp()
 {
 	LOG("Unloading race scene");
 
- 	App->textures->Unload(background);
+ 	App->textures->Unload(graphics);
 	App->player->Disable();
 	App->collision->Disable();
 	App->particles->Disable();
@@ -54,14 +63,14 @@ bool ModuleSceneRace::CleanUp()
 // Update: draw background
 update_status ModuleSceneRace::Update()
 {
-	// Move camera forward -----------------------------
-	int scroll_speed = 1;
-
-	App->player->position.x += 1;
-	App->renderer->camera.x -= 3;
-	
+	//for(ModuleRoad r : roads) {
+		roads.at(0).Update();
+	//}
 	// Draw everything --------------------------------------
-	App->renderer->Blit(background, 0, 0, NULL);
+	App->renderer->Blit(graphics, 0, 0, &backdrop);
+	App->renderer->Blit(graphics, backdrop.w, 0, &backdrop);
+
+	scoreBoard->ShowScore();
 	
 	return UPDATE_CONTINUE;
 }

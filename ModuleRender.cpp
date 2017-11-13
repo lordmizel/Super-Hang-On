@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "SDL/include/SDL.h"
+#include "SDL_gfx/include/SDL2_gfxPrimitives.h"
 
 ModuleRender::ModuleRender()
 {
@@ -136,6 +137,18 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	if (SDL_RenderFillRect(renderer, &rec) != 0)
 	{
 		LOG("Cannot draw quad to screen. SDL_RenderFillRect error: %s", SDL_GetError());
+		ret = false;
+	}
+
+	return ret;
+}
+
+bool ModuleRender::DrawPolygon(Sint16* vx, Sint16* vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	bool ret = true;
+	
+	if (filledPolygonRGBA(renderer, vx, vy, n, r, g, b, a) != 0)
+	{
+		LOG("Cannot draw polygon to screen. filledPolygonRGBA error: %s", SDL_GetError());
 		ret = false;
 	}
 

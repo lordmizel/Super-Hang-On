@@ -78,7 +78,7 @@ ModuleSceneMap::~ModuleSceneMap()
 
 bool ModuleSceneMap::Start()
 {
-	LOG("Loading space intro");
+	LOG("Loading race intro");
 
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
 

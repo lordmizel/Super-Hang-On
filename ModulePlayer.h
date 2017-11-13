@@ -13,6 +13,9 @@ public:
 	ModulePlayer(bool active = true);
 	~ModulePlayer();
 
+	int GetCurrentSegment() const { return currentSegment; }
+	int GetSpeed() const { return speed; }
+
 	bool Start();
 	update_status Update();
 	bool CleanUp();
@@ -29,9 +32,12 @@ public:
 	Animation leanedRight;
 	Animation unLeanRight;
 
-
 	iPoint position;
 	bool destroyed = false;
+
+private:
+	int currentSegment = 0;		//The segment where the player is currently
+	int speed = 0;
 };
 
 #endif

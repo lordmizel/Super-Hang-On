@@ -94,7 +94,6 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
-// Update: draw background
 update_status ModulePlayer::Update()
 {
 	int speed = 1;

@@ -25,8 +25,10 @@ class ModuleRoad : public Module
 {
 public:
 	static const int SEGMENT_DEPTH;
+	static const int ROAD_WIDTH;
 	static const int SEGMENTS_IN_ROAD;
 	static const int RUMBLE_LENGTH;
+	static const int CAMERA_DEPTH;
 	static const int DRAW_DISTANCE;
 
 	ModuleRoad(const int &index);
@@ -43,6 +45,8 @@ private:
 	Point2D ModuleRoad::Project(const Point3D p, const Point3D camera, const int& cameraDepth,
 		const int& roadWidth, int* const segmentWidth);
 	std::vector<Segment> roadSegments;
+
+	bool rumbleColor = true;
 };
 
 #endif
