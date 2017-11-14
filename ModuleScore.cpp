@@ -3,7 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleScore.h"
 
-int savedScores[8] = { 57170640, 34, 43543, 2, 10087, 9876542, 1234567, 909090 };
+int savedScores[7] = { 57170640, 34, 43543, 2, 10087, 9876542, 1234567 };
 
 ModuleScore::ModuleScore(bool active) : Module(active)
 {
@@ -77,10 +77,6 @@ update_status ModuleScore::Update()
 
 void ModuleScore::ShowScore() {
 
-	for (int i = 0; i < 10; i++) {
-		App->renderer->Blit(graphics, 0 + 8 * i, 0, &numbers[i]);
-	}
-
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - initialEntryCountdown.w/2, 30, &initialEntryCountdown);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - courseSelected.w / 2, 46, &courseSelected);
 
@@ -99,32 +95,31 @@ void ModuleScore::ShowScore() {
 		App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) - topRanks[i].w / 2, posY + 16 * i, &topRanks[i]);
 
 		//Score column
-		//for (int score = 0; score < sizeof(savedScores) / sizeof(savedScores[0]); score++) {
+		int numberThreshold = 10000000;
+		int scoreToWorkWith = savedScores[i];
+		int digitPositionX = -32;
+		bool numberInRange = false;
 
-			int numberThreshold = 10000000;
-			int scoreToWorkWith = savedScores[i];
-			int digitPositionX = -32;
-			bool numberInRange = false;
-
-			//Go through all digits
-			for (int dig = maxNumOfScoreDigits; dig > 0; dig--) {
-				if (scoreToWorkWith < numberThreshold && !numberInRange) {
-					App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &blankSpace);
-				}
-				else
-				{
-					App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &numbers[scoreToWorkWith / numberThreshold]);
-					numberInRange = true;
-				}
-				/*LOG("SCORE TO WORK WITH: %d", scoreToWorkWith);
-				LOG("THRESHOLD: %d", numberThreshold);
-				LOG("DIGIT: %d", scoreToWorkWith / numberThreshold);
-				LOG("REST OF NUMBER: %d", scoreToWorkWith % numberThreshold);*/
-
-				scoreToWorkWith = scoreToWorkWith % numberThreshold;
-				numberThreshold = numberThreshold / 10;
-				digitPositionX += 8;
+		for (int dig = maxNumOfScoreDigits; dig > 0; dig--) {
+			if (scoreToWorkWith < numberThreshold && !numberInRange) {
+				App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &blankSpace);
 			}
-		//}
+			else
+			{
+				App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &numbers[scoreToWorkWith / numberThreshold]);
+				numberInRange = true;
+			}
+
+			scoreToWorkWith = scoreToWorkWith % numberThreshold;
+			numberThreshold = numberThreshold / 10;
+			digitPositionX += 8;
+		}
+
+		// Stage column
+
+		// Name column
+		
+		// Time column
+
 	}
 }

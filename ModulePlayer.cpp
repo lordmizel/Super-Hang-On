@@ -65,6 +65,18 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	unLeanRight.frames.push_back({ 91, 596, 32, 72 });
 	unLeanRight.loop = false;
 	unLeanRight.speed = 0.2f;
+
+	blankSpace = { 525, 280, 8, 8 };
+	numbers[0] = { 374, 211, 8, 8 };
+	numbers[1] = { 294, 211, 8, 8 };
+	numbers[2] = { 302, 211, 8, 8 };
+	numbers[3] = { 311, 211, 8, 8 };
+	numbers[4] = { 320, 211, 8, 8 };
+	numbers[5] = { 329, 211, 8, 8 };
+	numbers[6] = { 338, 211, 8, 8 };
+	numbers[7] = { 347, 211, 8, 8 };
+	numbers[8] = { 356, 211, 8, 8 };
+	numbers[9] = { 365, 211, 8, 8 };
 }
 
 ModulePlayer::~ModulePlayer()
@@ -96,7 +108,50 @@ bool ModulePlayer::CleanUp()
 
 update_status ModulePlayer::Update()
 {
-	int speed = 1;
+
+	if (speed < currentMaxSpeed) 
+	{
+		speed = speed + acceleration;
+	}
+	else
+	{
+		speed = speed - acceleration;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_REPEAT)
+	{
+		//Player is braking
+		currentMaxSpeed = maxSpeedBraking;
+	}
+	else
+	{ 
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
+		{
+			//Player is using the accelerator
+			if (!offRoad)
+			{
+				if (speed >= maxSpeedRunning - 5 && App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
+				{
+					//Player uses nitro
+					currentMaxSpeed = maxSpeedNitro;
+				}
+				else
+				{
+					currentMaxSpeed = maxSpeedRunning;
+				}
+			}
+			else
+			{
+				//Player is off-track
+				currentMaxSpeed = maxSpeedOffTrack;
+			}
+		}
+		else
+		{
+			//Player isn't using the accelerator
+			currentMaxSpeed = maxSpeedAuto;
+		}
+	}
 
 	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
@@ -151,7 +206,7 @@ update_status ModulePlayer::Update()
 	// Draw everything --------------------------------------
 	if (destroyed == false)
 	{
-		
+		PrintSpeed();
 
 		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()));
 	}
@@ -159,8 +214,24 @@ update_status ModulePlayer::Update()
 	return UPDATE_CONTINUE;
 }
 
-// TODO 13: Make so is the laser collides, it is removed and create an explosion particle at its position
+void ModulePlayer::PrintSpeed() {
+	int numberThreshold = 100;
+	int helper = speed;
+	int digitPositionX = -32;
+	bool numberInRange = false;
 
-// TODO 14: Make so if the player collides, it is removed and create few explosions at its positions
-// then fade away back to the first screen (use the "destroyed" bool already created 
-// You will need to create, update and destroy the collider with the player
+	for (int dig = 3; dig > 0; dig--) {
+		if (helper < numberThreshold && !numberInRange) {
+			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 + digitPositionX, 20, &blankSpace);
+		}
+		else
+		{
+			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 + digitPositionX, 20, &numbers[helper / numberThreshold]);
+			numberInRange = true;
+		}
+
+		helper = helper % numberThreshold;
+		numberThreshold = numberThreshold / 10;
+		digitPositionX += 8;
+	}
+}

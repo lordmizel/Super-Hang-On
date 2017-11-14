@@ -15,6 +15,7 @@ public:
 
 	int GetCurrentSegment() const { return currentSegment; }
 	int GetSpeed() const { return speed; }
+	void PrintSpeed();
 
 	bool Start();
 	update_status Update();
@@ -32,12 +33,28 @@ public:
 	Animation leanedRight;
 	Animation unLeanRight;
 
+	
+	SDL_Rect speedDigits[3];
+	SDL_Rect kmText;
+
+	SDL_Rect blankSpace;
+	SDL_Rect numbers[10];
+
 	iPoint position;
 	bool destroyed = false;
 
 private:
 	int currentSegment = 0;		//The segment where the player is currently
 	int speed = 0;
+	int acceleration = 1;
+	int currentMaxSpeed;
+
+	int maxSpeedAuto = 90;
+	int maxSpeedRunning = 290;
+	int maxSpeedNitro = 324;
+	int maxSpeedOffTrack = 106;
+	int maxSpeedBraking = 85;
+	bool offRoad = false;
 };
 
 #endif

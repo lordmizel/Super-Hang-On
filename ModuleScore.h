@@ -25,7 +25,7 @@ public:
 	SDL_Rect stageText;
 	SDL_Rect nameText;
 	SDL_Rect timeText;
-	SDL_Rect topRanks[8];
+	SDL_Rect topRanks[7];
 
 	SDL_Rect numbers[10];
 	SDL_Rect blankSpace;

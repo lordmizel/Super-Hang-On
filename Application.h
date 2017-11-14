@@ -21,6 +21,8 @@ class ModuleSceneMap;
 class ModuleSceneMusic;
 class ModuleSceneRace;
 
+class CharacterManager;
+
 class Application
 {
 public:
