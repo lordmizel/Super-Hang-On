@@ -1,0 +1,1 @@
+Move these files to the EXE folder, i.e.: "Debug" folder.
