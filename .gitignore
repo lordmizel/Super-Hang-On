@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+*.ilk
+*.log
+*.tlog
+Debug/Super Hang-On.pdb
+Debug/vc141.idb
+Debug/vc141.pdb
+.vs/Super Hang-On/v15/ipch/AutoPCH/78ed62f64393f1ca/MAIN.ipch
+.vs/Super Hang-On/v15/Browse.VC.opendb
+.vs/Super Hang-On/v15/Browse.VC.db
+.vs/Super Hang-On/v15/.suo
+Super Hang-On.vcxproj.user
