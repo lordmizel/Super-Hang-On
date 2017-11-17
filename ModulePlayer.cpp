@@ -255,7 +255,7 @@ void ModulePlayer::PrintSpeed() {
 void ModulePlayer::ManageAnimations() {
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		if (current_animation->GetCurrentFrame().x == leaningLeft.frames[leaningLeft.frames.size() - 1].x || current_animation->GetCurrentFrame().x == leaningLeftBraking.frames[leaningLeftBraking.frames.size() - 1].x)
+		if ((current_animation != &unLeanRight && current_animation != &unLeanRightBraking) && (current_animation->GetCurrentFrame().x == leaningLeft.frames[leaningLeft.frames.size() - 1].x || current_animation->GetCurrentFrame().x == leaningLeftBraking.frames[leaningLeftBraking.frames.size() - 1].x) || current_animation == &leanedLeft || current_animation == &leanedLeftBraking)
 		{
 			if (braking)
 			{
@@ -266,7 +266,7 @@ void ModulePlayer::ManageAnimations() {
 				current_animation = &leanedLeft;
 			}
 		}
-		else if (current_animation == &forward || current_animation == &forwardBraking/*(current_animation != &leaningLeft || current_animation != &leaningLeftBraking) && (current_animation != &leanedLeft || current_animation != &leanedLeftBraking)*/)
+		else if (current_animation == &forward || current_animation == &forwardBraking)
 		{
 			if (braking)
 			{
@@ -279,21 +279,10 @@ void ModulePlayer::ManageAnimations() {
 				current_animation = &leaningLeft;
 			}
 		}
-		if (current_animation->GetCurrentFrame().x == leanedLeft.frames[0].x)
-		{
-			if (braking)
-			{
-				current_animation == &leanedLeftBraking;
-			}
-			else
-			{
-				current_animation == &leanedLeft;
-			}
-		}
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		if (current_animation != &leanedLeft && current_animation != &leanedLeftBraking && (current_animation->GetCurrentFrame().x == leaningRight.frames[leaningRight.frames.size() - 1].x || current_animation->GetCurrentFrame().x == leaningRightBraking.frames[leaningRightBraking.frames.size() - 1].x))
+		if ((current_animation != &unLeanLeft && current_animation != &unLeanLeftBraking) && (current_animation->GetCurrentFrame().x == leaningRight.frames[leaningRight.frames.size() - 1].x || current_animation->GetCurrentFrame().x == leaningRightBraking.frames[leaningRightBraking.frames.size() - 1].x) || current_animation == &leanedRight || current_animation == &leanedRightBraking)
 		{
 			if (braking)
 			{
@@ -304,7 +293,7 @@ void ModulePlayer::ManageAnimations() {
 				current_animation = &leanedRight;
 			}
 		}
-		else if (current_animation == &forward || current_animation == &forwardBraking/*(current_animation != &leaningRight || current_animation != &leaningRightBraking) && (current_animation != &leanedRight || current_animation != &leanedRightBraking)*/)
+		else if (current_animation == &forward || current_animation == &forwardBraking)
 		{
 			if (braking)
 			{
@@ -328,9 +317,6 @@ void ModulePlayer::ManageAnimations() {
 			}
 		}
 	}
-
-	
-	
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_IDLE && (current_animation == &leanedLeft || current_animation == &leaningLeft || current_animation == &leanedLeftBraking || current_animation == &leaningLeftBraking))
 	{
