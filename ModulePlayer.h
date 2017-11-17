@@ -32,7 +32,13 @@ public:
 	Animation leaningRight;
 	Animation leanedRight;
 	Animation unLeanRight;
-
+	Animation forwardBraking;
+	Animation leaningLeftBraking;
+	Animation leanedLeftBraking;
+	Animation unLeanLeftBraking;
+	Animation leaningRightBraking;
+	Animation leanedRightBraking;
+	Animation unLeanRightBraking;
 	
 	SDL_Rect speedDigits[3];
 	SDL_Rect kmText;
@@ -45,6 +51,7 @@ public:
 
 private:
 	int currentSegment = 0;		//The segment where the player is currently
+	bool braking = false;
 	int speed = 0;
 	int acceleration = 1;
 	int currentMaxSpeed;
@@ -55,6 +62,8 @@ private:
 	int maxSpeedOffTrack = 106;
 	int maxSpeedBraking = 85;
 	bool offRoad = false;
+
+	void ManageAnimations();
 };
 
 #endif
