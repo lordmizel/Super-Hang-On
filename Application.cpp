@@ -11,7 +11,7 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneMap.h"
 #include "ModuleSceneMusic.h"
-#include "ModuleSceneMapAfrica.h"
+#include "ModuleEuropeRace.h"
 #include "ModulePlayer.h"
 
 using namespace std;
@@ -30,7 +30,7 @@ Application::Application()
 	modules.push_back(scene_intro = new ModuleSceneIntro(false));
 	modules.push_back(scene_map = new ModuleSceneMap(false));
 	modules.push_back(scene_music = new ModuleSceneMusic(false));
-	modules.push_back(map_africa = new ModuleSceneMapAfrica(false));
+	modules.push_back(europe_race = new ModuleEuropeRace(false));
 	modules.push_back(player = new ModulePlayer(false));
 
 	// Modules to draw on top of game logic
@@ -59,7 +59,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(map_africa, nullptr, 3.0f);
+	fade->FadeToBlack(europe_race, nullptr, 3.0f);
 
 	return ret;
 }

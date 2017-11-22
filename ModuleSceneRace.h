@@ -4,15 +4,15 @@
 #include "Module.h"
 #include "Animation.h"
 
-class Line;
+class Segment;
 class ModuleEnemy;
 
-class ModuleSceneTrack : public Module
+class ModuleSceneRace : public Module
 {
 
 public:
-	ModuleSceneTrack(bool active = true);
-	~ModuleSceneTrack();
+	ModuleSceneRace(bool active = true);
+	~ModuleSceneRace();
 
 	bool Start();
 	update_status Update(/*float deltaTime*/);
@@ -52,7 +52,7 @@ public:
 	Color color_road;
 	Color color_line;
 
-	vector<Line> lines;
+	vector<Segment> lines;
 
 	int N = 0;
 	int pos;

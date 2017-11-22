@@ -23,7 +23,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Dummy.h" />
     <ClInclude Include="Globals.h" />
-    <ClInclude Include="Line.h" />
+    <ClInclude Include="Segment.h" />
     <ClInclude Include="MemLeaks.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleAudio.h" />
@@ -36,9 +36,9 @@
     <ClInclude Include="ModuleRender.h" />
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleSceneMap.h" />
-    <ClInclude Include="ModuleSceneMapAfrica.h" />
+    <ClInclude Include="ModuleEuropeRace.h" />
     <ClInclude Include="ModuleSceneMusic.h" />
-    <ClInclude Include="ModuleSceneTrack.h" />
+    <ClInclude Include="ModuleSceneRace.h" />
     <ClInclude Include="ModuleScore.h" />
     <ClInclude Include="ModuleTextures.h" />
     <ClInclude Include="ModuleWindow.h" />
@@ -58,9 +58,9 @@
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSceneIntro.cpp" />
     <ClCompile Include="ModuleSceneMap.cpp" />
-    <ClCompile Include="ModuleSceneMapAfrica.cpp" />
+    <ClCompile Include="ModuleEuropeRace.cpp" />
     <ClCompile Include="ModuleSceneMusic.cpp" />
-    <ClCompile Include="ModuleSceneTrack.cpp" />
+    <ClCompile Include="ModuleSceneRace.cpp" />
     <ClCompile Include="ModuleScore.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />

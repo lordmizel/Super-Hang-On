@@ -7,11 +7,11 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleFadeToBlack.h"
-#include "ModuleSceneMapAfrica.h"
+#include "ModuleEuropeRace.h"
 #include "ModulePlayer.h"
-#include "Line.h"
+#include "Segment.h"
 
-ModuleSceneMapAfrica::ModuleSceneMapAfrica(bool active) : ModuleSceneTrack(active)
+ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 {
 	background = { 17, 61, 640, 275 };
 	backgroundParalax = { 668,98,625,28 };
@@ -28,7 +28,7 @@ ModuleSceneMapAfrica::ModuleSceneMapAfrica(bool active) : ModuleSceneTrack(activ
 
 	for (int i = 0; i < 1600; i++)
 	{
-		Line line;
+		Segment line;
 		line.z = (float)i * line.segL;
 
 		//if (i > 300 && i < 700) line.curve = 4;
@@ -47,6 +47,6 @@ ModuleSceneMapAfrica::ModuleSceneMapAfrica(bool active) : ModuleSceneTrack(activ
 	playerX = 0;
 }
 
-ModuleSceneMapAfrica::~ModuleSceneMapAfrica()
+ModuleEuropeRace::~ModuleEuropeRace()
 {}
 

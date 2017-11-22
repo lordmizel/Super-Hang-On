@@ -145,8 +145,8 @@ bool ModulePlayer::Start()
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
 
 	destroyed = false;
-	position.x = SCREEN_WIDTH/2 - 16;
-	position.y = SCREEN_HEIGHT - 73;
+	position.x = SCREEN_WIDTH/2 - 16 * 2;
+	position.y = SCREEN_HEIGHT - 73 * 2;
 
 	return true;
 }
@@ -224,7 +224,7 @@ update_status ModulePlayer::Update()
 	{
 		PrintSpeed();
 
-		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()));
+		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, false, false, 2, 2);
 	}
 
 	return UPDATE_CONTINUE;

@@ -177,7 +177,7 @@ update_status ModuleSceneMusic::Update()
 			App->audio->musicChosen = "hardRoad.ogg";
 			break;
 		}
-		App->fade->FadeToBlack((Module*)App->map_africa, this);
+		App->fade->FadeToBlack((Module*)App->europe_race, this);
 	}
 
 	return UPDATE_CONTINUE;

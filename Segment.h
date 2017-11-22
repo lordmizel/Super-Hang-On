@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class Line
+class Segment
 
 {
 public:
@@ -22,7 +22,7 @@ public:
 	int segL = SEGL; //segmentLenght
 	float camD = (float)CAMD; //camera depth
 
-	Line() {
+	Segment() {
 		curve = x = y = z = 0; X = 0; Y = SCREEN_HEIGHT; W = 0;
 		spriteX = -1; clip = 0; scale = 0;
 	}

@@ -7,13 +7,13 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleFadeToBlack.h"
-#include "ModuleSceneTrack.h"
+#include "ModuleSceneRace.h"
 #include "ModulePlayer.h"
 //#include "ModuleEnemy.h"
-#include "Line.h"
+#include "Segment.h"
 #include <string>
 
-ModuleSceneTrack::ModuleSceneTrack(bool active) : Module(active)
+ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 {
 	startSign = { 7, 2, 627, 207};
 
@@ -44,11 +44,11 @@ ModuleSceneTrack::ModuleSceneTrack(bool active) : Module(active)
 
 }
 
-ModuleSceneTrack::~ModuleSceneTrack()
+ModuleSceneRace::~ModuleSceneRace()
 {}
 
 // Load assets
-bool ModuleSceneTrack::Start()
+bool ModuleSceneRace::Start()
 {
 	LOG("Loading space intro");
 
@@ -71,14 +71,14 @@ bool ModuleSceneTrack::Start()
 }
 
 // UnLoad assets
-bool ModuleSceneTrack::CleanUp()
+bool ModuleSceneRace::CleanUp()
 {
 	LOG("Unloading space scene");
 	App->textures->Unload(graphics);
 	return true;
 }
 
-void ModuleSceneTrack::PrintTrack()
+void ModuleSceneRace::PrintTrack()
 {
 
 	while (pos >= N * 200) pos -= N * SEGL;
@@ -90,7 +90,7 @@ void ModuleSceneTrack::PrintTrack()
 	int maxy = HEIGHT;
 
 	for (int n = startPos; n < startPos + 300; n++) {
-		Line &l = lines[n%N];
+		Segment &l = lines[n%N];
 		l.project((int)(playerX - x), camH, pos - (n >= N ? N * 200 : 0));
 		x += dx;
 		dx += l.curve;
@@ -103,22 +103,20 @@ void ModuleSceneTrack::PrintTrack()
 		Color grass2aux = (n / 3) % 2 ? grass2 : grass2;
 		Color line = (n / 10) % 2 ? color_line : color_road;
 
-		Line p;
+		Segment p;
 		if (n == 0)
 			p = lines[lines.size() - 1 % N]; //previous line
 		else
 			p = lines[(n - 1) % N]; //previous line
 
-		int numRalles = 100;
+		int numRalles = 20;
 		//App->renderer->DrawPoly(grass, 0, (short)p.Y, (short)p.width, 0, (short)l.Y, (short)l.width);
 		for (int i = numRalles; i > 0; i--) {
-			if (i % 2 == 0)
-				App->renderer->DrawPolygon(Green, (short)p.X, (short)p.Y, (short)(p.W*0.3*i), (short)l.X, (short)l.Y, (short)(l.W*0.3*i));
-			else
-				App->renderer->DrawPolygon(grass, (short)p.X, (short)p.Y, (short)(p.W*0.3*i), (short)l.X, (short)l.Y, (short)(l.W*0.3*i));
+			if((short)p.Y != (short)l.Y)
+			App->renderer->DrawPolygon(grass, SCREEN_WIDTH / 2 /*(short)p.X*/, (short)p.Y, SCREEN_WIDTH/*(short)(p.W*0.3*i)*/, SCREEN_WIDTH / 2/*(short)l.X*/, (short)l.Y, SCREEN_WIDTH/*(short)(l.W*0.3*i)*/);
 		}
-		App->renderer->DrawPolygon(Green, (short)p.X, (short)p.Y, (short)(p.W*0.1), (short)l.X, (short)l.Y, (short)(l.W*0.01));
-		App->renderer->DrawPolygon(grass2aux, (short)p.X, (short)p.Y, (short)(p.W*0.05), (short)l.X, (short)l.Y, (short)(l.W*0.05));
+		//App->renderer->DrawPolygon(Green, (short)p.X, (short)p.Y, (short)(p.W*0.1), (short)l.X, (short)l.Y, (short)(l.W*0.01));
+		//App->renderer->DrawPolygon(grass2aux, (short)p.X, (short)p.Y, (short)(p.W*0.05), (short)l.X, (short)l.Y, (short)(l.W*0.05));
 		//App->renderer->DrawPoly(rumble, (short)p.X, (short)p.Y, (short)(p.W*1.2), (short)l.X, (short)l.Y, (short)(l.W*1.2));
 		App->renderer->DrawPolygon(color_road, (short)p.X, (short)p.Y, (short)p.W, (short)l.X, (short)l.Y, (short)l.W);
 		App->renderer->DrawPolygon(line, (short)p.X, (short)p.Y, (short)(p.W*0.05), (short)l.X, (short)l.Y, (short)(l.W*0.05));
@@ -198,7 +196,7 @@ void ModuleSceneTrack::PrintTrack()
 	}
 }
 */
-void ModuleSceneTrack::PrintGui() {
+void ModuleSceneRace::PrintGui() {
 	App->renderer->Blit(gui, (SCREEN_WIDTH / 10), (SCREEN_HEIGHT / 20), &backgroundTop, 0.f);
 	App->renderer->Blit(gui, (SCREEN_WIDTH / 2) - backgroundTime.w / 2, (SCREEN_HEIGHT / 20), &backgroundTime, 0.f);
 	App->renderer->Blit(gui, (SCREEN_WIDTH / 10) * 6, (SCREEN_HEIGHT / 20), &backgroundScore, 0.f);
@@ -224,7 +222,7 @@ void ModuleSceneTrack::PrintGui() {
 
 
 // Update: draw background
-update_status ModuleSceneTrack::Update(/*float deltaTime*/)
+update_status ModuleSceneRace::Update(/*float deltaTime*/)
 {
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 	{
