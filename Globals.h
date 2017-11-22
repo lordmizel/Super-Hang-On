@@ -18,6 +18,19 @@ enum update_status
 	UPDATE_ERROR
 };
 
+struct Color {
+	int r;
+	int g;
+	int b;
+	int a;
+	Color() { r = 0; g = 0; b = 0; a = 0; }
+	Color(int red, int green, int blue, int alpha) {
+		r = red, g = green, b = blue, a = alpha;
+	}
+};
+
+#define Green Color(0,255,0,255)
+
 // Useful typedefs ---------
 typedef unsigned int uint;
 
@@ -43,11 +56,16 @@ typedef unsigned int uint;
 	 }
 
 // Configuration -----------
-#define SCREEN_SIZE 3
-#define SCREEN_WIDTH 384
-#define SCREEN_HEIGHT 240
+#define SCREEN_SIZE 1
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 #define FULLSCREEN false
 #define VSYNC true
 #define TITLE "Super Hang-On"
 
+#define WIDTH 640;
+#define HEIGHT 480;
+#define ROADW 2000;
+#define SEGL 200; //segmentLenght
+#define CAMD 0.84; //camera depth
 #endif //__GLOBALS_H__

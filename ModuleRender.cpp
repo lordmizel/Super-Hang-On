@@ -89,7 +89,7 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed)
+bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, bool moveX, bool moveY, int scaledW, int scaledH)
 {
 	bool ret = true;
 	SDL_Rect rect;
@@ -143,10 +143,14 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	return ret;
 }
 
-bool ModuleRender::DrawPolygon(Sint16* vx, Sint16* vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+bool ModuleRender::DrawPolygon(Color c, short x1, short y1, short w1, short x2, short y2, short w2)
+{
+	short vx[4] = { x1 - w1, x2 - w2, x2 + w2, x1 + w1 };
+	short vy[4] = { y1, y2, y2, y1 };
+
 	bool ret = true;
-	
-	if (filledPolygonRGBA(renderer, vx, vy, n, r, g, b, a) != 0)
+
+	if (filledPolygonRGBA(renderer, vx, vy, 4, c.r, c.g, c.b, c.a) != 0)
 	{
 		LOG("Cannot draw polygon to screen. filledPolygonRGBA error: %s", SDL_GetError());
 		ret = false;

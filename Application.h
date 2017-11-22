@@ -19,7 +19,7 @@ class ModulePlayer;
 class ModuleSceneIntro;
 class ModuleSceneMap;
 class ModuleSceneMusic;
-class ModuleSceneRace;
+class ModuleSceneMapAfrica;
 
 class CharacterManager;
 
@@ -49,7 +49,7 @@ public:
 	ModuleSceneIntro* scene_intro;
 	ModuleSceneMap* scene_map;
 	ModuleSceneMusic* scene_music;
-	ModuleSceneRace* scene_race;
+	ModuleSceneMapAfrica* map_africa;
 
 private:
 

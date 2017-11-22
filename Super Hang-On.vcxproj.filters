@@ -54,9 +54,6 @@
     <ClInclude Include="ModuleRender.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleRoad.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleSceneIntro.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -75,10 +72,19 @@
     <ClInclude Include="ModuleSceneMusic.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleSceneRace.h">
+    <ClInclude Include="ModuleScore.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleScore.h">
+    <ClInclude Include="Line.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleSceneMapAfrica.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleSceneTrack.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleFont.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,9 +116,6 @@
     <ClCompile Include="ModuleRender.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleRoad.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleSceneIntro.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
@@ -131,10 +134,16 @@
     <ClCompile Include="ModuleSceneMusic.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleSceneRace.cpp">
+    <ClCompile Include="ModuleScore.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleScore.cpp">
+    <ClCompile Include="ModuleSceneMapAfrica.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleSceneTrack.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFont.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
