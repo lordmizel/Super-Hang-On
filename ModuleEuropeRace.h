@@ -11,6 +11,11 @@ public:
 	ModuleEuropeRace(bool active = true);
 	~ModuleEuropeRace();
 
+private:
+	SDL_Rect landscapeParis;
+	SDL_Rect landscapePlains;
+
+	
 };
 
-#endif // __ModuleSceneMapAfrica_H__
+#endif

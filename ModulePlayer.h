@@ -13,7 +13,6 @@ public:
 	ModulePlayer(bool active = true);
 	~ModulePlayer();
 
-	int GetCurrentSegment() const { return currentSegment; }
 	int GetSpeed() const { return speed; }
 	void PrintSpeed();
 
@@ -50,7 +49,6 @@ public:
 	bool destroyed = false;
 
 private:
-	int currentSegment = 0;		//The segment where the player is currently
 	bool braking = false;
 	int speed = 0;
 	int acceleration = 1;

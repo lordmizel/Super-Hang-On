@@ -13,9 +13,9 @@
 
 ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 {
-	background = { 17, 61, 640, 275 };
-	backgroundParalax = { 668,98,625,28 };
-	backgroundTrackName = { 266, 467,98,18 };
+	
+	
+	landscapeParis = { 330, 256, 320, 128 };
 
 
 	grass1 = Color(224, 240, 160, 255);
@@ -29,18 +29,30 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 	for (int i = 0; i < 1600; i++)
 	{
 		Segment line;
-		line.z = (float)i * line.segL;
+		line.z = (float)i * SEGMENT_LENGTH/*line.segL*/;
 
-		//if (i > 300 && i < 700) line.curve = 4;
+		if (i > 300 && i < 700) line.curve = 4;
+		//if (i > 500 && i < 600) line.curve = -4;
+		if (i > 500 && i < 600) line.curve = -1;
 
+		if (i > 1) line.y = (float)(sin(i / 30.0) * 10000);
 		//if (i > 0) line.y = (float)(sin(i / 30.0) * 1500);
+
 		int dist = rand() % 3;
 		int sign = rand() % 2 + 1;
-		if (sign == 1) dist *= (-1);
-		if (i % 20 == 0) line.spriteX = dist;
+
+		if (sign == 1) {
+			dist *= (-1);
+		}
+
+		if (i % 20 == 0) {
+			line.spriteX = dist;
+		}
 
 		lines.push_back(line);
 	}
+
+	
 
 	N = lines.size();
 	pos = 0;
@@ -48,5 +60,5 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 }
 
 ModuleEuropeRace::~ModuleEuropeRace()
-{}
-
+{
+}

@@ -18,8 +18,8 @@ public:
 
 	int width = WIDTH;
 	int height = HEIGHT;
-	int roadW = ROADW;
-	int segL = SEGL; //segmentLenght
+	int roadWidth = ROAD_WIDTH;
+	//int segL = SEGMENT_LENGTH; //segmentLenght
 	float camD = (float)CAMD; //camera depth
 
 	Segment() {
@@ -33,7 +33,7 @@ public:
 		scale = camD / (z - camZ);
 		X = (float)((1 + scale*(x - camX)) * width / 2);
 		Y = (float)((1 - scale*(y - camY)) * height *0.55);
-		W = (float)(scale * roadW * width / 2);
+		W = (float)(scale * roadWidth * width / 2);
 	}
 
 	void DrawObject(SDL_Rect sprite, SDL_Texture* tex)

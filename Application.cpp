@@ -8,6 +8,7 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 
+#include "ModuleScore.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneMap.h"
 #include "ModuleSceneMusic.h"
@@ -31,7 +32,9 @@ Application::Application()
 	modules.push_back(scene_map = new ModuleSceneMap(false));
 	modules.push_back(scene_music = new ModuleSceneMusic(false));
 	modules.push_back(europe_race = new ModuleEuropeRace(false));
+	modules.push_back(score = new ModuleScore(false));
 	modules.push_back(player = new ModulePlayer(false));
+	
 
 	// Modules to draw on top of game logic
 	modules.push_back(collision = new ModuleCollision());

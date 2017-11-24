@@ -37,6 +37,9 @@ public:
 	int selectedSong;
 	float animationSpeed;
 	uint fx = 0;
+
+private:
+	void ChangeSongPlaying();
 };
 
 #endif

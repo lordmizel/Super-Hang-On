@@ -65,7 +65,7 @@ typedef unsigned int uint;
 
 #define WIDTH 640;
 #define HEIGHT 480;
-#define ROADW 2000;
-#define SEGL 200; //segmentLenght
-#define CAMD 0.84; //camera depth
+#define ROAD_WIDTH 1700;
+#define SEGMENT_LENGTH 200; //segmentLenght 200
+#define CAMD 0.5; //camera depth 0.84
 #endif //__GLOBALS_H__

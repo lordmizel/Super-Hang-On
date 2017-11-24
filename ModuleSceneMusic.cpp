@@ -64,7 +64,7 @@ bool ModuleSceneMusic::Start()
 
 	graphics = App->textures->Load("songs.png", 224, 160, 0);
 
-	//App->audio->PlayMusic("opening.ogg", 1.0f);
+	App->audio->PlayMusic("outRideACrisis.ogg", 1.0f);
 	if (fx == 0)
 		fx = App->audio->LoadFx("rtype/starting.wav");
 
@@ -90,14 +90,14 @@ bool ModuleSceneMusic::CleanUp()
 update_status ModuleSceneMusic::Update()
 {
 	App->renderer->DrawQuad(backdrop, 224, 160, 0, 255, false);
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 48, 30, &selectMusic);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - selectMusic.w, SCREEN_HEIGHT / 8, &selectMusic, 0.0f, false, false, 2, 2);
 
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 124, 60, &(song1.GetCurrentFrame()));
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 124, 90, &(song2.GetCurrentFrame()));
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 124, 120, &(song3.GetCurrentFrame()));
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 124, 150, &(song4.GetCurrentFrame()));
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song1.frames[0].w, SCREEN_HEIGHT / 8 * 2, &(song1.GetCurrentFrame()), 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song2.frames[0].w, SCREEN_HEIGHT / 8 * 3, &(song2.GetCurrentFrame()), 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song3.frames[0].w, SCREEN_HEIGHT / 8 * 4, &(song3.GetCurrentFrame()), 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song4.frames[0].w, SCREEN_HEIGHT / 8 * 5, &(song4.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 68, 200, &(pressButton.GetCurrentFrame()));
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
 	switch (selectedSong) {
 	case SONG1:
@@ -148,6 +148,7 @@ update_status ModuleSceneMusic::Update()
 		{
 			selectedSong = SONG4;
 		}
+		ChangeSongPlaying();
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
 	{
@@ -159,6 +160,7 @@ update_status ModuleSceneMusic::Update()
 		{
 			selectedSong = SONG1;
 		}
+		ChangeSongPlaying();
 	}
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
 	{
@@ -181,4 +183,23 @@ update_status ModuleSceneMusic::Update()
 	}
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleSceneMusic::ChangeSongPlaying() 
+{
+	switch (selectedSong)
+	{
+	case SONG1:
+		App->audio->PlayMusic("outRideACrisis.ogg", 1.0f);
+		break;
+	case SONG2:
+		App->audio->PlayMusic("sprinter.ogg", 1.0f);
+		break;
+	case SONG3:
+		App->audio->PlayMusic("winningRun.ogg", 1.0f);
+		break;
+	case SONG4:
+		App->audio->PlayMusic("hardRoad.ogg", 1.0f);
+		break;
+	}
 }

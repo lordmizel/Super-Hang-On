@@ -108,31 +108,31 @@ bool ModuleSceneMap::CleanUp()
 update_status ModuleSceneMap::Update()
 {
 	App->renderer->DrawQuad(backdrop, 160, 192, 224, 255, false);
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 78, 30, &chooseClass);
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 140, SCREEN_HEIGHT / 2 - 82, &worldMap);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - worldMap.w, SCREEN_HEIGHT / 2 - worldMap.h, &worldMap, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - chooseClass.w, SCREEN_HEIGHT / 8, &chooseClass, 0.0f, false, false, 2, 2);
 
 	switch (courseSelect) 
 	{
 	case AFRICA:
-		App->renderer->Blit(graphics, 174, 111, &(africa.GetCurrentFrame()));
+		App->renderer->Blit(graphics, 284, 221, &(africa.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		break;
 	case ASIA:
-		App->renderer->Blit(graphics, 210, 46, &(asia.GetCurrentFrame()));
+		App->renderer->Blit(graphics, 356, 91, &(asia.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		break;
 	case AMERICA:
-		App->renderer->Blit(graphics, 62, 63, &(america.GetCurrentFrame()));
+		App->renderer->Blit(graphics, 60, 125, &(america.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		break;
 	case EUROPE:
-		App->renderer->Blit(graphics, 170, 63, &(europe.GetCurrentFrame()));
+		App->renderer->Blit(graphics, 276, 125, &(europe.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		break;
 	}
 
-	App->renderer->Blit(graphics, 170, 127, &courseAfrica);
-	App->renderer->Blit(graphics, 235, 63, &courseAsia);
-	App->renderer->Blit(graphics, 83, 95, &courseAmerica);
-	App->renderer->Blit(graphics, 171, 79, &courseEurope);
+	App->renderer->Blit(graphics, 276, 253, &courseAfrica, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, 406, 125, &courseAsia, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, 102, 189, &courseAmerica, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, 278, 157, &courseEurope, 0.0f, false, false, 2, 2);
 
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 78, 200, &(pressButton.GetCurrentFrame()));
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false) 
 	{

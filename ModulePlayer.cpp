@@ -145,7 +145,7 @@ bool ModulePlayer::Start()
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
 
 	destroyed = false;
-	position.x = SCREEN_WIDTH/2 - 16 * 2;
+	position.x = SCREEN_WIDTH / 2 - 16 * 2;
 	position.y = SCREEN_HEIGHT - 73 * 2;
 
 	return true;
@@ -163,7 +163,7 @@ bool ModulePlayer::CleanUp()
 
 update_status ModulePlayer::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_REPEAT) 
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) 
 	{
 		braking = true;
 	}
@@ -176,24 +176,24 @@ update_status ModulePlayer::Update()
 	{
 		speed = speed + acceleration;
 	}
-	else
+	else if (speed > currentMaxSpeed)
 	{
 		speed = speed - acceleration;
 	}
 
-	if (braking/*App->input->GetKey(SDL_SCANCODE_L) == KEY_REPEAT*/)
+	if (braking)
 	{
 		//Player is braking
 		currentMaxSpeed = maxSpeedBraking;
 	}
 	else
 	{ 
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 		{
 			//Player is using the accelerator
 			if (!offRoad)
 			{
-				if (speed >= maxSpeedRunning - 5 && App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
+				if (speed >= maxSpeedRunning - 5 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
 				{
 					//Player uses nitro
 					currentMaxSpeed = maxSpeedNitro;
@@ -220,12 +220,9 @@ update_status ModulePlayer::Update()
 		
 
 	// Draw everything --------------------------------------
-	if (destroyed == false)
-	{
-		PrintSpeed();
+	PrintSpeed();
 
-		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 1, false, false, 2, 2);
-	}
+	App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
 	return UPDATE_CONTINUE;
 }
@@ -233,22 +230,24 @@ update_status ModulePlayer::Update()
 void ModulePlayer::PrintSpeed() {
 	int numberThreshold = 100;
 	int helper = speed;
-	int digitPositionX = -32;
+	int digitPositionX = 32;
 	bool numberInRange = false;
+
+	
 
 	for (int dig = 3; dig > 0; dig--) {
 		if (helper < numberThreshold && !numberInRange) {
-			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 + digitPositionX, 20, &blankSpace);
+			App->renderer->Blit(graphics, (SCREEN_WIDTH / 2) + digitPositionX, 0, &blankSpace, 0.0f, false, false, 2, 2);
 		}
 		else
 		{
-			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 + digitPositionX, 20, &numbers[helper / numberThreshold]);
+			App->renderer->Blit(graphics, (SCREEN_WIDTH / 2) + digitPositionX, 0, &numbers[helper / numberThreshold], 0.0f, false, false, 2, 2);
 			numberInRange = true;
 		}
 
 		helper = helper % numberThreshold;
 		numberThreshold = numberThreshold / 10;
-		digitPositionX += 8;
+		digitPositionX += 16;
 	}
 }
 

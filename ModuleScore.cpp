@@ -7,8 +7,6 @@ int savedScores[7] = { 57170640, 34, 43543, 2, 10087, 9876542, 1234567 };
 
 ModuleScore::ModuleScore(bool active) : Module(active)
 {
-	graphics = App->textures->Load("bikes.png", 255, 0, 204);
-
 	initialEntryCountdown = { 6, 915, 210, 8 };
 	courseSelected = { 432, 941, 104, 8 };
 	rankText = { 17, 208, 32, 8 };
@@ -51,8 +49,6 @@ bool ModuleScore::Start()
 
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
 
-	
-
 	return true;
 }
 
@@ -66,25 +62,24 @@ bool ModuleScore::CleanUp()
 	return true;
 }
 
-// Update: draw background
+
 update_status ModuleScore::Update()
 {
-	
-	App->renderer->Blit(graphics, 0, 0, &initialEntryCountdown);
+	//App->renderer->Blit(graphics, 0, 0, &initialEntryCountdown);
 
 	return UPDATE_CONTINUE;
 }
 
+
 void ModuleScore::ShowScore() {
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - initialEntryCountdown.w/2, 30, &initialEntryCountdown, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - courseSelected.w / 2, 46, &courseSelected, 0.0f, false, false, 2, 2);
 
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - initialEntryCountdown.w/2, 30, &initialEntryCountdown);
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - courseSelected.w / 2, 46, &courseSelected);
-
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 6 - rankText.w / 2, 62, &rankText);
-	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 - scoreText.w / 2, 62, &scoreText);
-	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 3 - stageText.w / 2, 62, &stageText);
-	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 4 - nameText.w / 2, 62, &nameText);
-	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2, 62, &timeText);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 6 - rankText.w / 2, 62, &rankText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 - scoreText.w / 2, 62, &scoreText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 3 - stageText.w / 2, 62, &stageText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 4 - nameText.w / 2, 62, &nameText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2, 62, &timeText, 0.0f, false, false, 2, 2);
 
 	int posY = 78;
 	int maxNumOfScoreDigits = 8;
@@ -92,7 +87,7 @@ void ModuleScore::ShowScore() {
 	for (int i = 0; i < sizeof(topRanks) / sizeof(topRanks[0]); i++)
 	{
 		//Rank column
-		App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) - topRanks[i].w / 2, posY + 16 * i, &topRanks[i]);
+		App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) - topRanks[i].w / 2, posY + 16 * i, &topRanks[i], 0.0f, false, false, 2, 2);
 
 		//Score column
 		int numberThreshold = 10000000;
@@ -102,17 +97,17 @@ void ModuleScore::ShowScore() {
 
 		for (int dig = maxNumOfScoreDigits; dig > 0; dig--) {
 			if (scoreToWorkWith < numberThreshold && !numberInRange) {
-				App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &blankSpace);
+				App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &blankSpace, 0.0f, false, false, 2, 2);
 			}
 			else
 			{
-				App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &numbers[scoreToWorkWith / numberThreshold]);
+				App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &numbers[scoreToWorkWith / numberThreshold], 0.0f, false, false, 2, 2);
 				numberInRange = true;
 			}
 
 			scoreToWorkWith = scoreToWorkWith % numberThreshold;
 			numberThreshold = numberThreshold / 10;
-			digitPositionX += 8;
+			digitPositionX += 16;
 		}
 
 		// Stage column

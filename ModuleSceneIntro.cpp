@@ -79,13 +79,13 @@ ModuleSceneIntro::ModuleSceneIntro(bool active) : Module(active)
 	titleLetters[6].h = 42;
 
 	// Title letter positions in X
-	letterPositions[0] = SCREEN_WIDTH / 2 - 133;
-	letterPositions[1] = letterPositions[0] + titleLetters[0].w - 9;
-	letterPositions[2] = letterPositions[1] + titleLetters[1].w + 1;
-	letterPositions[3] = letterPositions[2] + titleLetters[2].w - 4;
-	letterPositions[4] = letterPositions[3] + titleLetters[3].w + 3;
-	letterPositions[5] = letterPositions[4] + titleLetters[4].w - 1;
-	letterPositions[6] = letterPositions[5] + titleLetters[5].w - 8;
+	letterPositions[0] = SCREEN_WIDTH / 10;
+	letterPositions[1] = letterPositions[0] + titleLetters[0].w * 2 - 18;
+	letterPositions[2] = letterPositions[1] + titleLetters[1].w * 2 + 2;
+	letterPositions[3] = letterPositions[2] + titleLetters[2].w * 2 - 8;
+	letterPositions[4] = letterPositions[3] + titleLetters[3].w * 2 + 6;
+	letterPositions[5] = letterPositions[4] + titleLetters[4].w * 2 - 2;
+	letterPositions[6] = letterPositions[5] + titleLetters[5].w * 2 - 16;
 
 	fill_n(currentLetterPosition, 7, SCREEN_WIDTH);
 
@@ -122,7 +122,7 @@ bool ModuleSceneIntro::Start()
 	if(fx == 0)
 		fx = App->audio->LoadFx("rtype/starting.wav");
 
-	App->renderer->camera.x = App->renderer->camera.y = 0;
+	//App->renderer->camera.x = App->renderer->camera.y = 0;
 	
 	return true;
 }
@@ -142,7 +142,7 @@ update_status ModuleSceneIntro::Update()
 {
 	if (currentMovingLetter < 7) {
 		for (int i = 0; i < 7; i++) {
-			App->renderer->Blit(graphics, currentLetterPosition[i], 71, &titleLetters[i]);
+			App->renderer->Blit(graphics, currentLetterPosition[i], SCREEN_HEIGHT / 4, &titleLetters[i], 0.0f, false, false, 2, 2);
 		}
 		currentLetterPosition[currentMovingLetter] -= letterSpeed;
 		if (currentLetterPosition[currentMovingLetter] < letterPositions[currentMovingLetter]) {
@@ -152,32 +152,32 @@ update_status ModuleSceneIntro::Update()
 	}
 	else
 	{
-		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 133, 40, &(superHangOn.GetCurrentFrame()));
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 10, 57, &(superHangOn.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
 		if (selectedOption == NEW_GAME || selectedOption == PASSWORD) {
-			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 31, 150, &menuOptions1);
+			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions1.w, SCREEN_HEIGHT / 2, &menuOptions1, 0.0f, false, false, 2, 2);
 			if (selectedOption == NEW_GAME) {
-				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 40, 150, &(arrow.GetCurrentFrame()));
+				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions1.w - 12, SCREEN_HEIGHT / 2, &(arrow.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 			}
 			else if (selectedOption == PASSWORD) 
 			{
-				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 40, 166, &(arrow.GetCurrentFrame()));
+				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions1.w - 12, SCREEN_HEIGHT / 2 + 32, &(arrow.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 			}
 		}
 		else if (selectedOption == ARCADE_MODE || selectedOption == ORIGINAL_MODE)
 		{
-			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 51, 150, &menuOptions2);
+			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions2.w, SCREEN_HEIGHT / 2, &menuOptions2, 0.0f, false, false, 2, 2);
 			if (selectedOption == ARCADE_MODE) {
-				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 60, 150, &(arrow.GetCurrentFrame()));
+				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions2.w - 12, SCREEN_HEIGHT / 2, &(arrow.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 			}
 			else if (selectedOption == ORIGINAL_MODE)
 			{
-				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 60, 166, &(arrow.GetCurrentFrame()));
+				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions2.w - 12, SCREEN_HEIGHT / 2 + 32, &(arrow.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 			}
 		}
 
-		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - 37, SCREEN_HEIGHT / 2 + 75, &(segaLogo.GetCurrentFrame()));
-		App->renderer->Blit(graphics, SCREEN_WIDTH - trademark.w, SCREEN_HEIGHT - trademark.h, &trademark);
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - segaLogo.GetCurrentFrame().w, SCREEN_HEIGHT / 4 * 3, &(segaLogo.GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		App->renderer->Blit(graphics, SCREEN_WIDTH - trademark.w * 2, SCREEN_HEIGHT - trademark.h * 2, &trademark, 0.0f, false, false, 2, 2);
 
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN /*&& App->fade->isFading() == false*/)
 		{

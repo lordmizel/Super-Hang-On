@@ -16,6 +16,7 @@ class ModuleParticles;
 
 // Game modules ---
 class ModulePlayer;
+class ModuleScore;
 class ModuleSceneIntro;
 class ModuleSceneMap;
 class ModuleSceneMusic;
@@ -46,6 +47,7 @@ public:
 
 	// Game modules ---
 	ModulePlayer* player;
+	ModuleScore* score;
 	ModuleSceneIntro* scene_intro;
 	ModuleSceneMap* scene_map;
 	ModuleSceneMusic* scene_music;
