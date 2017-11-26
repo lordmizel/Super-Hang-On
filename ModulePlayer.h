@@ -13,7 +13,7 @@ public:
 	ModulePlayer(bool active = true);
 	~ModulePlayer();
 
-	int GetSpeed() const { return speed; }
+	inline int GetSpeed() const { return speed; }
 	void PrintSpeed();
 
 	bool Start();

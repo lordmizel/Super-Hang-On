@@ -17,6 +17,8 @@
 
 using namespace std;
 
+time_t g_timer = time(NULL);
+
 Application::Application()
 {
 	// Order matters: they will init/start/pre/update/post in this order

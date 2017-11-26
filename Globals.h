@@ -1,6 +1,7 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
+#include <ctime>
 #include "MemLeaks.h"
 #include "SDL/include/SDL_rect.h"
 
@@ -63,9 +64,11 @@ typedef unsigned int uint;
 #define VSYNC true
 #define TITLE "Super Hang-On"
 
-#define WIDTH 640;
-#define HEIGHT 480;
-#define ROAD_WIDTH 1700;
-#define SEGMENT_LENGTH 200; //segmentLenght 200
-#define CAMD 0.5; //camera depth 0.84
+#define WIDTH 640
+#define HEIGHT 480
+#define ROAD_WIDTH 1700
+#define SEGMENT_LENGTH 100 //segmentLenght 200
+#define CAMD 0.5 //camera depth 0.84
+
+extern time_t g_timer;
 #endif //__GLOBALS_H__

@@ -31,11 +31,12 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		Segment line;
 		line.z = (float)i * SEGMENT_LENGTH/*line.segL*/;
 
+		line.curve = 0;
 		if (i > 300 && i < 700) line.curve = 4;
 		//if (i > 500 && i < 600) line.curve = -4;
 		if (i > 500 && i < 600) line.curve = -1;
 
-		if (i > 1) line.y = (float)(sin(i / 30.0) * 10000);
+		//if (i > 1) line.y = (float)(sin(i / 30.0) * 10000);
 		//if (i > 0) line.y = (float)(sin(i / 30.0) * 1500);
 
 		int dist = rand() % 3;

@@ -50,7 +50,7 @@ private:
 	void DrawRoad();
 	int maxPuntuation;
 	int stage;
-	float time;
+	float time_;
 	int score;
 	int speed;
 

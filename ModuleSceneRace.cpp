@@ -27,7 +27,7 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 
 	maxPuntuation = 6514651;
 	stage = 1;
-	time = 60;
+	time_ = 60;
 	score = 0;
 	speed = 200;
 }
@@ -58,12 +58,16 @@ bool ModuleSceneRace::CleanUp()
 
 void ModuleSceneRace::DrawRoad()
 {
-	
-	while (pos >= N * 200) pos -= N * SEGMENT_LENGTH;
-	while (pos < 0) pos += N * SEGMENT_LENGTH;
+	int segment_length_draw = SEGMENT_LENGTH;
+	int seg_pos = pos;
+	if (pos % SEGMENT_LENGTH != 0) {
+		seg_pos = SEGMENT_LENGTH * (pos / SEGMENT_LENGTH);
+	}
+	while (seg_pos >= N * segment_length_draw) seg_pos -= N * segment_length_draw;
+	while (seg_pos < 0) seg_pos += N * segment_length_draw;
 
 	float x = 0, dx = 0;
-	int startPos = pos / SEGMENT_LENGTH;
+	int startPos = seg_pos / segment_length_draw;
 	int camH = (int)(1500 + lines[startPos].y);
 	int maxy = HEIGHT;
 
@@ -72,11 +76,20 @@ void ModuleSceneRace::DrawRoad()
 	App->renderer->Blit(graphics, landscapePosition, 0, &landscapeParis, 0.2, true, false, 2, 2);
 	App->renderer->Blit(graphics, landscapePosition + landscapeParis.w, 0, &landscapeParis, 0.2, true, false, 2, 2);*/
 
-	for (int n = startPos; n < startPos + 300; n++) {
+	for (int n = startPos; n < startPos + 100; n++) {
 		Segment &l = lines[n%N];
-		l.project((int)(playerX - x), camH, pos - (n >= N ? N * App->player->GetSpeed()/*200*/ : 0));
+		l.project((int)(playerX - x), camH, seg_pos - (n >= N ? N * 200 : 0));
 		x += dx;
 		dx += l.curve;
+
+		if (n == startPos) {
+			if (l.curve > 0){
+				playerX -= 40;
+			}
+			else if(l.curve < 0) {
+				playerX += 40;
+			}
+		}
 
 		l.clip = maxy;
 		if (l.Y >= maxy) continue;
@@ -108,7 +121,7 @@ void ModuleSceneRace::DrawRoad()
 		App->renderer->DrawPolygon(line, (short)p.X, (short)p.Y, (short)(p.W*0.05), (short)l.X, (short)l.Y, (short)(l.W*0.05));
 	}
 
-	App->score->ShowScore();
+	//App->score->ShowScore();
 
 	//Draw background
 	//App->renderer->Blit(graphics, 0, 0, &landscapeParis, 0.0f);
@@ -127,20 +140,21 @@ void ModuleSceneRace::DrawRoad()
 // Update: draw background
 update_status ModuleSceneRace::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-	{
-		pos += /*200 **/ App->player->GetSpeed();
+	time_t now = time(NULL);
+	int seconds = difftime(g_timer, now);
+	if (seconds != 0){
+		pos += App->player->GetSpeed() / 1.5f;
 		score += 200;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		playerX += 20;
+		playerX += 40;
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		playerX -= 20;
+		playerX -= 40;
 	}
 
 	DrawRoad();
