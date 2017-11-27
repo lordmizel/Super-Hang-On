@@ -13,8 +13,6 @@
 
 ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 {
-	
-	
 	landscapeParis = { 330, 256, 320, 128 };
 
 

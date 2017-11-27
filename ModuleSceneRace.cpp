@@ -9,6 +9,7 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleSceneRace.h"
 #include "ModulePlayer.h"
+#include "ModuleUI.h"
 #include "ModuleScore.h"
 //#include "ModuleEnemy.h"
 #include "Segment.h"
@@ -163,10 +164,7 @@ update_status ModuleSceneRace::Update()
 	//App->renderer->Blit(decoration, 5, SCREEN_HEIGHT / 2  - 60, &startSign, 0.f);
 	//App->renderer->Blit(decoration,  35, SCREEN_HEIGHT / 2 + 10, &sempahor.GetCurrentFrame(), 0.f);
 
-	if (App->fade->isFading() == false && (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN))
-	{
-
-	}
+	App->ui->ShowUI();
 
 	return UPDATE_CONTINUE;
 }

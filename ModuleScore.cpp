@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
+#include "ModuleFontManager.h"
 #include "ModuleScore.h"
 
 int savedScores[7] = { 57170640, 34, 43543, 2, 10087, 9876542, 1234567 };
@@ -25,18 +26,6 @@ ModuleScore::ModuleScore(bool active) : Module(active)
 	topRanks[7] = { 508, 612, 24, 8 };
 
 	blankSpace = { 525, 280, 8, 8 };
-
-	numbers[0] = { 374, 211, 8, 8 };
-	numbers[1] = { 294, 211, 8, 8 };
-	numbers[2] = { 302, 211, 8, 8 };
-	numbers[3] = { 311, 211, 8, 8 };
-	numbers[4] = { 320, 211, 8, 8 };
-	numbers[5] = { 329, 211, 8, 8 };
-	numbers[6] = { 338, 211, 8, 8 };
-	numbers[7] = { 347, 211, 8, 8 };
-	numbers[8] = { 356, 211, 8, 8 };
-	numbers[9] = { 365, 211, 8, 8 };
-
 }
 
 ModuleScore::~ModuleScore()
@@ -45,9 +34,12 @@ ModuleScore::~ModuleScore()
 
 bool ModuleScore::Start()
 {
-	LOG("Loading score scene");
+	LOG("Loading score module");
 
-	graphics = App->textures->Load("bikes.png", 255, 0, 204);
+	//graphics = App->textures->Load("bikes.png", 255, 0, 204);
+
+	// TODO: Assign actual valid data to Top Score
+	topScore = 4000000;
 
 	return true;
 }
@@ -65,13 +57,14 @@ bool ModuleScore::CleanUp()
 
 update_status ModuleScore::Update()
 {
-	//App->renderer->Blit(graphics, 0, 0, &initialEntryCountdown);
+	App->renderer->Blit(graphics, 0, 0, &initialEntryCountdown, 0.0f, false, false, 2, 2);
 
 	return UPDATE_CONTINUE;
 }
 
 
 void ModuleScore::ShowScore() {
+	LOG("Top score: %d", topScore);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - initialEntryCountdown.w/2, 30, &initialEntryCountdown, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - courseSelected.w / 2, 46, &courseSelected, 0.0f, false, false, 2, 2);
 
@@ -101,7 +94,7 @@ void ModuleScore::ShowScore() {
 			}
 			else
 			{
-				App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &numbers[scoreToWorkWith / numberThreshold], 0.0f, false, false, 2, 2);
+				App->font_manager->PrintDigit(scoreToWorkWith / numberThreshold, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 32 * i, Color(255, 255, 255, 255));
 				numberInRange = true;
 			}
 

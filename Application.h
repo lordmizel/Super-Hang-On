@@ -13,8 +13,10 @@ class ModuleAudio;
 class ModuleFadeToBlack;
 class ModuleCollision;
 class ModuleParticles;
+class ModuleFontManager;
 
 // Game modules ---
+class ModuleUI;
 class ModulePlayer;
 class ModuleScore;
 class ModuleSceneIntro;
@@ -44,8 +46,10 @@ public:
 	ModuleFadeToBlack* fade;
 	ModuleCollision* collision;
 	ModuleParticles* particles;
+	ModuleFontManager* font_manager;
 
 	// Game modules ---
+	ModuleUI* ui;
 	ModulePlayer* player;
 	ModuleScore* score;
 	ModuleSceneIntro* scene_intro;

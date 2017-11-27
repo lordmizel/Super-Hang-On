@@ -1,8 +1,9 @@
 #ifndef __MODULESCORE__
 #define __MODULESCORE__
 
-#include <map>
 #include "Module.h"
+
+struct SDL_Texture;
 
 class ModuleScore : public Module
 {
@@ -13,6 +14,8 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
+
+	int GetTopScore() { return topScore; }
 
 	/**
 	 - Compute where the new score will be inserted moving the following ranks
@@ -56,10 +59,11 @@ public:
 	SDL_Rect timeText;
 	SDL_Rect topRanks[7];
 
-	SDL_Rect numbers[10];
 	SDL_Rect blankSpace;
 
+	
 private:
+	int topScore;
 	int current_score;
 	int64_t current_time;
 	std::string current_player;

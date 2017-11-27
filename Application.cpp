@@ -7,8 +7,10 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
+#include "ModuleFontManager.h"
 
 #include "ModuleScore.h"
+#include "ModuleUI.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneMap.h"
 #include "ModuleSceneMusic.h"
@@ -28,14 +30,16 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
+	modules.push_back(font_manager = new ModuleFontManager());
 
 	// Game Modules
+	modules.push_back(ui = new ModuleUI());
+	modules.push_back(score = new ModuleScore());
 	modules.push_back(scene_intro = new ModuleSceneIntro(false));
 	modules.push_back(scene_map = new ModuleSceneMap(false));
 	modules.push_back(scene_music = new ModuleSceneMusic(false));
 	modules.push_back(europe_race = new ModuleEuropeRace(false));
-	modules.push_back(score = new ModuleScore(false));
-	modules.push_back(player = new ModulePlayer(false));
+	modules.push_back(player = new ModulePlayer());
 	
 
 	// Modules to draw on top of game logic

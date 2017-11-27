@@ -43,7 +43,6 @@ public:
 	SDL_Rect kmText;
 
 	SDL_Rect blankSpace;
-	SDL_Rect numbers[10];
 
 	iPoint position;
 	bool destroyed = false;

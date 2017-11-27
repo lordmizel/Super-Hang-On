@@ -6,6 +6,7 @@
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
 #include "ModuleFadeToBlack.h"
+#include "ModuleFontManager.h"
 #include "ModulePlayer.h"
 #include "SDL/include/SDL.h"
 
@@ -122,16 +123,6 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	unLeanRightBraking.speed = 0.2f;
 
 	blankSpace = { 525, 280, 8, 8 };
-	numbers[0] = { 374, 211, 8, 8 };
-	numbers[1] = { 294, 211, 8, 8 };
-	numbers[2] = { 302, 211, 8, 8 };
-	numbers[3] = { 311, 211, 8, 8 };
-	numbers[4] = { 320, 211, 8, 8 };
-	numbers[5] = { 329, 211, 8, 8 };
-	numbers[6] = { 338, 211, 8, 8 };
-	numbers[7] = { 347, 211, 8, 8 };
-	numbers[8] = { 356, 211, 8, 8 };
-	numbers[9] = { 365, 211, 8, 8 };
 }
 
 ModulePlayer::~ModulePlayer()
@@ -233,15 +224,13 @@ void ModulePlayer::PrintSpeed() {
 	int digitPositionX = 32;
 	bool numberInRange = false;
 
-	
-
 	for (int dig = 3; dig > 0; dig--) {
 		if (helper < numberThreshold && !numberInRange) {
 			App->renderer->Blit(graphics, (SCREEN_WIDTH / 2) + digitPositionX, 0, &blankSpace, 0.0f, false, false, 2, 2);
 		}
 		else
 		{
-			App->renderer->Blit(graphics, (SCREEN_WIDTH / 2) + digitPositionX, 0, &numbers[helper / numberThreshold], 0.0f, false, false, 2, 2);
+			App->font_manager->PrintDigit(helper / numberThreshold, (SCREEN_WIDTH / 2) + digitPositionX, 0, Color(255, 255, 255, 255));
 			numberInRange = true;
 		}
 

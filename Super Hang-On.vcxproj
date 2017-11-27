@@ -23,6 +23,8 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Dummy.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="ModuleFontManager.h" />
+    <ClInclude Include="ModuleUI.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="MemLeaks.h" />
     <ClInclude Include="Module.h" />
@@ -52,6 +54,7 @@
     <ClCompile Include="ModuleCollision.cpp" />
     <ClCompile Include="ModuleFadeToBlack.cpp" />
     <ClCompile Include="ModuleFont.cpp" />
+    <ClCompile Include="ModuleFontManager.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleParticles.cpp" />
     <ClCompile Include="ModulePlayer.cpp" />
@@ -63,6 +66,7 @@
     <ClCompile Include="ModuleSceneRace.cpp" />
     <ClCompile Include="ModuleScore.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
+    <ClCompile Include="ModuleUI.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
