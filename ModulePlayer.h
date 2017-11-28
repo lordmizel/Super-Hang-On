@@ -13,14 +13,13 @@ public:
 	ModulePlayer(bool active = true);
 	~ModulePlayer();
 
-	inline int GetSpeed() const { return speed; }
-	void PrintSpeed();
-
 	bool Start();
 	update_status Update();
 	bool CleanUp();
 
-public:
+	inline int GetSpeed() const { return speed; }
+	int GetXPosition() const { return positionX; }
+	void AlterXPosition(int alt) { positionX += alt; }
 
 	SDL_Texture* graphics = nullptr;
 	Animation* current_animation = nullptr;
@@ -38,20 +37,21 @@ public:
 	Animation leaningRightBraking;
 	Animation leanedRightBraking;
 	Animation unLeanRightBraking;
-	
-	SDL_Rect speedDigits[3];
-	SDL_Rect kmText;
-
-	SDL_Rect blankSpace;
 
 	iPoint position;
 	bool destroyed = false;
 
 private:
+	void ManageAnimations();
+	void ManageSpeed();
+
 	bool braking = false;
 	int speed = 0;
 	int acceleration = 1;
 	int currentMaxSpeed;
+
+	int positionX = 0;
+	int movementX = 50;
 
 	int maxSpeedAuto = 90;
 	int maxSpeedRunning = 290;
@@ -60,8 +60,7 @@ private:
 	int maxSpeedBraking = 85;
 	bool offRoad = false;
 
-	void ManageAnimations();
-	void ManageSpeed();
+	
 
 	time_t now;
 };

@@ -23,7 +23,7 @@ public:
 	
 	int N = 0;
 	int pos;
-	int playerX;
+	//int playerX;
 
 protected:
 	vector<SDL_Rect> backgrounds;

@@ -121,8 +121,6 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	unLeanRightBraking.frames.push_back({ 91, 676, 32, 72 });
 	unLeanRightBraking.loop = false;
 	unLeanRightBraking.speed = 0.2f;
-
-	blankSpace = { 525, 280, 8, 8 };
 }
 
 ModulePlayer::~ModulePlayer()
@@ -135,7 +133,6 @@ bool ModulePlayer::Start()
 
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
 
-	destroyed = false;
 	position.x = SCREEN_WIDTH / 2 - 16 * 2;
 	position.y = SCREEN_HEIGHT - 73 * 2;
 
@@ -154,7 +151,38 @@ bool ModulePlayer::CleanUp()
 
 update_status ModulePlayer::Update()
 {
-	
+	if (current_animation == &leaningLeft || current_animation == &unLeanLeft) {
+		positionX -= movementX / 2;
+	}
+	else if (current_animation == &leanedLeft) {
+		positionX -= movementX;
+	}
+	else if (current_animation == &leaningRight || current_animation == &unLeanRight) {
+		positionX += movementX / 2;
+	}
+	else if (current_animation == &leanedRight) {
+		positionX += movementX;
+	}
+
+	if (positionX > ROAD_WIDTH * 4) {
+		positionX = ROAD_WIDTH * 4;
+	}
+	if (positionX < -ROAD_WIDTH * 4) {
+		positionX = -ROAD_WIDTH * 4;
+	}
+
+	if (positionX > ROAD_WIDTH) {
+		offRoad = true;
+	}
+	else {
+		offRoad = false;
+	}
+	if (positionX < -ROAD_WIDTH) {
+		offRoad = true;
+	}
+	else {
+		offRoad = false;
+	}
 
 	ManageSpeed();
 

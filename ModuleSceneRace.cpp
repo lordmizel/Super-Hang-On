@@ -76,16 +76,16 @@ void ModuleSceneRace::DrawRoad()
 
 	for (int n = startPos; n < startPos + 100; n++) {
 		Segment &l = lines[n%N];
-		l.project((int)(playerX - x), camH, seg_pos - (n >= N ? N * 200 : 0));
+		l.project((int)(App->player->GetXPosition() - x), camH, seg_pos - (n >= N ? N * 200 : 0));
 		x += dx;
 		dx += l.curve;
 
 		if (n == startPos) {
 			if (l.curve > 0){
-				playerX -= 40;
+				App->player->AlterXPosition(-50); /*playerX -= 40;*/
 			}
 			else if(l.curve < 0) {
-				playerX += 40;
+				App->player->AlterXPosition(50); /*playerX += 40;*/
 			}
 		}
 
@@ -138,6 +138,8 @@ void ModuleSceneRace::DrawRoad()
 // Update: draw background
 update_status ModuleSceneRace::Update()
 {
+	//TODO: Remember to reset score and set player position in X to zero when starting a new race!
+
 	time_t now = time(NULL);
 	int seconds = difftime(g_timer, now);
 	if (seconds != 0){
@@ -145,7 +147,7 @@ update_status ModuleSceneRace::Update()
 		App->score->UpdateScore(App->player->GetSpeed());
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	/*if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
 		playerX += 40;
 	}
@@ -153,7 +155,7 @@ update_status ModuleSceneRace::Update()
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
 		playerX -= 40;
-	}
+	}*/
 
 	DrawRoad();
 

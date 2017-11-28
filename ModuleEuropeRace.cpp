@@ -55,7 +55,7 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 
 	N = lines.size();
 	pos = 0;
-	playerX = 0;
+	/*playerX = 0;*/
 }
 
 ModuleEuropeRace::~ModuleEuropeRace()
