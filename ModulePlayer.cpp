@@ -174,10 +174,7 @@ update_status ModulePlayer::Update()
 	if (positionX > ROAD_WIDTH) {
 		offRoad = true;
 	}
-	else {
-		offRoad = false;
-	}
-	if (positionX < -ROAD_WIDTH) {
+	else if (positionX < -ROAD_WIDTH) {
 		offRoad = true;
 	}
 	else {
@@ -224,7 +221,7 @@ void ModulePlayer::ManageSpeed() {
 			//Player is using the accelerator
 			if (!offRoad)
 			{
-				if (speed >= maxSpeedRunning - 5 && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
+				if (speed >= maxSpeedRunning && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
 				{
 					//Player uses nitro
 					currentMaxSpeed = maxSpeedNitro;

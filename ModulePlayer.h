@@ -18,6 +18,7 @@ public:
 	bool CleanUp();
 
 	inline int GetSpeed() const { return speed; }
+	inline int GetMaxSpeedRunning() const { return maxSpeedRunning; }
 	int GetXPosition() const { return positionX; }
 	void AlterXPosition(int alt) { positionX += alt; }
 
