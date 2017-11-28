@@ -16,7 +16,7 @@ public:
 
 	void ShowUI();
 	void ShowRankings();
-	void DigitRendering(int numberToRender, int numDigits, int x, int y, Color color);
+	void DigitRendering(int numberToRender, int numDigits, int x, int y, Color color = Color(255, 255, 255, 255));
 
 	
 

@@ -82,9 +82,10 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, bool moveX, bool moveY, int scaledW, int scaledH)
+bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, bool moveX, bool moveY, int scaledW, int scaledH, Color color)
 {
 	bool ret = true;
+	SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
 	SDL_Rect rect;
 	rect.x = (int)(camera.x * speed) + x * SCREEN_SIZE;
 	rect.y = (int)(camera.y * speed) + y * SCREEN_SIZE;

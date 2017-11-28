@@ -48,11 +48,8 @@ private:
 	int landscapePosition = 0;
 
 	void DrawRoad();
-	int maxPuntuation;
 	int stage;
 	float time_;
-	int score;
-	int speed;
 
 	SDL_Rect landscapeParis;
 };

@@ -41,6 +41,9 @@ bool ModuleScore::Start()
 	// TODO: Assign actual valid data to Top Score
 	topScore = 4000000;
 
+	//TODO: This should happen when race starts, not when this module is initialized
+	ResetScore();
+
 	return true;
 }
 
@@ -57,7 +60,7 @@ bool ModuleScore::CleanUp()
 
 update_status ModuleScore::Update()
 {
-	App->renderer->Blit(graphics, 0, 0, &initialEntryCountdown, 0.0f, false, false, 2, 2);
+	//App->renderer->Blit(graphics, 0, 0, &initialEntryCountdown, 0.0f, false, false, 2, 2);
 
 	return UPDATE_CONTINUE;
 }

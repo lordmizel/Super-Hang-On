@@ -26,11 +26,8 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	sempahor.loop = false;
 	sempahor.speed = 0.01f;
 
-	maxPuntuation = 6514651;
 	stage = 1;
 	time_ = 60;
-	score = 0;
-	speed = 200;
 }
 
 ModuleSceneRace::~ModuleSceneRace()
@@ -145,7 +142,7 @@ update_status ModuleSceneRace::Update()
 	int seconds = difftime(g_timer, now);
 	if (seconds != 0){
 		pos += App->player->GetSpeed() / 1.5f;
-		score += 200;
+		App->score->UpdateScore(App->player->GetSpeed());
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)

@@ -46,6 +46,6 @@ bool ModuleFontManager::CleanUp()
 
 void ModuleFontManager::PrintDigit(int digit, int x, int y, Color color)
 {
-	App->renderer->Blit(graphics, x, y, &numbers[digit], 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, x, y, &numbers[digit], 0.0f, false, false, 2, 2, color);
 }
 

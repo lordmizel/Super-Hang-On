@@ -24,7 +24,7 @@ struct Color {
 	int g;
 	int b;
 	int a;
-	Color() { r = 0; g = 0; b = 0; a = 0; }
+	Color() { r = 255; g = 255; b = 255; a = 255; }
 	Color(int red, int green, int blue, int alpha) {
 		r = red, g = green, b = blue, a = alpha;
 	}

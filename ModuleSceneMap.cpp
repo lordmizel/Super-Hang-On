@@ -139,7 +139,7 @@ update_status ModuleSceneMap::Update()
 		switch (courseSelect) 
 		{
 		case AFRICA:
-			App->fade->FadeToBlack((Module*)App->scene_music, this);
+			App->audio->PlayFx(fx);
 			break;
 		case ASIA:
 			App->audio->PlayFx(fx);
@@ -148,7 +148,7 @@ update_status ModuleSceneMap::Update()
 			App->audio->PlayFx(fx);
 			break;
 		case EUROPE:
-			App->audio->PlayFx(fx);
+			App->fade->FadeToBlack((Module*)App->scene_music, this);
 			break;
 		}
 	}

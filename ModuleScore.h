@@ -24,9 +24,10 @@ public:
 	void ShowScore();
 
 	// Call every time a race begins
-	void resetScore() {
+	void ResetScore() {
 		current_time = 0;
-		current_score = 0;
+		stage = 1;
+		currentScore = 0;
 		current_player = "";
 	}
 
@@ -38,9 +39,10 @@ public:
 		current_time = t;
 	}
 
-	void updateScore(int deltaScore) {
-		current_score += deltaScore;
-	}
+	void UpdateScore(int deltaScore) { currentScore += deltaScore; }
+
+	int GetScore() { return currentScore; }
+	int GetStage() { return stage; }
 
 	// Loads the score file, use on start()
 	void loadSavedScores();
@@ -64,7 +66,8 @@ public:
 	
 private:
 	int topScore;
-	int current_score;
+	int currentScore;
+	int stage;
 	int64_t current_time;
 	std::string current_player;
 };

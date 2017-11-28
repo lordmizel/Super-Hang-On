@@ -14,7 +14,7 @@ ModuleUI::ModuleUI(bool active) : Module(active)
 	topTag = { 17, 219, 30, 12 };
 	timeTag = { 49, 219, 37, 12 };
 	scoreTag = { 88, 219, 48, 12 };
-	courseAndStageText = { 312, 241, 48, 16 };
+	courseAndStageText = { 314, 241, 48, 16 };
 	speedText = { 138, 221, 40, 8 };
 	kmText = { 184, 221, 16, 8 };
 	europeText = { 325, 264, 48, 8 };
@@ -42,8 +42,22 @@ bool ModuleUI::CleanUp() {
 }
 
 void ModuleUI::ShowUI() {
-	DigitRendering(App->score->GetTopScore(), 8, 12, 12, Color(255, 255, 255, 255));
-	DigitRendering(App->player->GetSpeed(), 8, 50, 50, Color(255, 255, 255, 255));
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 - 16, SCREEN_HEIGHT / 17 - 4, &topTag, 0.0f, false, false, 2, 2);
+	DigitRendering(App->score->GetTopScore(), 8, SCREEN_WIDTH / 12 * 2, SCREEN_HEIGHT / 17, Color(255, 0, 0, 255));
+
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - timeTag.w, SCREEN_HEIGHT / 17 - 4, &timeTag, 0.0f, false, false, 2, 2);
+	//TODO: Print time
+
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 7, SCREEN_HEIGHT / 17 - 4, &scoreTag, 0.0f, false, false, 2, 2);
+	DigitRendering(App->score->GetScore(), 8, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17, Color(0, 255, 0, 255));
+
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 - 16, SCREEN_HEIGHT / 17 * 2 - 4, &courseAndStageText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 3, SCREEN_HEIGHT / 17 * 2 - 4, &europeText, 0.0f, false, false, 2, 2);
+	DigitRendering(App->score->GetStage(), 2, SCREEN_WIDTH / 12 * 3, SCREEN_HEIGHT / 17 * 2 + 12);
+	
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 7, SCREEN_HEIGHT / 17 * 2 - 4, &speedText, 0.0f, false, false, 2, 2);
+	DigitRendering(App->player->GetSpeed(), 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 9 + 8 + 16 * 3, SCREEN_HEIGHT / 17 * 2 - 4, &kmText, 0.0f, false, false, 2, 2);
 }
 
 void ModuleUI::DigitRendering(int numberToRender, int numDigits, int x, int y, Color color)
@@ -64,7 +78,7 @@ void ModuleUI::DigitRendering(int numberToRender, int numDigits, int x, int y, C
 		}
 		else
 		{
-			App->font_manager->PrintDigit(helper / numberThreshold, x + digitPositionX, y, Color(255, 255, 255, 255));
+			App->font_manager->PrintDigit(helper / numberThreshold, x + digitPositionX, y, color);
 			numberInRange = true;
 		}
 

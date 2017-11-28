@@ -154,7 +154,19 @@ bool ModulePlayer::CleanUp()
 
 update_status ModulePlayer::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) 
+	
+
+	ManageSpeed();
+
+	ManageAnimations();
+
+	App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+
+	return UPDATE_CONTINUE;
+}
+
+void ModulePlayer::ManageSpeed() {
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
 		braking = true;
 	}
@@ -163,7 +175,7 @@ update_status ModulePlayer::Update()
 		braking = false;
 	}
 
-	if (speed < currentMaxSpeed) 
+	if (speed < currentMaxSpeed)
 	{
 		speed = speed + acceleration;
 	}
@@ -178,7 +190,7 @@ update_status ModulePlayer::Update()
 		currentMaxSpeed = maxSpeedBraking;
 	}
 	else
-	{ 
+	{
 		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
 		{
 			//Player is using the accelerator
@@ -205,38 +217,6 @@ update_status ModulePlayer::Update()
 			//Player isn't using the accelerator
 			currentMaxSpeed = maxSpeedAuto;
 		}
-	}
-
-	ManageAnimations();
-		
-
-	// Draw everything --------------------------------------
-	PrintSpeed();
-
-	App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
-
-	return UPDATE_CONTINUE;
-}
-
-void ModulePlayer::PrintSpeed() {
-	int numberThreshold = 100;
-	int helper = speed;
-	int digitPositionX = 32;
-	bool numberInRange = false;
-
-	for (int dig = 3; dig > 0; dig--) {
-		if (helper < numberThreshold && !numberInRange) {
-			App->renderer->Blit(graphics, (SCREEN_WIDTH / 2) + digitPositionX, 0, &blankSpace, 0.0f, false, false, 2, 2);
-		}
-		else
-		{
-			App->font_manager->PrintDigit(helper / numberThreshold, (SCREEN_WIDTH / 2) + digitPositionX, 0, Color(255, 255, 255, 255));
-			numberInRange = true;
-		}
-
-		helper = helper % numberThreshold;
-		numberThreshold = numberThreshold / 10;
-		digitPositionX += 16;
 	}
 }
 

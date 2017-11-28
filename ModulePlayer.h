@@ -61,6 +61,9 @@ private:
 	bool offRoad = false;
 
 	void ManageAnimations();
+	void ManageSpeed();
+
+	time_t now;
 };
 
 #endif
