@@ -151,42 +151,48 @@ bool ModulePlayer::CleanUp()
 
 update_status ModulePlayer::Update()
 {
-	if (current_animation == &leaningLeft || current_animation == &unLeanLeft) {
-		positionX -= movementX / 2;
-	}
-	else if (current_animation == &leanedLeft) {
-		positionX -= movementX;
-	}
-	else if (current_animation == &leaningRight || current_animation == &unLeanRight) {
-		positionX += movementX / 2;
-	}
-	else if (current_animation == &leanedRight) {
-		positionX += movementX;
-	}
+	/*switch (stateOfGame) {
+	case(RACING):*/
+		if (current_animation == &leaningLeft || current_animation == &unLeanLeft) {
+			positionX -= movementX / 2;
+		}
+		else if (current_animation == &leanedLeft) {
+			positionX -= movementX;
+		}
+		else if (current_animation == &leaningRight || current_animation == &unLeanRight) {
+			positionX += movementX / 2;
+		}
+		else if (current_animation == &leanedRight) {
+			positionX += movementX;
+		}
 
-	if (positionX > ROAD_WIDTH * 4) {
-		positionX = ROAD_WIDTH * 4;
-	}
-	if (positionX < -ROAD_WIDTH * 4) {
-		positionX = -ROAD_WIDTH * 4;
-	}
+		if (positionX > ROAD_WIDTH * 4) {
+			positionX = ROAD_WIDTH * 4;
+		}
+		if (positionX < -ROAD_WIDTH * 4) {
+			positionX = -ROAD_WIDTH * 4;
+		}
 
-	if (positionX > ROAD_WIDTH) {
-		offRoad = true;
-	}
-	else if (positionX < -ROAD_WIDTH) {
-		offRoad = true;
-	}
-	else {
-		offRoad = false;
-	}
+		if (positionX > ROAD_WIDTH) {
+			offRoad = true;
+		}
+		else if (positionX < -ROAD_WIDTH) {
+			offRoad = true;
+		}
+		else {
+			offRoad = false;
+		}
 
-	ManageSpeed();
+		ManageSpeed();
 
-	ManageAnimations();
+		ManageAnimations();
 
-	App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
-
+		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		/*break;
+	default:
+		break;
+	}*/
+	
 	return UPDATE_CONTINUE;
 }
 

@@ -19,6 +19,15 @@ enum update_status
 	UPDATE_ERROR
 };
 
+enum game_state
+{
+	BEFORE_RACE,
+	RACING,
+	CRASHED,
+	AFTER_RACE,
+	GAME_OVER
+};
+
 struct Color {
 	int r;
 	int g;
@@ -64,11 +73,9 @@ typedef unsigned int uint;
 #define VSYNC true
 #define TITLE "Super Hang-On"
 
-#define WIDTH 640
-#define HEIGHT 480
 #define ROAD_WIDTH 1700
-#define SEGMENT_LENGTH 100 //segmentLenght 200
-#define CAMD 0.5 //camera depth 0.84
+#define SEGMENT_LENGTH 100
+#define CAMD 0.5
 
 extern time_t g_timer;
 #endif //__GLOBALS_H__

@@ -39,7 +39,7 @@ Application::Application()
 	modules.push_back(scene_map = new ModuleSceneMap(false));
 	modules.push_back(scene_music = new ModuleSceneMusic(false));
 	modules.push_back(europe_race = new ModuleEuropeRace(false));
-	modules.push_back(player = new ModulePlayer());
+	modules.push_back(player = new ModulePlayer(false));
 	
 
 	// Modules to draw on top of game logic
@@ -63,8 +63,10 @@ bool Application::Init()
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 	{
-		if((*it)->IsEnabled() == true)
+		if ((*it)->IsEnabled() == true)
+		{
 			ret = (*it)->Start();
+		}
 	}
 
 	// Start the first scene --

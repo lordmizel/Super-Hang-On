@@ -16,8 +16,8 @@ public:
 	float spriteX;
 	float clip;
 
-	int width = WIDTH;
-	int height = HEIGHT;
+	int width = SCREEN_WIDTH;
+	int height = SCREEN_HEIGHT;
 	int roadWidth = ROAD_WIDTH;
 	//int segL = SEGMENT_LENGTH; //segmentLenght
 	float camD = (float)CAMD; //camera depth
@@ -41,9 +41,10 @@ public:
 		int w = sprite.w;
 		int h = sprite.h;
 		float destX = X + scale * spriteX * width / 2;
-		float destY = Y + 4;
+		float destY = Y;
 		float destW = w * W / 266;
 		float destH = h * W / 266;
+		
 
 		destX += destW * spriteX; //offsetX
 		destY += destH * (-1);    //offsetY

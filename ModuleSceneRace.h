@@ -7,10 +7,29 @@
 class Segment;
 class ModuleEnemy;
 
+
+
 class ModuleSceneRace : public Module
 {
 
 public:
+	struct biome {
+		Color grassLight;
+		Color grassDark;
+		Color rumbleLight;
+		Color rumbleDark;
+		Color roadColor;
+		Color skyColor;
+		SDL_Rect background1;
+		SDL_Rect background2;
+
+		biome();
+		biome(Color gl, Color gd, Color rl, Color rd, Color rc, Color sc, SDL_Rect bg1, SDL_Rect bg2) :
+			grassLight(gl), grassDark(gd), rumbleLight(rl), rumbleDark(rd), roadColor(rc), skyColor(sc), background1(bg1), background2(bg2)
+		{
+		}
+	};
+
 	ModuleSceneRace(bool active = true);
 	~ModuleSceneRace();
 
@@ -18,28 +37,28 @@ public:
 	update_status Update(/*float deltaTime*/);
 	bool CleanUp();
 
-public:
 	vector<Segment> lines;
 	
 	int N = 0;
 	int pos;
-	//int playerX;
+	int seg_pos;
 
 protected:
-	vector<SDL_Rect> backgrounds;
+	
+	void BiomeChange();
 
-	Color grass1;
-	Color grass2;
-	Color rumble1;
-	Color rumble2;
-	Color color_road;
-	Color color_line;
+	SDL_Rect deadTree;
+
+	vector<biome> biomes;
+	int biomeIndex = 0;
+	biome currentBiome;
+	vector<int> biomeBorders;
 
 private:
 	SDL_Texture* graphics = nullptr;
 	SDL_Texture* decoration = nullptr;
 
-	Animation sempahor;
+	Animation sempahore;
 
 	SDL_Rect road;
 	SDL_Rect limit;

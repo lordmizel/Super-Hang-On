@@ -11,22 +11,13 @@
 ModuleSceneMap::ModuleSceneMap(bool active) : Module(active)
 {
 	// Backdrop
-	backdrop.x = 0;
-	backdrop.y = 0;
-	backdrop.w = SCREEN_WIDTH * 3;
-	backdrop.h = SCREEN_HEIGHT * 3;
+	backdrop = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
 	// World map
-	worldMap.x = 1;
-	worldMap.y = 41;
-	worldMap.w = 280;
-	worldMap.h = 165;
+	worldMap = { 1, 41, 280, 165 };
 
 	// "Choose your class" message
-	chooseClass.x = 3;
-	chooseClass.y = 3;
-	chooseClass.w = 136;
-	chooseClass.h = 8;
+	chooseClass = { 3, 3, 136, 8 };
 
 	// Africa
 	africa.frames.push_back({ 294, 2, 52, 56 });
@@ -46,25 +37,13 @@ ModuleSceneMap::ModuleSceneMap(bool active) : Module(active)
 	europe.speed = 0.05f;
 
 	// Africa text
-	courseAfrica.x = 142;
-	courseAfrica.y = 3;
-	courseAfrica.w = 71;
-	courseAfrica.h = 16;
+	courseAfrica = { 142, 3, 71, 16 };
 	// Asia text
-	courseAsia.x = 142;
-	courseAsia.y = 21;
-	courseAsia.w = 71;
-	courseAsia.h = 16;
+	courseAsia = { 142, 21, 71, 16 };
 	// America text
-	courseAmerica.x = 215;
-	courseAmerica.y = 3;
-	courseAmerica.w = 71;
-	courseAmerica.h = 16;
+	courseAmerica = { 215, 3, 71, 16 };
 	// Europe text
-	courseEurope.x = 215;
-	courseEurope.y = 21;
-	courseEurope.w = 71;
-	courseEurope.h = 16;
+	courseEurope = { 215, 21, 71, 16 };
 
 	// "Press button" animation
 	pressButton.frames.push_back({ 3, 14, 136, 8 });

@@ -14,16 +14,10 @@ ModuleSceneMusic::ModuleSceneMusic(bool active) : Module(active)
 	animationSpeed = 0.07f;
 
 	// Backdrop
-	backdrop.x = 0;
-	backdrop.y = 0;
-	backdrop.w = SCREEN_WIDTH * 3;
-	backdrop.h = SCREEN_HEIGHT * 3;
+	backdrop = { 0, 0, SCREEN_WIDTH * 3, SCREEN_HEIGHT * 3 };
 
 	// "Select music" text
-	selectMusic.x = 6;
-	selectMusic.y = 3;
-	selectMusic.w = 96;
-	selectMusic.h = 8;
+	selectMusic = { 6, 3, 96, 8 };
 
 	// Song1 animation
 	song1.frames.push_back({ 4, 26, 248, 22 });
