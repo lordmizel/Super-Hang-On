@@ -121,6 +121,50 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	unLeanRightBraking.frames.push_back({ 91, 676, 32, 72 });
 	unLeanRightBraking.loop = false;
 	unLeanRightBraking.speed = 0.2f;
+
+	// Small crash
+	smallCrash.frames.push_back({ 0, 0, 220, 124 });
+	smallCrash.frames.push_back({ 220, 0, 220, 124 });
+	smallCrash.frames.push_back({ 440, 0, 220, 124 });
+	smallCrash.frames.push_back({ 660, 0, 220, 124 });
+	smallCrash.frames.push_back({ 880, 0, 220, 124 });
+	smallCrash.frames.push_back({ 1100, 0, 220, 124 });
+	smallCrash.frames.push_back({ 0, 124, 220, 124 });
+	smallCrash.frames.push_back({ 220, 124, 220, 124 });
+	smallCrash.frames.push_back({ 440, 124, 220, 124 });
+	smallCrash.frames.push_back({ 660, 124, 220, 124 });
+	smallCrash.frames.push_back({ 880, 124, 220, 124 });
+	smallCrash.frames.push_back({ 1100, 124, 220, 124 });
+	smallCrash.frames.push_back({ 0, 248, 220, 124 });
+	smallCrash.frames.push_back({ 0, 248, 220, 124 });
+	smallCrash.frames.push_back({ 0, 248, 220, 124 });
+	smallCrash.frames.push_back({ 0, 248, 220, 124 });
+	smallCrash.frames.push_back({ 0, 248, 220, 124 });
+	smallCrash.frames.push_back({ 0, 248, 220, 124 });
+	smallCrash.frames.push_back({ 99, 99, 0, 0 });
+	smallCrash.loop = false;
+	smallCrash.speed = 0.04f;
+
+	// Big crash
+	bigCrash.frames.push_back({0, 373, 171, 144});
+	bigCrash.frames.push_back({ 171, 373, 171, 144 });
+	bigCrash.frames.push_back({ 342, 373, 171, 144 });
+	bigCrash.frames.push_back({ 513, 373, 171, 144 });
+	bigCrash.frames.push_back({ 684, 373, 171, 144 });
+	bigCrash.frames.push_back({ 855, 373, 171, 144 });
+	bigCrash.frames.push_back({ 1026, 373, 171, 144 });
+	bigCrash.frames.push_back({ 0, 517, 171, 144 });
+	bigCrash.frames.push_back({ 171, 517, 171, 144 });
+	bigCrash.frames.push_back({ 342, 517, 171, 144 });
+	bigCrash.frames.push_back({ 513, 517, 171, 144 });
+	bigCrash.frames.push_back({ 513, 517, 171, 144 });
+	bigCrash.frames.push_back({ 513, 517, 171, 144 });
+	bigCrash.frames.push_back({ 513, 517, 171, 144 });
+	bigCrash.frames.push_back({ 513, 517, 171, 144 });
+	bigCrash.frames.push_back({ 513, 517, 171, 144 });
+	bigCrash.frames.push_back({ 99, 99, 0, 0 });
+	bigCrash.loop = false;
+	bigCrash.speed = 0.04f;
 }
 
 ModulePlayer::~ModulePlayer()
@@ -130,8 +174,9 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
-
+	state = RACING;
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
+	crashes = App->textures->Load("falls.png", 224, 64, 32);
 
 	position.x = SCREEN_WIDTH / 2 - 16 * 2;
 	position.y = SCREEN_HEIGHT - 73 * 2;
@@ -151,47 +196,114 @@ bool ModulePlayer::CleanUp()
 
 update_status ModulePlayer::Update()
 {
-	/*switch (stateOfGame) {
-	case(RACING):*/
-		if (current_animation == &leaningLeft || current_animation == &unLeanLeft) {
-			positionX -= movementX / 2;
+		if (speed < currentMaxSpeed)
+		{
+			speed = speed + acceleration;
 		}
-		else if (current_animation == &leanedLeft) {
-			positionX -= movementX;
-		}
-		else if (current_animation == &leaningRight || current_animation == &unLeanRight) {
-			positionX += movementX / 2;
-		}
-		else if (current_animation == &leanedRight) {
-			positionX += movementX;
+		else if (speed > currentMaxSpeed)
+		{
+			speed = speed - acceleration;
 		}
 
-		if (positionX > ROAD_WIDTH * 4) {
-			positionX = ROAD_WIDTH * 4;
-		}
-		if (positionX < -ROAD_WIDTH * 4) {
-			positionX = -ROAD_WIDTH * 4;
-		}
+		switch (state) {
+		case(BEFORE_RACE):
+			break;
 
-		if (positionX > ROAD_WIDTH) {
-			offRoad = true;
-		}
-		else if (positionX < -ROAD_WIDTH) {
-			offRoad = true;
-		}
-		else {
-			offRoad = false;
-		}
+		case(RACING):
+			//TODO: DELETE THIS WHOLE IF STATEMENT!! ONLY FOR DEBUG!!
+			if (App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
+			{
+				state = CRASHING;
+			}
 
-		ManageSpeed();
+			if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) {
+				positionX -= movementX / 2;
+				if (positionX > -ROAD_WIDTH * 4) {
+					absoluteX -= movementX / 2;
+				}
+			}
+			else if (current_animation == &leanedLeft || current_animation == &leanedLeftBraking) {
+				positionX -= movementX;
+				if (positionX > -ROAD_WIDTH * 4) {
+					absoluteX -= movementX;
+				}
+			}
+			else if (current_animation == &leaningRight || current_animation == &unLeanRight || current_animation == &leaningRightBraking || current_animation == &unLeanRightBraking) {
+				positionX += movementX / 2;
+				if (positionX < ROAD_WIDTH * 4) {
+					absoluteX += movementX / 2;
+				}
+			}
+			else if (current_animation == &leanedRight || current_animation == &leanedRightBraking) {
+				positionX += movementX;
+				if (positionX < ROAD_WIDTH * 4) {
+					absoluteX += movementX;
+				}
+			}
 
-		ManageAnimations();
+			if (positionX > ROAD_WIDTH * 4) {
+				positionX = ROAD_WIDTH * 4;
+			}
+			if (positionX < -ROAD_WIDTH * 4) {
+				positionX = -ROAD_WIDTH * 4;
+			}
 
-		App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
-		/*break;
-	default:
+			if (positionX > ROAD_WIDTH) {
+				offRoad = true;
+			}
+			else if (positionX < -ROAD_WIDTH) {
+				offRoad = true;
+			}
+			else {
+				offRoad = false;
+			}
+
+			ManageSpeed();
+
+			ManageAnimations();
+
+			App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+			break;
+
+		case(CRASHING):
+		if (speed > 200 && current_animation != &smallCrash) {
+			current_animation = &bigCrash;
+		}
+		else if (current_animation != &bigCrash){
+			current_animation = &smallCrash;
+		}
+		
+		if (speed > 80) {
+			speed = 80;
+			current_animation->Reset();
+		}
+		currentMaxSpeed = 0;
+		App->renderer->Blit(crashes, position.x -80, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		if (current_animation->GetCurrentFrame().x == current_animation->frames[current_animation->frames.size() - 1].x && current_animation->GetCurrentFrame().y == current_animation->frames[current_animation->frames.size() - 1].y) {
+			state = RECOVERING;
+		}
 		break;
-	}*/
+
+	case(RECOVERING):
+		speed = 0;
+		if (positionX > 0) {
+			positionX -= 20;
+		}
+		else if (positionX < 0) {
+			positionX += 20;
+		}
+		if(positionX > -20 && positionX < 20)
+		{
+			positionX = 0;
+			state = RACING;
+		}
+
+		break;
+
+	case(AFTER_RACE):
+		break;
+	}
+	
 	
 	return UPDATE_CONTINUE;
 }
@@ -204,15 +316,6 @@ void ModulePlayer::ManageSpeed() {
 	else
 	{
 		braking = false;
-	}
-
-	if (speed < currentMaxSpeed)
-	{
-		speed = speed + acceleration;
-	}
-	else if (speed > currentMaxSpeed)
-	{
-		speed = speed - acceleration;
 	}
 
 	if (braking)
@@ -252,6 +355,7 @@ void ModulePlayer::ManageSpeed() {
 }
 
 void ModulePlayer::ManageAnimations() {
+	//This is a nightmare
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
 		if ((current_animation != &unLeanRight && current_animation != &unLeanRightBraking) && (current_animation->GetCurrentFrame().x == leaningLeft.frames[leaningLeft.frames.size() - 1].x || current_animation->GetCurrentFrame().x == leaningLeftBraking.frames[leaningLeftBraking.frames.size() - 1].x) || current_animation == &leanedLeft || current_animation == &leanedLeftBraking)

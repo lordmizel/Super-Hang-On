@@ -1,5 +1,6 @@
 #pragma once
 #include "Globals.h"
+#include "SDL\include\SDL.h"
 #include <vector>
 
 using namespace std;
@@ -15,12 +16,14 @@ public:
 
 	float spriteX;
 	float clip;
+	float cover;
+
+	vector<pair<SDL_Rect, int>> atrezzos;
 
 	int width = SCREEN_WIDTH;
 	int height = SCREEN_HEIGHT;
 	int roadWidth = ROAD_WIDTH;
-	//int segL = SEGMENT_LENGTH; //segmentLenght
-	float camD = (float)CAMD; //camera depth
+	float camD = (float)CAMERA_DEPTH; //camera depth
 
 	Segment() {
 		curve = x = y = z = 0; X = 0; Y = SCREEN_HEIGHT; W = 0;
@@ -36,27 +39,28 @@ public:
 		W = (float)(scale * roadWidth * width / 2);
 	}
 
-	void DrawObject(SDL_Rect sprite, SDL_Texture* tex)
+	void DrawObject(SDL_Rect sprite, SDL_Texture* tex, int posX)
 	{
-		int w = sprite.w;
-		int h = sprite.h;
-		float destX = X + scale * spriteX * width / 2;
-		float destY = Y;
-		float destW = w * W / 266;
-		float destH = h * W / 266;
+		float scaling = 2 * W / SEGMENT_LENGTH;
+		float destY = Y - sprite.h * scaling;
+		float destX = X;
+		int destH = sprite.h;
 		
-
-		destX += destW * spriteX; //offsetX
-		destY += destH * (-1);    //offsetY
-
 		float clipH = destY + destH - clip;
-		if (clipH<0) clipH = 0;
+		if (clipH<0) 
+			clipH = 0;
+		//LOG("Clip %f", clip)
+		//destX = X + (W * spriteXToDraw);
+		if (clipH >= destH) 
+			//return;
 
-		X += (W * spriteX);
-		if (clipH >= destH) return;
+		sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
 
-		sprite.h = h - h*clipH / destH;
-		App->renderer->Blit(tex, X, destY, &sprite, 0.f, false, false, sprite.w*(destW / w), sprite.h*(destH / h));
+		//LOG("%d", sprite.h)
+		destX += (W * posX);
+		SDL_Rect newRect = { sprite.x, sprite.y, sprite.w, sprite.h };
+		//App->renderer->Blit(tex, destX, destY, &newRect/*&sprite*/, 0.f, false, false, scaling, scaling);
+		App->renderer->Blit(tex, (int)destX/* - scaling / 2*/, (int)destY, &sprite, 0.f, false, false, scaling, scaling);
 	}
 
 };

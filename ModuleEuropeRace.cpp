@@ -12,7 +12,7 @@
 
 ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 {
-	landscapeParis = { 330, 256, 320, 128 };
+	landscapeParis = { 8, 197, 320, 74 };
 	parisBuildings = { 0, 0, 0, 0 };
 	landscapeSea = { 330, 484, 320, 128 };
 	seaRocks = { 0, 0, 0, 0 };
@@ -25,25 +25,23 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		Color(224, 224, 224, 255), Color(128, 128, 128, 255),
 		Color(192, 192, 192, 255), Color(32, 0, 224, 225),
 		landscapeParis, parisBuildings));
-
-	biomes.push_back(sunset = biome(Color(224, 160, 0, 255), Color(192, 128, 0, 255),
-		Color(224, 192, 192, 255), Color(64, 32, 32, 255),
-		Color(64, 64, 64, 255), Color(224, 64, 0, 225),
-		landscapeSunset, sunsetBuildings));
 	biomes.push_back(alpine = biome(Color(0, 224, 96, 255), Color(0, 192, 64, 255),
 		Color(192, 192, 192, 255), Color(64, 64, 64, 255),
 		Color(64, 64, 64, 255), Color(64, 224, 224, 225),
 		landscapeAlpine, alpineMountains));
-	biomes.push_back(windmills = biome(Color(160, 224, 64, 255), Color(128, 192, 32, 255),
+	biomes.push_back(windmills = biome(Color(160, 200, 64, 255), Color(128, 192, 32, 255),
 		Color(224, 192, 224, 255), Color(96, 64, 64, 255),
 		Color(96, 64, 64, 255), Color(192, 224, 224, 225),
 		landscapeWindmills, windmillVillage));
+	biomes.push_back(sunset = biome(Color(224, 160, 0, 255), Color(192, 128, 0, 255),
+		Color(224, 192, 192, 255), Color(64, 32, 32, 255),
+		Color(64, 64, 64, 255), Color(224, 64, 0, 225),
+		landscapeSunset, sunsetBuildings));
 	biomes.push_back(city = biome(Color(0, 0, 32, 255), Color(0, 0, 32, 255),
 		Color(224, 224, 128, 255), Color(0, 0, 96, 255),
 		Color(0, 0, 96, 255), Color(0, 0, 0, 225),
 		landscapeCity, cityBuildings));
 	
-
 	biomeBorders.push_back(1000);
 	biomeBorders.push_back(2000);
 	biomeBorders.push_back(3000);
@@ -79,9 +77,9 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 			dist *= (-1);
 		}
 
-		if (i == 200) {
-			line.spriteX = 2;
-		}
+		if (i == 300) { line.atrezzos.push_back(make_pair(deadTree, 2)); }
+		if (i == 400) { line.atrezzos.push_back(make_pair(discoNora, 1)); }
+		if (i == 500) { line.atrezzos.push_back(make_pair(palmLeft, -2)); }
 
 		lines.push_back(line);
 	}

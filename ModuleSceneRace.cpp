@@ -10,22 +10,42 @@
 #include "ModulePlayer.h"
 #include "ModuleUI.h"
 #include "ModuleScore.h"
-//#include "ModuleEnemy.h"
 #include "Segment.h"
 #include <string>
 
+//float cover = 0;
+
 ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 {
-	landscapeParis = { 330, 256, 320, 128 };
-
-	sempahore.frames.push_back({ 12, 265, 62, 142 });
+	/*sempahore.frames.push_back({ 12, 265, 62, 142 });
 	sempahore.frames.push_back({ 84, 265, 62, 142 });
 	sempahore.frames.push_back({ 157, 265, 62, 142 });
 	sempahore.frames.push_back({ 225, 265, 62, 142 });
 	sempahore.loop = false;
-	sempahore.speed = 0.01f;
+	sempahore.speed = 0.01f;*/
 
-	deadTree = { 56, 413, 54, 80 };
+	arrowLeft = { 6, 4, 46, 42 };
+	arrowRight = { 61, 4, 46, 62};
+	bridalStone = { 119, 7, 116, 40 };
+	nokSparkPlugs = { 245, 5, 86, 71 };
+	birdBird = { 3, 55, 76, 56 };
+	discoNora = { 87, 54, 64, 56 };
+	rustyDrum = { 159, 56, 44, 56 };
+	smallCacti = { 212, 89, 54, 57 };
+	bigRock = { 95, 117, 96, 56 };
+	morobare = { 4, 130, 80, 48 };
+	tallCactus = { 5, 186, 36, 88 };
+	phoneBooth = { 62, 187, 40, 96 };
+	palmLeft = { 109, 183, 76, 144 };
+	palmRight = { 195, 183, 76, 144 };
+	retroLamp = { 292, 194, 24, 159 };
+	palmTree = { 4, 287, 46, 142 };
+	smallTree = { 58, 337, 64, 71 };
+	streetMirror = { 132, 332, 20, 72 };
+	lampRight = { 161, 334, 52, 160 };
+	lampLeft = { 227, 334, 56, 160 };
+	tallTree = { 287, 363, 40, 128 };
+	deadTree = { 62, 419, 45, 70 };
 
 	stage = 1;
 	time_ = 60;
@@ -72,18 +92,19 @@ void ModuleSceneRace::DrawRoad()
 	int camH = (int)(1500 + lines[startPos].y);
 	int maxy = SCREEN_HEIGHT;
 
-	
-	/*App->renderer->Blit(graphics, landscapePosition-landscapeParis.w, 0, &landscapeParis, 0.2, true, false, 2, 2);
-	App->renderer->Blit(graphics, landscapePosition, 0, &landscapeParis, 0.2, true, false, 2, 2);
-	App->renderer->Blit(graphics, landscapePosition + landscapeParis.w, 0, &landscapeParis, 0.2, true, false, 2, 2);*/
+	App->renderer->Blit(graphics, 0 - App->player->GetAbsoluteX() / 200, -currentBiome.background1.y + 340, &currentBiome.background1, 0.2f, false, false, 2, 2);
 
-	for (int n = startPos; n < startPos + 100; n++) {
+	for (int n = startPos; n < startPos + 200; n++) {
+		Color grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
+		Color rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
+		Color rumble2 = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.rumbleDark;
+		Color line = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.roadColor;
+
 		Segment &l = lines[n%N];
 		l.project((int)(App->player->GetXPosition() - x), camH, seg_pos - (n >= N ? N * 100 : 0));
 		x += dx;
 		dx += l.curve;
 
-		//TODO: Make centrifugue force dependant on player speed
 		if (n == startPos) {
 			if (l.curve > 0){
 				App->player->AlterXPosition(-App->player->GetSpeed() / 6);
@@ -97,35 +118,32 @@ void ModuleSceneRace::DrawRoad()
 		if (l.Y >= maxy) continue;
 		maxy = (int)(l.Y);
 
-		Color grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
-		Color rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
-		Color rumble2 = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.rumbleDark;
-		//Color grass2aux = (n / 3) % 2 ? grass2 : grass2;
-		Color line = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.roadColor;
-
-		Segment p;
+		Segment previous;
 		if (n == 0)
-			p = lines[lines.size() - 1 % N]; //previous line
+			previous = lines[lines.size() - 1 % N];
 		else
-			p = lines[(n - 1) % N]; //previous line
+			previous = lines[(n - 1) % N];
 
 		int laneNumber = 10;
 		for (int i = laneNumber; i > 0; i--) {
-			if((short)p.Y != (short)l.Y)
-			App->renderer->DrawPolygon(grass, SCREEN_WIDTH / 2 /*(short)p.X*/, (short)p.Y, SCREEN_WIDTH/*(short)(p.W*0.3*i)*/, SCREEN_WIDTH / 2/*(short)l.X*/, (short)l.Y, SCREEN_WIDTH/*(short)(l.W*0.3*i)*/);
+			if ((short)previous.Y != (short)l.Y) {
+				App->renderer->DrawPolygon(grass, SCREEN_WIDTH / 2, (short)previous.Y, SCREEN_WIDTH, SCREEN_WIDTH / 2, (short)l.Y, SCREEN_WIDTH);
+			}
 		}
-		App->renderer->DrawPolygon(rumble2, (short)p.X, (short)p.Y, (short)(p.W*1.15), (short)l.X, (short)l.Y, (short)(l.W*1.15));
-		App->renderer->DrawPolygon(rumble, (short)p.X, (short)p.Y, (short)(p.W*1.03), (short)l.X, (short)l.Y, (short)(l.W*1.03));
+		App->renderer->DrawPolygon(rumble2, (short)previous.X, (short)previous.Y, (short)(previous.W*1.15), (short)l.X, (short)l.Y, (short)(l.W*1.15));
+		App->renderer->DrawPolygon(rumble, (short)previous.X, (short)previous.Y, (short)(previous.W*1.03), (short)l.X, (short)l.Y, (short)(l.W*1.03));
 		
-		App->renderer->DrawPolygon(currentBiome.roadColor, (short)p.X, (short)p.Y, (short)p.W, (short)l.X, (short)l.Y, (short)l.W);
-		App->renderer->DrawPolygon(line, (short)p.X, (short)p.Y, (short)(p.W*0.05), (short)l.X, (short)l.Y, (short)(l.W*0.05));
-
+		App->renderer->DrawPolygon(currentBiome.roadColor, (short)previous.X, (short)previous.Y, (short)previous.W, (short)l.X, (short)l.Y, (short)l.W);
+		App->renderer->DrawPolygon(line, (short)previous.X, (short)previous.Y, (short)(previous.W*0.05), (short)l.X, (short)l.Y, (short)(l.W*0.05));
 	}
 
 	//Draw Objects
-	for (int n = startPos + 99; n >= startPos; n--) {
-		if (lines[n%N].spriteX != -1)
-			lines[n%N].DrawObject(deadTree, decoration);
+	for (int n = startPos + 199; n >= startPos; n--) {
+		if (!lines[n%N].atrezzos.empty()) {
+			for (int i = 0; i < lines[n%N].atrezzos.size(); i++) {
+				lines[n%N].DrawObject(lines[n%N].atrezzos[i].first, decoration, lines[n%N].atrezzos[i].second);
+			}
+		}
 	}
 }
 
@@ -152,10 +170,6 @@ update_status ModuleSceneRace::Update()
 
 	DrawRoad();
 
-	//DrawDecoration
-	//App->renderer->Blit(decoration, 5, SCREEN_HEIGHT / 2  - 60, &startSign, 0.f);
-	//App->renderer->Blit(decoration,  35, SCREEN_HEIGHT / 2 + 10, &sempahor.GetCurrentFrame(), 0.f);
-
 	App->ui->ShowUI();
 
 	return UPDATE_CONTINUE;
@@ -167,7 +181,7 @@ void ModuleSceneRace::BiomeChange() {
 		currentBiome.grassLight.r < biomes[biomeIndex].grassLight.r ? currentBiome.grassLight.r++ : currentBiome.grassLight.r--;
 	}
 	if (currentBiome.grassLight.g != biomes[biomeIndex].grassLight.g) {
-		currentBiome.grassLight.g < biomes[biomeIndex].grassLight.g ? currentBiome.grassLight.g++ : currentBiome.grassLight.g--;
+		currentBiome.grassLight.g < biomes[biomeIndex].grassLight.g ? currentBiome.grassLight.g += 2 : currentBiome.grassLight.g -= 2;
 	}
 	if (currentBiome.grassLight.b != biomes[biomeIndex].grassLight.b) {
 		currentBiome.grassLight.b < biomes[biomeIndex].grassLight.b ? currentBiome.grassLight.b++ : currentBiome.grassLight.b--;

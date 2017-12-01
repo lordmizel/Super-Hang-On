@@ -75,7 +75,7 @@ typedef unsigned int uint;
 
 #define ROAD_WIDTH 1700
 #define SEGMENT_LENGTH 100
-#define CAMD 0.5
+#define CAMERA_DEPTH 0.5
 
 extern time_t g_timer;
 #endif //__GLOBALS_H__

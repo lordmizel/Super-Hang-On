@@ -20,7 +20,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f, bool moveX = false, bool moveY = false, int scaledW = -1, int scaledH = -1, Color color = Color());
+	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f, bool moveX = false, bool moveY = false, float scaledW = -1, float scaledH = -1, Color color = Color());
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
 	bool DrawPolygon(Color c, short x1, short y1, short w1, short x2, short y2, short w2);
 

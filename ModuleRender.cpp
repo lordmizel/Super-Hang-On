@@ -82,7 +82,7 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, bool moveX, bool moveY, int scaledW, int scaledH, Color color)
+bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, bool moveX, bool moveY, float scaledW, float scaledH, Color color)
 {
 	bool ret = true;
 	SDL_SetTextureColorMod(texture, color.r, color.g, color.b);

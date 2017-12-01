@@ -7,9 +7,19 @@
 
 struct SDL_Texture;
 
+
+
 class ModulePlayer : public Module
 {
 public:
+	enum player_state {
+		BEFORE_RACE,
+		RACING,
+		CRASHING,
+		RECOVERING,
+		AFTER_RACE
+	};
+
 	ModulePlayer(bool active = true);
 	~ModulePlayer();
 
@@ -20,9 +30,12 @@ public:
 	inline int GetSpeed() const { return speed; }
 	inline int GetMaxSpeedRunning() const { return maxSpeedRunning; }
 	int GetXPosition() const { return positionX; }
-	void AlterXPosition(int alt) { positionX += alt; }
+	inline int GetAbsoluteX() const { return absoluteX; }
 
+	void AlterXPosition(int alt) { positionX += alt; }
+	
 	SDL_Texture* graphics = nullptr;
+	SDL_Texture* crashes = nullptr;
 	Animation* current_animation = nullptr;
 	Animation forward;
 	Animation leaningLeft;
@@ -38,6 +51,10 @@ public:
 	Animation leaningRightBraking;
 	Animation leanedRightBraking;
 	Animation unLeanRightBraking;
+	Animation smallCrash;
+	Animation bigCrash;
+
+	player_state state;
 
 	iPoint position;
 	bool destroyed = false;
@@ -53,6 +70,7 @@ private:
 
 	int positionX = 0;
 	int movementX = 50;
+	int absoluteX = 0;
 
 	int maxSpeedAuto = 90;
 	int maxSpeedRunning = 290;
@@ -60,8 +78,6 @@ private:
 	int maxSpeedOffTrack = 106;
 	int maxSpeedBraking = 85;
 	bool offRoad = false;
-
-	
 
 	time_t now;
 };
