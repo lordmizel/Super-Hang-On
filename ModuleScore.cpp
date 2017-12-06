@@ -24,13 +24,13 @@ bool ModuleScore::Start()
 
 	file.open(fileName, std::ifstream::in | std::ifstream::out);
 
-	for (int i = 0; i < 7; i++) {
+	while (!file.eof()) {
 		file >> inputString;
 		LOG("%d", stoi(inputString))
 		file >> inputString;
 		LOG("%d", stoi(inputString))
 		file >> inputString;
-		LOG("%s", inputString)
+		LOG("%s", inputString.c_str())
 		file >> inputString;
 		LOG("%d", stoi(inputString))
 	}

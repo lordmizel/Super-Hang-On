@@ -66,7 +66,6 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		if (i > 300 && i < 700) line.curve = 4;
 		if (i > 500 && i < 600) line.curve = -1;
 
-		//if (i > 0) line.y = (float)(sin(i / 30.0) * 10000);
 		//if (i > 0) line.y = (float)(sin(i / 30.0) * 1500);
 		if (i > 800 && i < 1100) {
 			ChangeAltitude(altitudeVariation, 110.0f, i, 800, 1100);

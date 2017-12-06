@@ -43,23 +43,16 @@ public:
 	{
 		float scaling = 2 * W / SEGMENT_LENGTH;
 		float destY = Y - sprite.h * scaling;
-		float destX = X;
-		int destH = sprite.h;
+		float destX = X + (W * posX);
+		int destH = sprite.h * scaling;
 		
-		float clipH = (destY + destH - clip)/* * scaling*/;
-		if (clipH<0) 
-			clipH = 0;
-		////LOG("Clip %f", clip)
-		if (clipH >= destH) 
-			return;
+		// Apply clipping only if needed (if the sprite must be cut)
+		if (destY + destH > clip) {
+			float clipH = destY + destH - clip;
+			sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
+		}
 
-		sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
-
-		//LOG("%d", sprite.h)
-		destX += (W * posX);
-		SDL_Rect newRect = { sprite.x, sprite.y, sprite.w, sprite.h };
-		//App->renderer->Blit(tex, destX, destY, &newRect/*&sprite*/, 0.f, false, false, scaling, scaling);
-		App->renderer->Blit(tex, (int)destX/* - scaling / 2*/, (int)destY, &sprite, 0.f, false, false, scaling, scaling);
+		App->renderer->Blit(tex, (int)destX, (int)destY, &sprite, 0.f, false, false, scaling, scaling);
 	}
 
 };
