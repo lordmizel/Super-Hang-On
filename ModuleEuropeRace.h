@@ -11,7 +11,11 @@ public:
 	ModuleEuropeRace(bool active = true);
 	~ModuleEuropeRace();
 
+
 private:
+	float altitudeVariation = 0.0f;
+	float currentAltitude = 0.0f;
+
 	biome paris;
 	biome coast;
 	biome sunset;

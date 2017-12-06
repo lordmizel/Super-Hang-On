@@ -54,21 +54,27 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 
 	for (int i = 0; i <10000; i++)
 	{
+		
 		Segment line;
 		line.z = (float)i * SEGMENT_LENGTH;
+		line.y += currentAltitude + altitudeVariation;
+		currentAltitude = line.y;
+
+		LOG("Altitude variation: %f", altitudeVariation)
 
 		line.curve = 0;
 		if (i > 300 && i < 700) line.curve = 4;
-		//if (i > 500 && i < 600) line.curve = -4;
 		if (i > 500 && i < 600) line.curve = -1;
 
 		//if (i > 0) line.y = (float)(sin(i / 30.0) * 10000);
 		//if (i > 0) line.y = (float)(sin(i / 30.0) * 1500);
+		if (i > 800 && i < 1100) {
+			ChangeAltitude(altitudeVariation, 110.0f, i, 800, 1100);
+		}
 
-		//if (i >= 0 && i < 500) biomeIndex = 0;
-		//if (i >= 500 && i < 1000) biomeIndex = 1;
-		//if (i >= 1000 && i < 1500) biomeIndex = 2;
-		//if (i >= 1500 /*&& i < 500*/) biomeIndex = 3;
+		if (i > 1100 && i < 1500) {
+			ChangeAltitude(altitudeVariation, -50.0f, i, 1100, 1500);
+		}
 
 		int dist = rand() % 3;
 		int sign = rand() % 2 + 1;

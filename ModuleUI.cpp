@@ -11,6 +11,7 @@ ModuleUI::ModuleUI(bool active) : Module(active)
 {
 	blankSpace = { 525, 280, 8, 8 };
 
+	//Racing UI
 	topTag = { 17, 219, 30, 12 };
 	timeTag = { 49, 219, 37, 12 };
 	scoreTag = { 88, 219, 48, 12 };
@@ -19,6 +20,22 @@ ModuleUI::ModuleUI(bool active) : Module(active)
 	kmText = { 184, 221, 16, 8 };
 	europeText = { 325, 264, 48, 8 };
 	
+	//Score screen
+	initialEntryCountdown = { 6, 915, 210, 8 };
+	courseSelected = { 432, 941, 104, 8 };
+	rankText = { 17, 208, 32, 8 };
+	scoreText = { 76, 208, 40, 8 };
+	stageText = { 138, 208, 40, 8 };
+	nameText = { 226, 221, 32, 8 };
+	timeText = { 226, 232, 32, 8 };
+
+	topRanks[0] = { 508, 549, 24, 8 };
+	topRanks[1] = { 508, 558, 24, 8 };
+	topRanks[2] = { 508, 567, 24, 8 };
+	topRanks[3] = { 508, 576, 24, 8 };
+	topRanks[4] = { 508, 585, 24, 8 };
+	topRanks[5] = { 508, 594, 24, 8 };
+	topRanks[6] = { 508, 603, 24, 8 };
 }
 
 ModuleUI::~ModuleUI()
@@ -95,50 +112,42 @@ void ModuleUI::DigitRendering(int numberToRender, int numDigits, int x, int y, C
 	}
 }
 
-//void ModuleUI::ShowRankings() {
-//	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - initialEntryCountdown.w / 2, 30, &initialEntryCountdown, 0.0f, false, false, 2, 2);
-//	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - courseSelected.w / 2, 46, &courseSelected, 0.0f, false, false, 2, 2);
-//
-//	App->renderer->Blit(graphics, SCREEN_WIDTH / 6 - rankText.w / 2, 62, &rankText, 0.0f, false, false, 2, 2);
-//	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 - scoreText.w / 2, 62, &scoreText, 0.0f, false, false, 2, 2);
-//	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 3 - stageText.w / 2, 62, &stageText, 0.0f, false, false, 2, 2);
-//	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 4 - nameText.w / 2, 62, &nameText, 0.0f, false, false, 2, 2);
-//	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2, 62, &timeText, 0.0f, false, false, 2, 2);
-//
-//	int posY = 78;
-//	int maxNumOfScoreDigits = 8;
-//
-//	for (int i = 0; i < sizeof(topRanks) / sizeof(topRanks[0]); i++)
-//	{
-//		//Rank column
-//		App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) - topRanks[i].w / 2, posY + 16 * i, &topRanks[i], 0.0f, false, false, 2, 2);
-//
-//		//Score column
-//		int numberThreshold = 10000000;
-//		int scoreToWorkWith = savedScores[i];
-//		int digitPositionX = -32;
-//		bool numberInRange = false;
-//
-//		for (int dig = maxNumOfScoreDigits; dig > 0; dig--) {
-//			if (scoreToWorkWith < numberThreshold && !numberInRange) {
-//				App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 16 * i, &blankSpace, 0.0f, false, false, 2, 2);
-//			}
-//			else
-//			{
-//				App->font_manager->PrintDigit(scoreToWorkWith / numberThreshold, (SCREEN_WIDTH / 6) * 2 + digitPositionX, posY + 32 * i, Color(255, 255, 255, 255));
-//				numberInRange = true;
-//			}
-//
-//			scoreToWorkWith = scoreToWorkWith % numberThreshold;
-//			numberThreshold = numberThreshold / 10;
-//			digitPositionX += 16;
-//		}
-//
-//		// Stage column
-//
-//		// Name column
-//
-//		// Time column
-//
-//	}
-//}
+void ModuleUI::ShowRankings() {
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - initialEntryCountdown.w * 2 / 2, SCREEN_HEIGHT / 13, &initialEntryCountdown, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - courseSelected.w * 2 / 2, SCREEN_HEIGHT / 13 * 2, &courseSelected, 0.0f, false, false, 2, 2);
+
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 6 - rankText.w /** 2*/ / 2, SCREEN_HEIGHT / 13 * 3, &rankText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 2 - scoreText.w /** 2*/ / 2, SCREEN_HEIGHT / 13 * 3, &scoreText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 3 - stageText.w /** 2*/ / 2, SCREEN_HEIGHT / 13 * 3, &stageText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 4 - nameText.w /** 2*/ / 2, SCREEN_HEIGHT / 13 * 3, &nameText, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 - timeText.w /** 2*/ / 2, SCREEN_HEIGHT / 13 * 3, &timeText, 0.0f, false, false, 2, 2);
+
+	int Ymultiplier = 0;
+	int maxNumOfScoreDigits = 8;
+
+	for (int i = 0; i < sizeof(topRanks) / sizeof(topRanks[0]); i++)
+	{
+		int posY = SCREEN_HEIGHT / 13 * (4 + Ymultiplier);
+
+		//Rank column
+		App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) - topRanks[i].w / 2, posY, &topRanks[i], 0.0f, false, false, 2, 2);
+
+		//Score column
+		int numberThreshold = 10000000;
+		int scoreToWorkWith = App->score->savedScores[i];
+		int digitPositionX = -48;
+		bool numberInRange = false;
+
+		DigitRendering(App->score->savedScores[i], 8, (SCREEN_WIDTH / 6) * 2 -48, posY);
+		
+
+		// Stage column
+
+		// Name column
+
+		// Time column
+
+
+		Ymultiplier++;
+	}
+}

@@ -49,6 +49,8 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 
 	stage = 1;
 	time_ = 60;
+
+
 }
 
 ModuleSceneRace::~ModuleSceneRace()
@@ -79,21 +81,31 @@ bool ModuleSceneRace::CleanUp()
 
 void ModuleSceneRace::DrawRoad()
 {
-	int segment_length_draw = SEGMENT_LENGTH;
+	//int segment_length_draw = SEGMENT_LENGTH;
 	seg_pos = pos;
-	if (pos % SEGMENT_LENGTH != 0) {
+	if (pos % SEGMENT_LENGTH != 0) 
+	{
 		seg_pos = SEGMENT_LENGTH * (pos / SEGMENT_LENGTH);
 	}
-	while (seg_pos >= N * segment_length_draw) seg_pos -= N * segment_length_draw;
-	while (seg_pos < 0) seg_pos += N * segment_length_draw;
+
+	while (seg_pos >= N * SEGMENT_LENGTH) 
+	{
+		seg_pos -= N * SEGMENT_LENGTH;
+	}
+	while (seg_pos < 0) 
+	{
+		seg_pos += N * SEGMENT_LENGTH;
+	}
 
 	float x = 0, dx = 0;
-	int startPos = seg_pos / segment_length_draw;
+	int startPos = seg_pos / SEGMENT_LENGTH;
 	int camH = (int)(1500 + lines[startPos].y);
 	int maxy = SCREEN_HEIGHT;
 
-	App->renderer->Blit(graphics, 0 - App->player->GetAbsoluteX() / 200, -currentBiome.background1.y + 340, &currentBiome.background1, 0.2f, false, false, 2, 2);
+	App->renderer->Blit(graphics, lines[startPos%N].curve, -currentBiome.background1.y + 340, &currentBiome.background1, 0.2f, false, false, 2, 2);
+	
 
+	LOG("%d", lines[startPos%N].curve)
 	for (int n = startPos; n < startPos + 200; n++) {
 		Color grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
 		Color rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
@@ -144,10 +156,23 @@ void ModuleSceneRace::DrawRoad()
 				lines[n%N].DrawObject(lines[n%N].atrezzos[i].first, decoration, lines[n%N].atrezzos[i].second);
 			}
 		}
+		/*if (!lines[n%N].rivalRacers.empty()) {
+			for (int i = 0; i < lines[n%N].atrezzos.size(); i++) {
+				lines[n%N].DrawObject(lines[n%N].rivalRacers[i].first, decoration, lines[n%N].rivalRacers[i].second);
+			}
+		}*/
 	}
+
+	//Draw rivals
+	/*for (int n = 0; n < rivalRacers.size(); n++) {
+		if (rivalRacers[n]->posZ > startPos) {
+			lines[(int)(rivalRacers[n]->posZ) % N].DrawObject(rivalRacers[n]->current_animation->GetCurrentFrame(), gui, rivalRacers[n]->posX);
+		}
+
+	}*/
 }
 
-// Update: draw background
+
 update_status ModuleSceneRace::Update()
 {
 	time_t now = time(NULL);
@@ -170,7 +195,8 @@ update_status ModuleSceneRace::Update()
 
 	DrawRoad();
 
-	App->ui->ShowUI();
+	//App->ui->ShowUI();
+	App->ui->ShowRankings();
 
 	return UPDATE_CONTINUE;
 }
@@ -181,6 +207,7 @@ void ModuleSceneRace::BiomeChange() {
 		currentBiome.grassLight.r < biomes[biomeIndex].grassLight.r ? currentBiome.grassLight.r++ : currentBiome.grassLight.r--;
 	}
 	if (currentBiome.grassLight.g != biomes[biomeIndex].grassLight.g) {
+		//+2 instead of +1 added to avoid weird bug that ONLY happened with the g attribute of the light grass. What the heck.
 		currentBiome.grassLight.g < biomes[biomeIndex].grassLight.g ? currentBiome.grassLight.g += 2 : currentBiome.grassLight.g -= 2;
 	}
 	if (currentBiome.grassLight.b != biomes[biomeIndex].grassLight.b) {
@@ -240,6 +267,23 @@ void ModuleSceneRace::BiomeChange() {
 	}
 	if (currentBiome.skyColor.b != biomes[biomeIndex].skyColor.b) {
 		currentBiome.skyColor.b < biomes[biomeIndex].skyColor.b ? currentBiome.skyColor.b++ : currentBiome.skyColor.b--;
+	}
+}
+
+//Avoid a targetVariation inferior to -50 when calling ChangeAltitude(). 
+//It works, but the slope down is so steep it makes it look like the bike is flying.
+void ModuleSceneRace::ChangeAltitude(float &altitudeVariation, float targetVariation, int currentSegment, int startingSegment, int endSegment, int heldSegments) {
+	int segmentsToMidpoint = (endSegment - startingSegment - heldSegments) / 2;
+	float variation = (float)targetVariation / segmentsToMidpoint;
+
+	if (currentSegment <= startingSegment + segmentsToMidpoint) {
+		altitudeVariation += variation;
+	}
+	else if (currentSegment >= startingSegment + segmentsToMidpoint + heldSegments) {
+		altitudeVariation -= variation;
+	}
+	if (currentSegment == endSegment) {
+		altitudeVariation = 0;
 	}
 }
 

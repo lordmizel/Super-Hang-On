@@ -46,13 +46,12 @@ public:
 		float destX = X;
 		int destH = sprite.h;
 		
-		float clipH = destY + destH - clip;
+		float clipH = (destY + destH - clip)/* * scaling*/;
 		if (clipH<0) 
 			clipH = 0;
-		//LOG("Clip %f", clip)
-		//destX = X + (W * spriteXToDraw);
+		////LOG("Clip %f", clip)
 		if (clipH >= destH) 
-			//return;
+			return;
 
 		sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
 

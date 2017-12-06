@@ -46,6 +46,7 @@ public:
 protected:
 	
 	void BiomeChange();
+	void ChangeAltitude(float &altitudeVariation, float targetVariation, int currentSegment, int startingSegment, int endSegment, int heldSegments = 0);
 
 	vector<biome> biomes;
 	int biomeIndex = 0;

@@ -2,12 +2,22 @@
 #define __MODULESCORE__
 
 #include "Module.h"
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 struct SDL_Texture;
 
 class ModuleScore : public Module
 {
 public:
+	struct scoreEntry {
+		int score;
+		int stage;
+		std::string name;
+		int time;
+	};
+
 	ModuleScore(bool active = true);
 	~ModuleScore();
 
@@ -44,32 +54,25 @@ public:
 	int GetScore() { return currentScore; }
 	int GetStage() { return stage; }
 
+	int savedScores[7] = { 57170640, 34, 43543, 2, 10087, 9876542, 1234567 };
+
 	// Loads the score file, use on start()
 	void loadSavedScores();
 
 	// Saves the score ranking, use on showScore()
 	void saveCurrentScore();
 
-	SDL_Texture* graphics = nullptr;
+	std::vector<scoreEntry> scoreEntries;
 
-	SDL_Rect initialEntryCountdown;
-	SDL_Rect courseSelected;
-	SDL_Rect rankText;
-	SDL_Rect scoreText;
-	SDL_Rect stageText;
-	SDL_Rect nameText;
-	SDL_Rect timeText;
-	SDL_Rect topRanks[7];
-
-	SDL_Rect blankSpace;
-
-	
 private:
 	int topScore;
 	int currentScore;
 	int stage;
 	int64_t current_time;
 	std::string current_player;
+
+	std::string fileName = "scores.txt";
+	std::ifstream file;
 };
 
 #endif
