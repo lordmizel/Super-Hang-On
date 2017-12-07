@@ -194,6 +194,13 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
+void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision)
+{
+	if (!(collider.x > r.x + r.w || collider.x + collider.w < r.x || collider.y > r.y + r.h || collider.y + collider.h < r.y)) {
+		state = CRASHING;
+	}
+}
+
 update_status ModulePlayer::Update()
 {
 		if (speed < currentMaxSpeed)
@@ -262,7 +269,7 @@ update_status ModulePlayer::Update()
 
 			ManageAnimations();
 
-			App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 			break;
 
 		case(CRASHING):
@@ -278,7 +285,7 @@ update_status ModulePlayer::Update()
 			current_animation->Reset();
 		}
 		currentMaxSpeed = 0;
-		App->renderer->Blit(crashes, position.x -80, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w + 50, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		if (current_animation->GetCurrentFrame().x == current_animation->frames[current_animation->frames.size() - 1].x && current_animation->GetCurrentFrame().y == current_animation->frames[current_animation->frames.size() - 1].y) {
 			state = RECOVERING;
 		}
@@ -304,6 +311,8 @@ update_status ModulePlayer::Update()
 		break;
 	}
 	
+		collider = { SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, SCREEN_HEIGHT - 50, current_animation->GetCurrentFrame().w * 2, 50 };
+		SDL_RenderFillRect(App->renderer->renderer, &collider);
 	
 	return UPDATE_CONTINUE;
 }

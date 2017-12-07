@@ -105,7 +105,7 @@ void ModuleSceneRace::DrawRoad()
 	App->renderer->Blit(graphics, lines[startPos%N].curve, -currentBiome.background1.y + 340, &currentBiome.background1, 0.2f, false, false, 2, 2);
 	
 
-	LOG("%d", lines[startPos%N].curve)
+	//LOG("%d", lines[startPos%N].curve)
 	for (int n = startPos; n < startPos + 200; n++) {
 		Color grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
 		Color rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;

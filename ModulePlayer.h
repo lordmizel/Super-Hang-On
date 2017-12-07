@@ -20,6 +20,11 @@ public:
 		AFTER_RACE
 	};
 
+	enum collision_types {
+		OBSTACLE,
+		RIVAL
+	};
+
 	ModulePlayer(bool active = true);
 	~ModulePlayer();
 
@@ -33,7 +38,21 @@ public:
 	inline int GetAbsoluteX() const { return absoluteX; }
 
 	void AlterXPosition(int alt) { positionX += alt; }
+
+	void DetectCollision(SDL_Rect r, collision_types typeOfCollision);
 	
+	player_state state;
+
+	iPoint position;
+	bool destroyed = false;
+
+	SDL_Rect collider;
+
+private:
+
+	void ManageAnimations();
+	void ManageSpeed();
+
 	SDL_Texture* graphics = nullptr;
 	SDL_Texture* crashes = nullptr;
 	Animation* current_animation = nullptr;
@@ -53,15 +72,6 @@ public:
 	Animation unLeanRightBraking;
 	Animation smallCrash;
 	Animation bigCrash;
-
-	player_state state;
-
-	iPoint position;
-	bool destroyed = false;
-
-private:
-	void ManageAnimations();
-	void ManageSpeed();
 
 	bool braking = false;
 	int speed = 0;
