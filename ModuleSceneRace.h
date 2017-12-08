@@ -7,8 +7,6 @@
 class Segment;
 class ModuleEnemy;
 
-
-
 class ModuleSceneRace : public Module
 {
 
@@ -80,13 +78,20 @@ private:
 	SDL_Texture* graphics = nullptr;
 	SDL_Texture* decoration = nullptr;
 
+	SDL_Rect skyBox = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+
 	Animation sempahore;
 
 	SDL_Rect road;
 	SDL_Rect limit;
 	SDL_Rect midLine;
 
-	int landscapePosition = 0;
+	const int MAX_LANDSCAPE_ALTITUDE = 273;
+	float landscapePositionX = 0.0f;
+	float landscapePositionY = 0.0f;
+	float foregroundPositionX = 0.0f;
+	int landscapeParallaxFactor = 300;
+	int foregroundParallaxFactor = 200;
 
 	void DrawRoad();
 	int stage;

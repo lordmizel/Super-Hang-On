@@ -45,7 +45,7 @@ public:
 		float scaling = 2 * W / SEGMENT_LENGTH;
 		float destY = Y - sprite.h * scaling;
 		float destX = X + (W * posX);
-		int destH = sprite.h * scaling;
+		int destH = sprite.h * (int)scaling;
 		
 		
 		// Apply clipping only if needed (if the sprite must be cut)

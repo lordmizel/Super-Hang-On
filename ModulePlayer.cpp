@@ -2,9 +2,7 @@
 #include "Application.h"
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
-#include "ModuleParticles.h"
 #include "ModuleRender.h"
-#include "ModuleCollision.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleFontManager.h"
 #include "ModulePlayer.h"
@@ -196,8 +194,16 @@ bool ModulePlayer::CleanUp()
 
 void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision)
 {
+	collision_types type = typeOfCollision;
 	if (!(collider.x > r.x + r.w || collider.x + collider.w < r.x || collider.y > r.y + r.h || collider.y + collider.h < r.y)) {
-		state = CRASHING;
+		switch (type) {
+		case OBSTACLE:
+			state = CRASHING;
+			break;
+		case RIVAL:
+			break;
+		}
+		
 	}
 }
 

@@ -13,8 +13,6 @@
 #include "Segment.h"
 #include <string>
 
-//float cover = 0;
-
 ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 {
 	/*sempahore.frames.push_back({ 12, 265, 62, 142 });
@@ -49,8 +47,6 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 
 	stage = 1;
 	time_ = 60;
-
-
 }
 
 ModuleSceneRace::~ModuleSceneRace()
@@ -66,8 +62,10 @@ bool ModuleSceneRace::Start()
 
 	currentBiome = biomes[biomeIndex];
 
+	landscapePositionY = MAX_LANDSCAPE_ALTITUDE;
+
 	App->player->Enable();
-	//App->enemy->Enable();
+
 	return true;
 }
 
@@ -102,7 +100,27 @@ void ModuleSceneRace::DrawRoad()
 	int camH = (int)(1500 + lines[startPos].y);
 	int maxy = SCREEN_HEIGHT;
 
-	App->renderer->Blit(graphics, lines[startPos%N].curve, -currentBiome.background1.y + 340, &currentBiome.background1, 0.2f, false, false, 2, 2);
+	if ((int)landscapePositionX < -SCREEN_WIDTH) {
+		landscapePositionX = landscapePositionX + SCREEN_WIDTH;
+	}
+	if ((int)landscapePositionX > SCREEN_WIDTH) {
+		landscapePositionX = landscapePositionX - SCREEN_WIDTH;
+	}
+
+	if ((int)foregroundPositionX < -SCREEN_WIDTH) {
+		foregroundPositionX = foregroundPositionX + SCREEN_WIDTH;
+	}
+	if ((int)foregroundPositionX > SCREEN_WIDTH) {
+		foregroundPositionX = foregroundPositionX - SCREEN_WIDTH;
+	}
+
+	App->renderer->Blit(graphics, (int)landscapePositionX, landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)landscapePositionX - SCREEN_WIDTH, landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)landscapePositionX + SCREEN_WIDTH, landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
+
+	App->renderer->Blit(graphics, (int)foregroundPositionX, landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)foregroundPositionX - SCREEN_WIDTH, landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)foregroundPositionX + SCREEN_WIDTH, landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	
 
 	//LOG("%d", lines[startPos%N].curve)
@@ -120,9 +138,13 @@ void ModuleSceneRace::DrawRoad()
 		if (n == startPos) {
 			if (l.curve > 0){
 				App->player->AlterXPosition(-App->player->GetSpeed() / 6);
+				landscapePositionX -= App->player->GetSpeed() / (float)landscapeParallaxFactor;
+				foregroundPositionX -= App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
 			else if(l.curve < 0) {
 				App->player->AlterXPosition(App->player->GetSpeed() / 6);
+				landscapePositionX += App->player->GetSpeed() / (float)landscapeParallaxFactor;
+				foregroundPositionX += App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
 		}
 
@@ -148,7 +170,7 @@ void ModuleSceneRace::DrawRoad()
 		App->renderer->DrawPolygon(currentBiome.roadColor, (short)previous.X, (short)previous.Y, (short)previous.W, (short)l.X, (short)l.Y, (short)l.W);
 		App->renderer->DrawPolygon(line, (short)previous.X, (short)previous.Y, (short)(previous.W*0.05), (short)l.X, (short)l.Y, (short)(l.W*0.05));
 	}
-
+	
 	//Draw Objects
 	for (int n = startPos + 199; n >= startPos; n--) {
 		if (!lines[n%N].atrezzos.empty()) {
@@ -161,6 +183,17 @@ void ModuleSceneRace::DrawRoad()
 				lines[n%N].DrawObject(lines[n%N].rivalRacers[i].first, decoration, lines[n%N].rivalRacers[i].second);
 			}
 		}*/
+	}
+
+	//landscapePositionX -= lines[startPos%N].curve * App->player->GetSpeed() / 200;
+
+	if (maxy >= MAX_LANDSCAPE_ALTITUDE) 
+	{
+		landscapePositionY = maxy;
+	}
+	else
+	{
+		landscapePositionY = MAX_LANDSCAPE_ALTITUDE;
 	}
 
 	//Draw rivals
@@ -189,7 +222,7 @@ update_status ModuleSceneRace::Update()
 		}
 	}
 
-	App->renderer->DrawPolygon(currentBiome.skyColor, 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH);
+	App->renderer->DrawQuad(skyBox, currentBiome.skyColor.r, currentBiome.skyColor.g, currentBiome.skyColor.b, 255, false);
 
 	BiomeChange();
 
@@ -204,70 +237,75 @@ update_status ModuleSceneRace::Update()
 void ModuleSceneRace::BiomeChange() {
 	//Adapt light grass
 	if (currentBiome.grassLight.r != biomes[biomeIndex].grassLight.r) {
-		currentBiome.grassLight.r < biomes[biomeIndex].grassLight.r ? currentBiome.grassLight.r++ : currentBiome.grassLight.r--;
+		currentBiome.grassLight.r < biomes[biomeIndex].grassLight.r ? currentBiome.grassLight.r += 2 : currentBiome.grassLight.r -= 2;
 	}
 	if (currentBiome.grassLight.g != biomes[biomeIndex].grassLight.g) {
-		//+2 instead of +1 added to avoid weird bug that ONLY happened with the g attribute of the light grass. What the heck.
 		currentBiome.grassLight.g < biomes[biomeIndex].grassLight.g ? currentBiome.grassLight.g += 2 : currentBiome.grassLight.g -= 2;
 	}
 	if (currentBiome.grassLight.b != biomes[biomeIndex].grassLight.b) {
-		currentBiome.grassLight.b < biomes[biomeIndex].grassLight.b ? currentBiome.grassLight.b++ : currentBiome.grassLight.b--;
+		currentBiome.grassLight.b < biomes[biomeIndex].grassLight.b ? currentBiome.grassLight.b += 2 : currentBiome.grassLight.b -= 2;
 	}
 
 	//Adapt dark grass
 	if (currentBiome.grassDark.r != biomes[biomeIndex].grassDark.r) {
-		currentBiome.grassDark.r < biomes[biomeIndex].grassDark.r ? currentBiome.grassDark.r++ : currentBiome.grassDark.r--;
+		currentBiome.grassDark.r < biomes[biomeIndex].grassDark.r ? currentBiome.grassDark.r += 2 : currentBiome.grassDark.r -= 2;
 	}
 	if (currentBiome.grassDark.g != biomes[biomeIndex].grassDark.g) {
-		currentBiome.grassDark.g < biomes[biomeIndex].grassDark.g ? currentBiome.grassDark.g++ : currentBiome.grassDark.g--;
+		currentBiome.grassDark.g < biomes[biomeIndex].grassDark.g ? currentBiome.grassDark.g += 2 : currentBiome.grassDark.g -= 2;
 	}
 	if (currentBiome.grassDark.b != biomes[biomeIndex].grassDark.b) {
-		currentBiome.grassDark.b < biomes[biomeIndex].grassDark.b ? currentBiome.grassDark.b++ : currentBiome.grassDark.b--;
+		currentBiome.grassDark.b < biomes[biomeIndex].grassDark.b ? currentBiome.grassDark.b += 2 : currentBiome.grassDark.b -= 2;
 	}
 
 	//Adapt light rumble
 	if (currentBiome.rumbleLight.r != biomes[biomeIndex].rumbleLight.r) {
-		currentBiome.rumbleLight.r < biomes[biomeIndex].rumbleLight.r ? currentBiome.rumbleLight.r++ : currentBiome.rumbleLight.r--;
+		currentBiome.rumbleLight.r < biomes[biomeIndex].rumbleLight.r ? currentBiome.rumbleLight.r += 2 : currentBiome.rumbleLight.r -= 2;
 	}
 	if (currentBiome.rumbleLight.g != biomes[biomeIndex].rumbleLight.g) {
-		currentBiome.rumbleLight.g < biomes[biomeIndex].rumbleLight.g ? currentBiome.grassLight.g++ : currentBiome.rumbleLight.g--;
+		currentBiome.rumbleLight.g < biomes[biomeIndex].rumbleLight.g ? currentBiome.grassLight.g += 2 : currentBiome.rumbleLight.g -= 2;
 	}
 	if (currentBiome.rumbleLight.b != biomes[biomeIndex].rumbleLight.b) {
-		currentBiome.rumbleLight.b < biomes[biomeIndex].rumbleLight.b ? currentBiome.rumbleLight.b++ : currentBiome.rumbleLight.b--;
+		currentBiome.rumbleLight.b < biomes[biomeIndex].rumbleLight.b ? currentBiome.rumbleLight.b += 2 : currentBiome.rumbleLight.b -= 2;
 	}
 
 	//Adapt dark rumble
 	if (currentBiome.rumbleDark.r != biomes[biomeIndex].rumbleDark.r) {
-		currentBiome.rumbleDark.r < biomes[biomeIndex].rumbleDark.r ? currentBiome.rumbleDark.r++ : currentBiome.rumbleDark.r--;
+		currentBiome.rumbleDark.r < biomes[biomeIndex].rumbleDark.r ? currentBiome.rumbleDark.r += 2 : currentBiome.rumbleDark.r -= 2;
 	}
 	if (currentBiome.rumbleDark.g != biomes[biomeIndex].rumbleDark.g) {
-		currentBiome.rumbleDark.g < biomes[biomeIndex].rumbleDark.g ? currentBiome.rumbleDark.g++ : currentBiome.rumbleDark.g--;
+		currentBiome.rumbleDark.g < biomes[biomeIndex].rumbleDark.g ? currentBiome.rumbleDark.g += 2 : currentBiome.rumbleDark.g -= 2;
 	}
 	if (currentBiome.rumbleDark.b != biomes[biomeIndex].rumbleDark.b) {
-		currentBiome.rumbleDark.b < biomes[biomeIndex].rumbleDark.b ? currentBiome.rumbleDark.b++ : currentBiome.rumbleDark.b--;
+		currentBiome.rumbleDark.b < biomes[biomeIndex].rumbleDark.b ? currentBiome.rumbleDark.b += 2 : currentBiome.rumbleDark.b -= 2;
 	}
 
 	//Adapt road
 	if (currentBiome.roadColor.r != biomes[biomeIndex].roadColor.r) {
-		currentBiome.roadColor.r < biomes[biomeIndex].roadColor.r ? currentBiome.roadColor.r++ : currentBiome.roadColor.r--;
+		currentBiome.roadColor.r < biomes[biomeIndex].roadColor.r ? currentBiome.roadColor.r += 2 : currentBiome.roadColor.r -= 2;
 	}
 	if (currentBiome.roadColor.g != biomes[biomeIndex].roadColor.g) {
-		currentBiome.roadColor.g < biomes[biomeIndex].roadColor.g ? currentBiome.roadColor.g++ : currentBiome.roadColor.g--;
+		currentBiome.roadColor.g < biomes[biomeIndex].roadColor.g ? currentBiome.roadColor.g += 2 : currentBiome.roadColor.g -= 2;
 	}
 	if (currentBiome.roadColor.b != biomes[biomeIndex].roadColor.b) {
-		currentBiome.roadColor.b < biomes[biomeIndex].roadColor.b ? currentBiome.roadColor.b++ : currentBiome.roadColor.b--;
+		currentBiome.roadColor.b < biomes[biomeIndex].roadColor.b ? currentBiome.roadColor.b += 2 : currentBiome.roadColor.b -= 2;
 	}
 
 	//Adapt sky
 	if (currentBiome.skyColor.r != biomes[biomeIndex].skyColor.r) {
-		currentBiome.skyColor.r < biomes[biomeIndex].skyColor.r ? currentBiome.skyColor.r++ : currentBiome.skyColor.r--;
+		currentBiome.skyColor.r < biomes[biomeIndex].skyColor.r ? currentBiome.skyColor.r += 2 : currentBiome.skyColor.r -= 2;
 	}
 	if (currentBiome.skyColor.g != biomes[biomeIndex].skyColor.g) {
-		currentBiome.skyColor.g < biomes[biomeIndex].skyColor.g ? currentBiome.skyColor.g++ : currentBiome.skyColor.g--;
+		currentBiome.skyColor.g < biomes[biomeIndex].skyColor.g ? currentBiome.skyColor.g += 2 : currentBiome.skyColor.g -= 2;
 	}
 	if (currentBiome.skyColor.b != biomes[biomeIndex].skyColor.b) {
-		currentBiome.skyColor.b < biomes[biomeIndex].skyColor.b ? currentBiome.skyColor.b++ : currentBiome.skyColor.b--;
+		currentBiome.skyColor.b < biomes[biomeIndex].skyColor.b ? currentBiome.skyColor.b += 2 : currentBiome.skyColor.b -= 2;
 	}
+
+	LOG("Sky color should be %d %d %d", biomes[biomeIndex].skyColor.r, biomes[biomeIndex].skyColor.g, biomes[biomeIndex].skyColor.b)
+	LOG("Sky color is actually %d %d %d", currentBiome.skyColor.r, currentBiome.skyColor.g, currentBiome.skyColor.b)
+
+	currentBiome.background1 = biomes[biomeIndex].background1;
+	currentBiome.background2 = biomes[biomeIndex].background2;
 }
 
 //Avoid a targetVariation inferior to -50 when calling ChangeAltitude(). 
