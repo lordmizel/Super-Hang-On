@@ -16,6 +16,10 @@ public:
 		int stage;
 		std::string name;
 		int time;
+
+		int timeMin;
+		int timeSec;
+		int timeDec;
 	};
 
 	ModuleScore(bool active = true);
@@ -26,53 +30,30 @@ public:
 	bool CleanUp();
 
 	int GetTopScore() { return topScore; }
+	int GetScore() { return currentScore.score; }
+	int GetStage() { return currentScore.stage; }
 
-	/**
-	 - Compute where the new score will be inserted moving the following ranks
-	 - Show the list
-	 - Store the new ranking*/
-	void ShowScore();
+	void setTime(int64_t t) { current_time = t; }
 
-	// Call every time a race begins
-	void ResetScore() {
-		current_time = 0;
-		stage = 1;
-		currentScore = 0;
-		current_player = "";
-	}
+	void UpdateScore(int deltaScore) { currentScore.score += deltaScore; }
 
-	void setName(std::string playerName) {
-		current_player = playerName;
-	}
-
-	void setTime(int64_t t) {
-		current_time = t;
-	}
-
-	void UpdateScore(int deltaScore) { currentScore += deltaScore; }
-
-	int GetScore() { return currentScore; }
-	int GetStage() { return stage; }
-
-	int savedScores[7] = { 57170640, 34, 43543, 2, 10087, 9876542, 1234567 };
-
-	// Loads the score file, use on start()
-	void loadSavedScores();
-
-	// Saves the score ranking, use on showScore()
-	void saveCurrentScore();
+	void SaveScoreEntry();
+	void ResetScore();
 
 	std::vector<scoreEntry> scoreEntries;
+	int entryInScoreTable = NULL;
+
+	scoreEntry currentScore;
 
 private:
 	int topScore;
-	int currentScore;
-	int stage;
 	int64_t current_time;
-	std::string current_player;
 
 	std::string fileName = "scores.txt";
-	std::ifstream file;
+	std::ifstream readFile;
+	std::ofstream writeFile;
+
+	
 };
 
 #endif

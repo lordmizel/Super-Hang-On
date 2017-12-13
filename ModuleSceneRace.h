@@ -7,6 +7,12 @@
 class Segment;
 class ModuleEnemy;
 
+struct atrezzo {
+	SDL_Rect sprite;
+	int hitBoxXOffset = 0;
+	int hitBoxWidth = 0;
+};
+
 class ModuleSceneRace : public Module
 {
 
@@ -27,6 +33,8 @@ public:
 		{
 		}
 	};
+
+	
 
 	ModuleSceneRace(bool active = true);
 	~ModuleSceneRace();
@@ -51,28 +59,28 @@ protected:
 	biome currentBiome;
 	vector<int> biomeBorders;
 
-	SDL_Rect arrowLeft;
-	SDL_Rect arrowRight;
-	SDL_Rect bridalStone;
-	SDL_Rect nokSparkPlugs;
-	SDL_Rect birdBird;
-	SDL_Rect discoNora;
-	SDL_Rect rustyDrum;
-	SDL_Rect smallCacti;
-	SDL_Rect bigRock;
-	SDL_Rect morobare;
-	SDL_Rect tallCactus;
-	SDL_Rect phoneBooth;
-	SDL_Rect palmLeft;
-	SDL_Rect palmRight;
-	SDL_Rect retroLamp;
-	SDL_Rect palmTree;
-	SDL_Rect smallTree;
-	SDL_Rect streetMirror;
-	SDL_Rect lampRight;
-	SDL_Rect lampLeft;
-	SDL_Rect tallTree;
-	SDL_Rect deadTree;
+	atrezzo arrowLeft;
+	atrezzo arrowRight;
+	atrezzo bridalStone;
+	atrezzo nokSparkPlugs;
+	atrezzo birdBird;
+	atrezzo discoNora;
+	atrezzo rustyDrum;
+	atrezzo smallCacti;
+	atrezzo bigRock;
+	atrezzo morobare;
+	atrezzo tallCactus;
+	atrezzo phoneBooth;
+	atrezzo palmLeft;
+	atrezzo palmRight;
+	atrezzo retroLamp;
+	atrezzo palmTree;
+	atrezzo smallTree;
+	atrezzo streetMirror;
+	atrezzo lampRight;
+	atrezzo lampLeft;
+	atrezzo tallTree;
+	atrezzo deadTree;
 
 private:
 	SDL_Texture* graphics = nullptr;

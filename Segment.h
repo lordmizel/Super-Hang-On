@@ -1,5 +1,6 @@
 #pragma once
 #include "Globals.h"
+//#include "ModuleSceneRace.h"
 #include "SDL\include\SDL.h"
 #include <vector>
 
@@ -18,7 +19,7 @@ public:
 	float clip;
 	float cover;
 
-	vector<pair<SDL_Rect, int>> atrezzos;
+	vector<pair<atrezzo, int>> atrezzos;
 
 	int width = SCREEN_WIDTH;
 	int height = SCREEN_HEIGHT;
@@ -39,29 +40,36 @@ public:
 		W = (float)(scale * roadWidth * width / 2);
 	}
 
-	void DrawObject(SDL_Rect sprite, SDL_Texture* tex, int posX)
+	void DrawObject(atrezzo object, SDL_Texture* tex, int posX)
 	{
 		bool behindStuff;
 		float scaling = 2 * W / SEGMENT_LENGTH;
-		float destY = Y - sprite.h * scaling;
+		float destY = Y - object.sprite.h * scaling;
 		float destX = X + (W * posX);
-		int destH = sprite.h * (int)scaling;
-		
+		int destH = object.sprite.h * (int)scaling;
+		float destW;
 		
 		// Apply clipping only if needed (if the sprite must be cut)
 		if (destY + destH > clip) {
 			behindStuff = true;
 			float clipH = destY + destH - clip;
-			sprite.h = (int)(sprite.h - sprite.h * clipH / destH);
+			object.sprite.h = (int)(object.sprite.h - object.sprite.h * clipH / destH);
 		}
 		else {
 			behindStuff = false;
 		}
+
+		if (object.hitBoxWidth != 0) {
+			destW = object.hitBoxWidth * scaling;
+		}
+		else {
+			destW = object.sprite.w * scaling;
+		}
 		
-		SDL_Rect hitBox = { (int)destX, (int)destY + sprite.h * scaling - 10,  sprite.w * scaling, 10 };
+		SDL_Rect hitBox = { (int)destX + object.hitBoxXOffset * scaling, (int)destY + object.sprite.h * scaling - 10,  (int) destW, 10 };
 		SDL_RenderFillRect(App->renderer->renderer, &hitBox);		//DEBUG
 
-		App->renderer->Blit(tex, (int)destX, (int)destY, &sprite, 0.f, false, false, scaling, scaling);
+		App->renderer->Blit(tex, (int)destX, (int)destY, &object.sprite, 0.f, false, false, scaling, scaling);
 
 		if (!behindStuff) {
 			App->player->DetectCollision(hitBox, ModulePlayer::collision_types::OBSTACLE);

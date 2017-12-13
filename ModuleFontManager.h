@@ -2,6 +2,7 @@
 #define __MODULEFONTMANAGER_H__
 
 #include "Module.h"
+#include <map>
 
 struct SDL_Texture;
 
@@ -15,6 +16,9 @@ public:
 	bool CleanUp();
 
 	void PrintDigit(int digit, int x, int y, Color color);
+	void PrintChar(char c, int x, int y, Color color);
+
+	std::map<char, SDL_Rect> characters;
 
 private:
 	SDL_Texture* graphics = nullptr;

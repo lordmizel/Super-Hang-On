@@ -6,6 +6,7 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleFontManager.h"
 #include "ModulePlayer.h"
+#include "ModuleScore.h"					/////////
 #include "SDL/include/SDL.h"
 
 ModulePlayer::ModulePlayer(bool active) : Module(active)
@@ -209,76 +210,81 @@ void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision)
 
 update_status ModulePlayer::Update()
 {
-		if (speed < currentMaxSpeed)
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)	///////
+	{
+		App->score->SaveScoreEntry();
+	}
+
+	if (speed < currentMaxSpeed)
+	{
+		speed = speed + acceleration;
+	}
+	else if (speed > currentMaxSpeed)
+	{
+		speed = speed - acceleration;
+	}
+
+	switch (state) {
+	case(BEFORE_RACE):
+		break;
+
+	case(RACING):
+		//TODO: DELETE THIS WHOLE IF STATEMENT!! ONLY FOR DEBUG!!
+		if (App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
 		{
-			speed = speed + acceleration;
-		}
-		else if (speed > currentMaxSpeed)
-		{
-			speed = speed - acceleration;
+			state = CRASHING;
 		}
 
-		switch (state) {
-		case(BEFORE_RACE):
-			break;
+		if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) {
+			positionX -= movementX / 2;
+			if (positionX > -ROAD_WIDTH * 4) {
+				absoluteX -= movementX / 2;
+			}
+		}
+		else if (current_animation == &leanedLeft || current_animation == &leanedLeftBraking) {
+			positionX -= movementX;
+			if (positionX > -ROAD_WIDTH * 4) {
+				absoluteX -= movementX;
+			}
+		}
+		else if (current_animation == &leaningRight || current_animation == &unLeanRight || current_animation == &leaningRightBraking || current_animation == &unLeanRightBraking) {
+			positionX += movementX / 2;
+			if (positionX < ROAD_WIDTH * 4) {
+				absoluteX += movementX / 2;
+			}
+		}
+		else if (current_animation == &leanedRight || current_animation == &leanedRightBraking) {
+			positionX += movementX;
+			if (positionX < ROAD_WIDTH * 4) {
+				absoluteX += movementX;
+			}
+		}
 
-		case(RACING):
-			//TODO: DELETE THIS WHOLE IF STATEMENT!! ONLY FOR DEBUG!!
-			if (App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
-			{
-				state = CRASHING;
-			}
+		if (positionX > ROAD_WIDTH * 4) {
+			positionX = ROAD_WIDTH * 4;
+		}
+		if (positionX < -ROAD_WIDTH * 4) {
+			positionX = -ROAD_WIDTH * 4;
+		}
 
-			if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) {
-				positionX -= movementX / 2;
-				if (positionX > -ROAD_WIDTH * 4) {
-					absoluteX -= movementX / 2;
-				}
-			}
-			else if (current_animation == &leanedLeft || current_animation == &leanedLeftBraking) {
-				positionX -= movementX;
-				if (positionX > -ROAD_WIDTH * 4) {
-					absoluteX -= movementX;
-				}
-			}
-			else if (current_animation == &leaningRight || current_animation == &unLeanRight || current_animation == &leaningRightBraking || current_animation == &unLeanRightBraking) {
-				positionX += movementX / 2;
-				if (positionX < ROAD_WIDTH * 4) {
-					absoluteX += movementX / 2;
-				}
-			}
-			else if (current_animation == &leanedRight || current_animation == &leanedRightBraking) {
-				positionX += movementX;
-				if (positionX < ROAD_WIDTH * 4) {
-					absoluteX += movementX;
-				}
-			}
+		if (positionX > ROAD_WIDTH) {
+			offRoad = true;
+		}
+		else if (positionX < -ROAD_WIDTH) {
+			offRoad = true;
+		}
+		else {
+			offRoad = false;
+		}
 
-			if (positionX > ROAD_WIDTH * 4) {
-				positionX = ROAD_WIDTH * 4;
-			}
-			if (positionX < -ROAD_WIDTH * 4) {
-				positionX = -ROAD_WIDTH * 4;
-			}
+		ManageSpeed();
 
-			if (positionX > ROAD_WIDTH) {
-				offRoad = true;
-			}
-			else if (positionX < -ROAD_WIDTH) {
-				offRoad = true;
-			}
-			else {
-				offRoad = false;
-			}
+		ManageAnimations();
 
-			ManageSpeed();
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		break;
 
-			ManageAnimations();
-
-			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
-			break;
-
-		case(CRASHING):
+	case(CRASHING):
 		if (speed > 200 && current_animation != &smallCrash) {
 			current_animation = &bigCrash;
 		}

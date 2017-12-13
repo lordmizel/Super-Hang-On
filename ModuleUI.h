@@ -16,7 +16,8 @@ public:
 
 	void ShowUI();
 	void ShowRankings();
-	void DigitRendering(int numberToRender, int numDigits, int x, int y, Color color = Color(255, 255, 255, 255));
+	void StringRendering(std::string stringToRender, int x, int y, Color color = Color(255, 255, 255, 255));
+	void DigitRendering(int numberToRender, int numDigits, int x, int y, Color color = Color(255, 255, 255, 255), bool fillWithZero = false);
 
 	SDL_Texture* graphics;
 
@@ -42,7 +43,12 @@ private:
 	SDL_Rect stageText;
 	SDL_Rect nameText;
 	SDL_Rect timeText;
+	SDL_Rect minutesMark;
+	SDL_Rect secondsMark;
 	
+	bool nameEntered = false;
+	int characterIndex = 0;
+	int nameCharacterIndex = 0;
 };
 
 #endif

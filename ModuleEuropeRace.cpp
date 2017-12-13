@@ -42,7 +42,6 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		Color(224, 192, 224, 255), Color(96, 64, 64, 255),
 		Color(96, 64, 64, 255), Color(192, 224, 224, 225),
 		landscapeWindmills, windmillVillage));
-	
 	biomes.push_back(city = biome(Color(0, 0, 32, 255), Color(0, 0, 32, 255),
 		Color(224, 224, 128, 255), Color(0, 0, 96, 255),
 		Color(0, 0, 96, 255), Color(0, 0, 0, 225),
@@ -65,8 +64,6 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		line.z = (float)i * SEGMENT_LENGTH;
 		line.y += currentAltitude + altitudeVariation;
 		currentAltitude = line.y;
-
-		LOG("Altitude variation: %f", altitudeVariation)
 
 		line.curve = 0;
 		if (i > 300 && i < 700) line.curve = 4;
@@ -92,7 +89,8 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 
 		if (i == 300) { line.atrezzos.push_back(make_pair(deadTree, 2)); }
 		if (i == 400) { line.atrezzos.push_back(make_pair(discoNora, 1)); }
-		if (i == 500) { line.atrezzos.push_back(make_pair(palmLeft, -2)); }
+		if (i == 500) { line.atrezzos.push_back(make_pair(lampLeft, -2)); }
+		if (i == 500) { line.atrezzos.push_back(make_pair(lampRight, 2)); }
 
 		lines.push_back(line);
 	}

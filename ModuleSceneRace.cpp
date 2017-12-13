@@ -22,28 +22,35 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	sempahore.loop = false;
 	sempahore.speed = 0.01f;*/
 
-	arrowLeft = { 6, 4, 46, 42 };
-	arrowRight = { 61, 4, 46, 62};
-	bridalStone = { 119, 7, 116, 40 };
-	nokSparkPlugs = { 245, 5, 86, 71 };
-	birdBird = { 3, 55, 76, 56 };
-	discoNora = { 87, 54, 64, 56 };
-	rustyDrum = { 159, 56, 44, 56 };
-	smallCacti = { 212, 89, 54, 57 };
-	bigRock = { 95, 117, 96, 56 };
-	morobare = { 4, 130, 80, 48 };
-	tallCactus = { 5, 186, 36, 88 };
-	phoneBooth = { 62, 187, 40, 96 };
-	palmLeft = { 109, 183, 76, 144 };
-	palmRight = { 195, 183, 76, 144 };
-	retroLamp = { 292, 194, 24, 159 };
-	palmTree = { 4, 287, 46, 142 };
-	smallTree = { 58, 337, 64, 71 };
-	streetMirror = { 132, 332, 20, 72 };
-	lampRight = { 161, 334, 52, 160 };
-	lampLeft = { 227, 334, 56, 160 };
-	tallTree = { 287, 363, 40, 128 };
-	deadTree = { 62, 419, 45, 70 };
+	arrowLeft.sprite = { 6, 4, 46, 42 };
+	arrowRight.sprite = { 61, 4, 46, 62};
+	bridalStone.sprite = { 119, 7, 116, 40 };
+	nokSparkPlugs.sprite = { 245, 5, 86, 71 };
+	birdBird.sprite = { 3, 55, 76, 56 };
+	discoNora.sprite = { 87, 54, 64, 56 };
+	rustyDrum.sprite = { 159, 56, 44, 56 };
+	smallCacti.sprite = { 212, 89, 54, 57 };
+	bigRock.sprite = { 95, 117, 96, 56 };
+	morobare.sprite = { 4, 130, 80, 48 };
+	tallCactus.sprite = { 5, 186, 36, 88 };
+	phoneBooth.sprite = { 62, 187, 40, 96 };
+	palmLeft.sprite = { 109, 183, 76, 144 };
+	palmLeft.hitBoxXOffset = 10;
+	palmLeft.hitBoxWidth = 30;
+	palmRight.sprite = { 195, 183, 76, 144 };
+	palmRight.hitBoxXOffset = 39;
+	palmRight.hitBoxWidth = 30;
+	retroLamp.sprite = { 292, 194, 24, 159 };
+	palmTree.sprite = { 4, 287, 46, 142 };
+	smallTree.sprite = { 58, 337, 64, 71 };
+	streetMirror.sprite = { 132, 332, 20, 72 };
+	lampRight.sprite = { 161, 334, 52, 160 };
+	lampRight.hitBoxXOffset = 45;
+	lampRight.hitBoxWidth = 10;
+	lampLeft.sprite = { 227, 334, 56, 160 };
+	lampLeft.hitBoxWidth = 10;
+	tallTree.sprite = { 287, 363, 40, 128 };
+	deadTree.sprite = { 62, 419, 45, 70 };
 
 	stage = 1;
 	time_ = 60;
@@ -62,7 +69,7 @@ bool ModuleSceneRace::Start()
 
 	currentBiome = biomes[biomeIndex];
 
-	landscapePositionY = MAX_LANDSCAPE_ALTITUDE;
+	landscapePositionY = (float)MAX_LANDSCAPE_ALTITUDE;
 
 	App->player->Enable();
 
@@ -114,13 +121,13 @@ void ModuleSceneRace::DrawRoad()
 		foregroundPositionX = foregroundPositionX - SCREEN_WIDTH;
 	}
 
-	App->renderer->Blit(graphics, (int)landscapePositionX, landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
-	App->renderer->Blit(graphics, (int)landscapePositionX - SCREEN_WIDTH, landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
-	App->renderer->Blit(graphics, (int)landscapePositionX + SCREEN_WIDTH, landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)landscapePositionX, (int)landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)landscapePositionX - SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)landscapePositionX + SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
 
-	App->renderer->Blit(graphics, (int)foregroundPositionX, landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
-	App->renderer->Blit(graphics, (int)foregroundPositionX - SCREEN_WIDTH, landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
-	App->renderer->Blit(graphics, (int)foregroundPositionX + SCREEN_WIDTH, landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)foregroundPositionX, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)foregroundPositionX - SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
+	App->renderer->Blit(graphics, (int)foregroundPositionX + SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	
 
 	//LOG("%d", lines[startPos%N].curve)
@@ -300,9 +307,6 @@ void ModuleSceneRace::BiomeChange() {
 	if (currentBiome.skyColor.b != biomes[biomeIndex].skyColor.b) {
 		currentBiome.skyColor.b < biomes[biomeIndex].skyColor.b ? currentBiome.skyColor.b += 2 : currentBiome.skyColor.b -= 2;
 	}
-
-	LOG("Sky color should be %d %d %d", biomes[biomeIndex].skyColor.r, biomes[biomeIndex].skyColor.g, biomes[biomeIndex].skyColor.b)
-	LOG("Sky color is actually %d %d %d", currentBiome.skyColor.r, currentBiome.skyColor.g, currentBiome.skyColor.b)
 
 	currentBiome.background1 = biomes[biomeIndex].background1;
 	currentBiome.background2 = biomes[biomeIndex].background2;
