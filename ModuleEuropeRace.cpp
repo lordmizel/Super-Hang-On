@@ -69,7 +69,6 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		if (i > 300 && i < 700) line.curve = 4;
 		if (i > 500 && i < 600) line.curve = -1;
 
-		if (i > 800 && i < 3000) line.curve = 4;
 
 		//if (i > 0) line.y = (float)(sin(i / 30.0) * 1500);
 		if (i > 800 && i < 1500) {
@@ -87,10 +86,13 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 			dist *= (-1);
 		}*/
 
-		if (i == 300) { line.atrezzos.push_back(make_pair(deadTree, 2)); }
+		if (i == 25) { line.atrezzos.push_back(make_pair(startSign, -3)); }
+		if (i == 300) { line.atrezzos.push_back(make_pair(test, 2)); }
 		if (i == 400) { line.atrezzos.push_back(make_pair(discoNora, 1)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampLeft, -2)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampRight, 2)); }
+
+		//if (i == 25) { line.rivals.push_back(make_pair(rival1, 0)); }
 
 		lines.push_back(line);
 	}

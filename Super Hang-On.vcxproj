@@ -23,6 +23,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Dummy.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="Rival.h" />
     <ClInclude Include="ModuleFontManager.h" />
     <ClInclude Include="ModuleUI.h" />
     <ClInclude Include="Segment.h" />

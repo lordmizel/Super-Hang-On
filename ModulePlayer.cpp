@@ -324,7 +324,7 @@ update_status ModulePlayer::Update()
 	}
 	
 		collider = { SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, SCREEN_HEIGHT - 50, current_animation->GetCurrentFrame().w * 2, 50 };
-		SDL_RenderFillRect(App->renderer->renderer, &collider);
+		//SDL_RenderFillRect(App->renderer->renderer, &collider);
 	
 	return UPDATE_CONTINUE;
 }

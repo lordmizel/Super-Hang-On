@@ -52,7 +52,7 @@ bool ModuleScore::Start()
 	ResetScore();
 
 	//TODO: DELETE THIS, ONLY FOR DEBUG
-	currentScore.score = 1600050;
+	currentScore.score = 0;
 	currentScore.stage = 2;
 	currentScore.time = 12345;
 	currentScore.timeMin = (currentScore.time / 100) / 60;
@@ -87,7 +87,6 @@ bool ModuleScore::CleanUp()
 
 	return true;
 }
-
 
 void ModuleScore::SaveScoreEntry() {
 	bool validEntry = false;

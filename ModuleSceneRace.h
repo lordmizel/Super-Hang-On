@@ -5,10 +5,18 @@
 #include "Animation.h"
 
 class Segment;
-class ModuleEnemy;
+//class Rival;
 
 struct atrezzo {
 	SDL_Rect sprite;
+	int hitBoxXOffset = 0;
+	int hitBoxWidth = 0;
+};
+
+struct rival {
+	SDL_Rect sprite;
+	float z = 0;
+	int speed = 1000;
 	int hitBoxXOffset = 0;
 	int hitBoxWidth = 0;
 };
@@ -82,9 +90,19 @@ protected:
 	atrezzo tallTree;
 	atrezzo deadTree;
 
+	atrezzo test;
+
+	atrezzo startSign;
+
+	vector<rival*> rivals;
+
+	//TODO: Turn into animation
+	SDL_Rect rivalRunningFront;
+
 private:
 	SDL_Texture* graphics = nullptr;
 	SDL_Texture* decoration = nullptr;
+	SDL_Texture* drivers = nullptr;
 
 	SDL_Rect skyBox = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
@@ -93,6 +111,8 @@ private:
 	SDL_Rect road;
 	SDL_Rect limit;
 	SDL_Rect midLine;
+
+	
 
 	const int MAX_LANDSCAPE_ALTITUDE = 273;
 	float landscapePositionX = 0.0f;

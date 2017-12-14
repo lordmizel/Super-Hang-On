@@ -11,6 +11,7 @@
 #include "ModuleUI.h"
 #include "ModuleScore.h"
 #include "Segment.h"
+//#include "Rival.h"
 #include <string>
 
 ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
@@ -52,6 +53,18 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	tallTree.sprite = { 287, 363, 40, 128 };
 	deadTree.sprite = { 62, 419, 45, 70 };
 
+	startSign.sprite = { 333, 2, 314, 103 };
+	startSign.hitBoxWidth = 50;
+
+	rivalRunningFront = { 91, 440, 32, 72 };
+
+	rival* rival1 = new rival();
+	rival1->sprite = { 91, 440, 32, 72 };
+	rival1->z = 50;
+	rival1->speed = 1;
+
+	rivals.push_back(rival1);
+
 	stage = 1;
 	time_ = 60;
 }
@@ -66,10 +79,13 @@ bool ModuleSceneRace::Start()
 
 	graphics = App->textures->Load("backgrounds.png", 255, 0, 204);
 	decoration = App->textures->Load("stuff.png", 255, 0, 255);
+	drivers = App->textures->Load("bikes.png", 255, 0, 204);
 
 	currentBiome = biomes[biomeIndex];
 
 	landscapePositionY = (float)MAX_LANDSCAPE_ALTITUDE;
+
+	
 
 	App->player->Enable();
 
@@ -81,12 +97,13 @@ bool ModuleSceneRace::CleanUp()
 {
 	LOG("Unloading space scene");
 	App->textures->Unload(graphics);
+	App->textures->Unload(decoration);
+	App->textures->Unload(drivers);
 	return true;
 }
 
 void ModuleSceneRace::DrawRoad()
 {
-	//int segment_length_draw = SEGMENT_LENGTH;
 	seg_pos = pos;
 	if (pos % SEGMENT_LENGTH != 0) 
 	{
@@ -137,27 +154,27 @@ void ModuleSceneRace::DrawRoad()
 		Color rumble2 = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.rumbleDark;
 		Color line = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.roadColor;
 
-		Segment &l = lines[n%N];
-		l.project((int)(App->player->GetXPosition() - x), camH, seg_pos - (n >= N ? N * 100 : 0));
+		Segment &current = lines[n%N];
+		current.project((int)(App->player->GetXPosition() - x), camH, seg_pos - (n >= N ? N * 100 : 0));
 		x += dx;
-		dx += l.curve;
+		dx += current.curve;
 
 		if (n == startPos) {
-			if (l.curve > 0){
+			if (current.curve > 0){
 				App->player->AlterXPosition(-App->player->GetSpeed() / 6);
 				landscapePositionX -= App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX -= App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
-			else if(l.curve < 0) {
+			else if(current.curve < 0) {
 				App->player->AlterXPosition(App->player->GetSpeed() / 6);
 				landscapePositionX += App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX += App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
 		}
 
-		l.clip = maxy;
-		if (l.Y >= maxy) continue;
-		maxy = (int)(l.Y);
+		current.clip = maxy;
+		if (current.Y >= maxy) continue;
+		maxy = (int)(current.Y);
 
 		Segment previous;
 		if (n == 0)
@@ -167,33 +184,35 @@ void ModuleSceneRace::DrawRoad()
 
 		int laneNumber = 10;
 		for (int i = laneNumber; i > 0; i--) {
-			if ((short)previous.Y != (short)l.Y) {
-				App->renderer->DrawPolygon(grass, SCREEN_WIDTH / 2, (short)previous.Y, SCREEN_WIDTH, SCREEN_WIDTH / 2, (short)l.Y, SCREEN_WIDTH);
+			if ((short)previous.Y != (short)current.Y) {
+				App->renderer->DrawPolygon(grass, SCREEN_WIDTH / 2, (short)previous.Y, SCREEN_WIDTH, SCREEN_WIDTH / 2, (short)current.Y, SCREEN_WIDTH);
 			}
 		}
-		App->renderer->DrawPolygon(rumble2, (short)previous.X, (short)previous.Y, (short)(previous.W*1.15), (short)l.X, (short)l.Y, (short)(l.W*1.15));
-		App->renderer->DrawPolygon(rumble, (short)previous.X, (short)previous.Y, (short)(previous.W*1.03), (short)l.X, (short)l.Y, (short)(l.W*1.03));
+		App->renderer->DrawPolygon(rumble2, (short)previous.X, (short)previous.Y, (short)(previous.W*1.15), (short)current.X, (short)current.Y, (short)(current.W*1.15));
+		App->renderer->DrawPolygon(rumble, (short)previous.X, (short)previous.Y, (short)(previous.W*1.03), (short)current.X, (short)current.Y, (short)(current.W*1.03));
 		
-		App->renderer->DrawPolygon(currentBiome.roadColor, (short)previous.X, (short)previous.Y, (short)previous.W, (short)l.X, (short)l.Y, (short)l.W);
-		App->renderer->DrawPolygon(line, (short)previous.X, (short)previous.Y, (short)(previous.W*0.05), (short)l.X, (short)l.Y, (short)(l.W*0.05));
+		App->renderer->DrawPolygon(currentBiome.roadColor, (short)previous.X, (short)previous.Y, (short)previous.W, (short)current.X, (short)current.Y, (short)current.W);
+		App->renderer->DrawPolygon(line, (short)previous.X, (short)previous.Y, (short)(previous.W*0.05), (short)current.X, (short)current.Y, (short)(current.W*0.05));
 	}
-	
-	//Draw Objects
+
+	//Draw Objects and Rivals
 	for (int n = startPos + 199; n >= startPos; n--) {
 		if (!lines[n%N].atrezzos.empty()) {
 			for (int i = 0; i < lines[n%N].atrezzos.size(); i++) {
 				lines[n%N].DrawObject(lines[n%N].atrezzos[i].first, decoration, lines[n%N].atrezzos[i].second);
 			}
 		}
-		/*if (!lines[n%N].rivalRacers.empty()) {
-			for (int i = 0; i < lines[n%N].atrezzos.size(); i++) {
-				lines[n%N].DrawObject(lines[n%N].rivalRacers[i].first, decoration, lines[n%N].rivalRacers[i].second);
+		for (int i = 0; i < rivals.size(); i++) {
+			if (n%N == (int)rivals[i]->z % N && (int)rivals[i]->z % N > startPos) {
+				lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers, 0);
 			}
-		}*/
+		}
 	}
 
-	//landscapePositionX -= lines[startPos%N].curve * App->player->GetSpeed() / 200;
-
+	for (int i = 0; i < rivals.size(); i++) {
+		rivals[i]->z += rivals[i]->speed;
+	}
+	
 	if (maxy >= MAX_LANDSCAPE_ALTITUDE) 
 	{
 		landscapePositionY = maxy;
@@ -202,14 +221,6 @@ void ModuleSceneRace::DrawRoad()
 	{
 		landscapePositionY = MAX_LANDSCAPE_ALTITUDE;
 	}
-
-	//Draw rivals
-	/*for (int n = 0; n < rivalRacers.size(); n++) {
-		if (rivalRacers[n]->posZ > startPos) {
-			lines[(int)(rivalRacers[n]->posZ) % N].DrawObject(rivalRacers[n]->current_animation->GetCurrentFrame(), gui, rivalRacers[n]->posX);
-		}
-
-	}*/
 }
 
 

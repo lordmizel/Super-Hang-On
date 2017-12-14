@@ -175,6 +175,11 @@ void ModuleUI::ShowRankings() {
 		Ymultiplier++;
 	}
 
+	if (App->score->entryInScoreTable == NULL && nameEntered == false) {
+		StringRendering("YOU.", (SCREEN_WIDTH / 6) - topRanks[0].w / 2, SCREEN_HEIGHT / 13 * (4 + Ymultiplier), { 255, 0, 0, 255 });
+		DigitRendering(App->score->currentScore.score, 8, (SCREEN_WIDTH / 6) * 2 - 54, SCREEN_HEIGHT / 13 * (4 + Ymultiplier), { 255, 0, 0, 255 });
+	}
+
 	//TODO: REMEMBER TO PUT nameEntered TO FALSE AND characterIndex AND nameCharacterIndex TO 0 EVERY TIME A NEW RACE STARTS
 	if (App->score->entryInScoreTable != NULL && nameEntered == false) {
 		Color color;
