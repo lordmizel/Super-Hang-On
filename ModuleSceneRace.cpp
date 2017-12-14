@@ -14,15 +14,9 @@
 //#include "Rival.h"
 #include <string>
 
+
 ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 {
-	/*sempahore.frames.push_back({ 12, 265, 62, 142 });
-	sempahore.frames.push_back({ 84, 265, 62, 142 });
-	sempahore.frames.push_back({ 157, 265, 62, 142 });
-	sempahore.frames.push_back({ 225, 265, 62, 142 });
-	sempahore.loop = false;
-	sempahore.speed = 0.01f;*/
-
 	arrowLeft.sprite = { 6, 4, 46, 42 };
 	arrowRight.sprite = { 61, 4, 46, 62};
 	bridalStone.sprite = { 119, 7, 116, 40 };
@@ -69,8 +63,10 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	time_ = 60;
 }
 
+
 ModuleSceneRace::~ModuleSceneRace()
 {}
+
 
 // Load assets
 bool ModuleSceneRace::Start()
@@ -85,12 +81,11 @@ bool ModuleSceneRace::Start()
 
 	landscapePositionY = (float)MAX_LANDSCAPE_ALTITUDE;
 
-	
-
 	App->player->Enable();
 
 	return true;
 }
+
 
 // UnLoad assets
 bool ModuleSceneRace::CleanUp()
@@ -101,6 +96,7 @@ bool ModuleSceneRace::CleanUp()
 	App->textures->Unload(drivers);
 	return true;
 }
+
 
 void ModuleSceneRace::DrawRoad()
 {
@@ -146,8 +142,6 @@ void ModuleSceneRace::DrawRoad()
 	App->renderer->Blit(graphics, (int)foregroundPositionX - SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, (int)foregroundPositionX + SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	
-
-	//LOG("%d", lines[startPos%N].curve)
 	for (int n = startPos; n < startPos + 200; n++) {
 		Color grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
 		Color rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
@@ -252,6 +246,7 @@ update_status ModuleSceneRace::Update()
 	return UPDATE_CONTINUE;
 }
 
+
 void ModuleSceneRace::BiomeChange() {
 	//Adapt light grass
 	if (currentBiome.grassLight.r != biomes[biomeIndex].grassLight.r) {
@@ -323,6 +318,7 @@ void ModuleSceneRace::BiomeChange() {
 	currentBiome.background2 = biomes[biomeIndex].background2;
 }
 
+
 //Avoid a targetVariation inferior to -50 when calling ChangeAltitude(). 
 //It works, but the slope down is so steep it makes it look like the bike is flying.
 void ModuleSceneRace::ChangeAltitude(float &altitudeVariation, float targetVariation, int currentSegment, int startingSegment, int endSegment, int heldSegments) {
@@ -339,6 +335,7 @@ void ModuleSceneRace::ChangeAltitude(float &altitudeVariation, float targetVaria
 		altitudeVariation = 0;
 	}
 }
+
 
 ModuleSceneRace::biome::biome()
 {

@@ -6,7 +6,7 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleFontManager.h"
 #include "ModulePlayer.h"
-#include "ModuleScore.h"					/////////
+#include "ModuleScore.h"
 #include "SDL/include/SDL.h"
 
 ModulePlayer::ModulePlayer(bool active) : Module(active)
@@ -212,7 +212,7 @@ update_status ModulePlayer::Update()
 {
 	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)	///////
 	{
-		App->score->SaveScoreEntry();
+		App->score->ValidateScoreEntry();
 	}
 
 	if (speed < currentMaxSpeed)

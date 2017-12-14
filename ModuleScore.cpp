@@ -46,13 +46,11 @@ bool ModuleScore::Start()
 
 	readFile.close();
 
-	writeFile.open(fileName, std::ios::out | std::ios::trunc);
-
 	//TODO: This should happen when race starts, not when this module is initialized
 	ResetScore();
 
 	//TODO: DELETE THIS, ONLY FOR DEBUG
-	currentScore.score = 0;
+	currentScore.score = 1400000;
 	currentScore.stage = 2;
 	currentScore.time = 12345;
 	currentScore.timeMin = (currentScore.time / 100) / 60;
@@ -65,11 +63,35 @@ bool ModuleScore::Start()
 
 update_status ModuleScore::Update()
 {
+	//LOG("%d", currentScore.score)
 	return UPDATE_CONTINUE;
 }
 
 bool ModuleScore::CleanUp()
 {
+	
+
+	return true;
+}
+
+void ModuleScore::ValidateScoreEntry() {
+	bool validEntry = false;
+	//Recorrer lista de puntuaciones y ver si supera las puntuaciones guardadas
+	for (int i = 0; i < scoreEntries.size(); i++) {
+		if (currentScore.score > scoreEntries[i].score) {
+			entryInScoreTable = i;
+			validEntry = true;
+			break;
+		}
+	}
+}
+
+void ModuleScore::SaveScoreEntry() {
+	scoreEntries.pop_back();
+	scoreEntries.insert(scoreEntries.begin() + entryInScoreTable, currentScore);
+
+	writeFile.open(fileName, std::ios::out | std::ios::trunc);
+
 	for (int i = 0; i < 7; i++) {
 		writeFile << scoreEntries[i].score;
 		writeFile << ";";
@@ -84,24 +106,6 @@ bool ModuleScore::CleanUp()
 	}
 
 	writeFile.close();
-
-	return true;
-}
-
-void ModuleScore::SaveScoreEntry() {
-	bool validEntry = false;
-	for (int i = 0; i < scoreEntries.size(); i++) {
-		if (currentScore.score > scoreEntries[i].score) {
-			entryInScoreTable = i;
-			validEntry = true;
-			break;
-		}
-	}
-
-	if (validEntry) {
-		scoreEntries.pop_back();
-		scoreEntries.insert(scoreEntries.begin() + entryInScoreTable, currentScore);
-	}
 }
 
 void ModuleScore::ResetScore()

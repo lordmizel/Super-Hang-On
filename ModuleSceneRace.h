@@ -112,8 +112,6 @@ private:
 	SDL_Rect limit;
 	SDL_Rect midLine;
 
-	
-
 	const int MAX_LANDSCAPE_ALTITUDE = 273;
 	float landscapePositionX = 0.0f;
 	float landscapePositionY = 0.0f;

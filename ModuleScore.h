@@ -37,6 +37,7 @@ public:
 
 	void UpdateScore(int deltaScore) { currentScore.score += deltaScore; }
 
+	void ValidateScoreEntry();
 	void SaveScoreEntry();
 	void ResetScore();
 
