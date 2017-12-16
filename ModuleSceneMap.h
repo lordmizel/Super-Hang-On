@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Animation.h"
+#include "Timer.h"
 
 struct SDL_Texture;
 
@@ -38,6 +39,8 @@ public:
 	Animation america;
 	Animation europe;
 	Animation pressButton;
+
+	Timer timer_;
 
 	int courseSelect = AFRICA;
 	uint fx = 0;

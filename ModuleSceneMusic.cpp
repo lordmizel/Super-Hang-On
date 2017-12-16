@@ -6,7 +6,7 @@
 #include "ModuleRender.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleSceneMusic.h"
-
+#include "ModuleFontManager.h"
 
 
 ModuleSceneMusic::ModuleSceneMusic(bool active) : Module(active)
@@ -44,6 +44,8 @@ ModuleSceneMusic::ModuleSceneMusic(bool active) : Module(active)
 	pressButton.frames.push_back({ 0, 0, 0, 0 });
 	pressButton.speed = 0.03f;
 
+	timer_.SetTime(10);
+
 	selectedSong = SONG1;
 	
 }
@@ -64,6 +66,8 @@ bool ModuleSceneMusic::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	timer_.Start();
+
 	return true;
 }
 
@@ -76,6 +80,8 @@ bool ModuleSceneMusic::CleanUp()
 
 	if (fx == 0)
 		fx = App->audio->LoadFx("rtype/starting.wav");
+
+	timer_.Update();
 
 	return true;
 }
@@ -90,6 +96,8 @@ update_status ModuleSceneMusic::Update()
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song2.frames[0].w, SCREEN_HEIGHT / 8 * 3, &(song2.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song3.frames[0].w, SCREEN_HEIGHT / 8 * 4, &(song3.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song4.frames[0].w, SCREEN_HEIGHT / 8 * 5, &(song4.GetCurrentFrame()), 0.0f, false, false, 2, 2);
+
+	App->font_manager->DigitRendering(timer_.GetRemainingTime(), 2, SCREEN_WIDTH / 2 - 32, SCREEN_HEIGHT / 7 * 5, Color{ 255,255,255,255 }, false, true);
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
@@ -156,7 +164,7 @@ update_status ModuleSceneMusic::Update()
 		}
 		ChangeSongPlaying();
 	}
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false)
+	if ((App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false) || (timer_.IsExpired() && App->fade->isFading() == false))
 	{
 		switch (selectedSong)
 		{
@@ -175,6 +183,8 @@ update_status ModuleSceneMusic::Update()
 		}
 		App->fade->FadeToBlack((Module*)App->europe_race, this);
 	}
+
+	timer_.Update();
 
 	return UPDATE_CONTINUE;
 }

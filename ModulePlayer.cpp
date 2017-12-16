@@ -232,7 +232,7 @@ update_status ModulePlayer::Update()
 		//TODO: DELETE THIS WHOLE IF STATEMENT!! ONLY FOR DEBUG!!
 		if (App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
 		{
-			state = CRASHING;
+			state = OUT_OF_CONTROL;
 		}
 
 		if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) {
@@ -318,7 +318,12 @@ update_status ModulePlayer::Update()
 		}
 
 		break;
+	case(OUT_OF_CONTROL):
+		if (speed < 90) {
+			speed = 90;
+		}
 
+		break;
 	case(AFTER_RACE):
 		break;
 	}

@@ -7,8 +7,6 @@
 
 struct SDL_Texture;
 
-
-
 class ModulePlayer : public Module
 {
 public:
@@ -17,6 +15,7 @@ public:
 		RACING,
 		CRASHING,
 		RECOVERING,
+		OUT_OF_CONTROL,
 		AFTER_RACE
 	};
 

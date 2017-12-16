@@ -2,6 +2,7 @@
 
 #include "Globals.h"
 //#include "ModuleSceneRace.h"
+#include "ModuleEuropeRace.h"
 #include "SDL\include\SDL.h"
 //#include "Rival.h"
 #include <vector>
@@ -85,23 +86,23 @@ public:
 		}
 	}
 
-	void DrawRival(rival* racer, SDL_Texture* tex, int posX)
+	void DrawRival(rival* racer, SDL_Texture* tex, float posX)
 	{
 		bool behindStuff;
 
 		float scaling = W / SEGMENT_LENGTH;
-		if (scaling >= 2) scaling = 2;
+		if (scaling >= 1) scaling = 1;
 
-		float destY = Y - racer->sprite.h * scaling;
-		float destX = X + (W * posX);
-		int destH = racer->sprite.h * (int)scaling;
+		float destY = Y - racer->currentAnimation->GetCurrentFrame().h * scaling;
+		float destX = X + (W * racer->x);
+		int destH = racer->currentAnimation->GetCurrentFrame().h * (int)scaling;
 		float destW;
 
 		// Apply clipping only if needed (if the sprite must be cut)
 		if (destY + destH > clip) {
 			behindStuff = true;
 			float clipH = destY + destH - clip;
-			racer->sprite.h = (int)(racer->sprite.h - racer->sprite.h * clipH / destH);
+			//racer->currentAnimation->GetCurrentFrame().h = (int)(racer->currentAnimation->GetCurrentFrame().h - racer->currentAnimation->GetCurrentFrame().h * clipH / destH);
 		}
 		else {
 			behindStuff = false;
@@ -111,24 +112,29 @@ public:
 			destW = racer->hitBoxWidth * scaling;
 		}
 		else {
-			destW = racer->sprite.w * scaling;
+			destW = racer->currentAnimation->GetCurrentFrame().w * scaling;
 		}
 
-		SDL_Rect hitBox = { (int)destX + racer->hitBoxXOffset * scaling, (int)destY + racer->sprite.h * scaling - 10,  (int)destW, 10 };
+		SDL_Rect hitBox = { (int)destX + racer->hitBoxXOffset * scaling, (int)destY + racer->currentAnimation->GetCurrentFrame().h * scaling - 10,  (int)destW, 10 };
 		//SDL_RenderFillRect(App->renderer->renderer, &hitBox);		//DEBUG
 
-		App->renderer->Blit(tex, (int)destX, (int)destY, &racer->sprite, 0.f, false, false, scaling, scaling);
+		//LOG("Scaling %f", scaling)
+		//	LOG("Sprite height %d", racer->currentAnimation->GetCurrentFrame().h)
+		//	LOG("Sprite width %d", racer->currentAnimation->GetCurrentFrame().w)
+		//	LOG("Sprite X %f", destX)
+		//	LOG("Sprite Y %f", destY)
+		//	LOG("Sprite H %d", destH)
+			if (destX < 0 || destY > SCREEN_HEIGHT) {
+				return;
+			}
+			if (racer->currentAnimation->GetCurrentFrame().h< 0) {
+				racer->currentAnimation->GetCurrentFrame().h = 0;
+			}
+		App->renderer->Blit(tex, (int)destX, (int)destY, &racer->currentAnimation->GetCurrentFrame(), 0.f, false, false, scaling, scaling);
 
-		if (scaling >= 2) {
+		if (scaling >= 1) {
 			App->player->DetectCollision(hitBox, ModulePlayer::collision_types::RIVAL);
 		}
-
-		/*racer.z += racer.speed;
-
-		LOG("Speed %d", racer.speed)
-		LOG("Z %f", racer.z)
-
-		return racer.z;*/
 	}
-
+	
 };

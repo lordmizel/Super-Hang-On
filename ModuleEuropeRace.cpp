@@ -21,7 +21,6 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 	landscapeSunset = { 677, 251, 320, 39 };
 	sunsetBuildings = { 335, 333, 320, 16 };
 
-	
 	biomes.push_back(paris = biome(Color(160, 160, 160, 255), Color(128, 128, 128, 255),
 		Color(224, 224, 224, 255), Color(96, 96, 96, 255),
 		Color(32, 32, 32, 255), Color(224, 224, 224, 225),
@@ -59,7 +58,6 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 
 	for (int i = 0; i <10000; i++)
 	{
-		
 		Segment line;
 		line.z = (float)i * SEGMENT_LENGTH;
 		line.y += currentAltitude + altitudeVariation;
@@ -79,20 +77,10 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 			ChangeAltitude(altitudeVariation, -50.0f, i, 1100, 1500);
 		}*/
 
-		/*int dist = rand() % 3;
-		int sign = rand() % 2 + 1;*/
-
-		/*if (sign == 1) {
-			dist *= (-1);
-		}*/
-
-		if (i == 25) { line.atrezzos.push_back(make_pair(startSign, -3)); }
-		if (i == 300) { line.atrezzos.push_back(make_pair(test, 2)); }
+		if (i == 50) { line.atrezzos.push_back(make_pair(startSign, -3)); }
 		if (i == 400) { line.atrezzos.push_back(make_pair(discoNora, 1)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampLeft, -2)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampRight, 2)); }
-
-		//if (i == 25) { line.rivals.push_back(make_pair(rival1, 0)); }
 
 		lines.push_back(line);
 	}

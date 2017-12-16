@@ -11,7 +11,6 @@
 #include "ModuleUI.h"
 #include "ModuleScore.h"
 #include "Segment.h"
-//#include "Rival.h"
 #include <string>
 
 
@@ -50,14 +49,68 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	startSign.sprite = { 333, 2, 314, 103 };
 	startSign.hitBoxWidth = 50;
 
-	rivalRunningFront = { 91, 440, 32, 72 };
+	greenRivalStraight.frames.push_back({ 91, 440, 32, 72 });
+	greenRivalStraight.frames.push_back({ 129, 440, 32, 72 });
+	greenRivalStraight.speed = 0.2f;
+
+	yellowRivalStraight.frames.push_back({ 91, 520, 32, 72 });
+	yellowRivalStraight.frames.push_back({ 129, 520, 32, 72 });
+	yellowRivalStraight.speed = 0.2f;
+
+	greenRivalTurnsLeft.frames.push_back({ 244, 440, 45, 72 });
+	greenRivalTurnsLeft.frames.push_back({ 295, 440, 45, 72 });
+	greenRivalTurnsLeft.speed = 0.2f;
+
+	yellowRivalTurnsLeft.frames.push_back({ 244, 520, 45, 72 });
+	yellowRivalTurnsLeft.frames.push_back({ 295, 520, 45, 72 });
+	yellowRivalTurnsLeft.speed = 0.2f;
+
+	greenRivalTurnsRight.frames.push_back({ 244, 756, 45, 72 });
+	greenRivalTurnsRight.frames.push_back({ 295, 756, 45, 72 });
+	greenRivalTurnsRight.speed = 0.2f;
+
+	yellowRivalTurnsRight.frames.push_back({ 244, 836, 45, 72 });
+	yellowRivalTurnsRight.frames.push_back({ 295, 836, 45, 72 });
+	yellowRivalTurnsRight.speed = 0.2f;
 
 	rival* rival1 = new rival();
-	rival1->sprite = { 91, 440, 32, 72 };
-	rival1->z = 50;
+	rival1->currentAnimation = &greenRivalTurnsLeft;
+	rival1->z = 46;
 	rival1->speed = 1;
+	rival1->x = -0.8f;
+	rival1->isYellow = true;
+
+	rival* rival2 = new rival();
+	rival2->currentAnimation = &greenRivalStraight;
+	rival2->z = 48;
+	rival2->speed = 1;
+	rival2->x = -0.4f;
+
+	rival* rival3 = new rival();
+	rival3->currentAnimation = &greenRivalStraight;
+	rival3->z = 50;
+	rival3->speed = 1;
+	rival3->x = 0;
+	rival3->isYellow = true;
+
+	rival* rival4 = new rival();
+	rival4->currentAnimation = &greenRivalStraight;
+	rival4->z = 48;
+	rival4->speed = 1;
+	rival4->x = 0.4f;
+
+	rival* rival5 = new rival();
+	rival5->currentAnimation = &greenRivalStraight;
+	rival5->z = 46;
+	rival5->speed = 1;
+	rival5->x = 0.8f;
+	rival5->isYellow = true;
 
 	rivals.push_back(rival1);
+	//rivals.push_back(rival2);
+	//rivals.push_back(rival3);
+	//rivals.push_back(rival4);
+	//rivals.push_back(rival5);
 
 	stage = 1;
 	time_ = 60;
@@ -198,6 +251,30 @@ void ModuleSceneRace::DrawRoad()
 		}
 		for (int i = 0; i < rivals.size(); i++) {
 			if (n%N == (int)rivals[i]->z % N && (int)rivals[i]->z % N > startPos) {
+				if (rivals[i]->isYellow) {
+					if (lines[n%N].curve < 0) {
+						rivals[i]->currentAnimation = &yellowRivalTurnsLeft;
+					}
+					else if (lines[n%N].curve > 0) {
+						rivals[i]->currentAnimation = &yellowRivalTurnsRight;
+					}
+					else
+					{
+						rivals[i]->currentAnimation = &yellowRivalStraight;
+					}
+				}
+				else {
+					if (lines[n%N].curve < 0) {
+						rivals[i]->currentAnimation = &greenRivalTurnsLeft;
+					}
+					else if (lines[n%N].curve > 0) {
+						rivals[i]->currentAnimation = &greenRivalTurnsRight;
+					}
+					else
+					{
+						rivals[i]->currentAnimation = &greenRivalStraight;
+					}
+				}
 				lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers, 0);
 			}
 		}

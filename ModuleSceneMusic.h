@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Animation.h"
+#include "Timer.h"
 
 struct SDL_Texture;
 
@@ -40,6 +41,8 @@ public:
 
 private:
 	void ChangeSongPlaying();
+
+	Timer timer_;
 };
 
 #endif

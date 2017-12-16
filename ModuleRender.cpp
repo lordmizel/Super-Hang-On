@@ -100,8 +100,16 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
 	}
 
-	rect.w *= scaledW;
-	rect.h *= scaledH;
+	if (rect.h == 72) {
+		LOG("W: %d  H: %d scaleW %f scaleH %f", rect.w, rect.h, scaledW, scaledH)
+		rect.w *= scaledW;
+		rect.h *= scaledH;
+		LOG("New W: %d  New H: %d", rect.w, rect.h)
+	}
+	else {
+		rect.w *= scaledW;
+		rect.h *= scaledH;
+	}
 
 	if(SDL_RenderCopy(renderer, texture, section, &rect) != 0)
 	{

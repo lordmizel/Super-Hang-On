@@ -73,7 +73,7 @@ typedef unsigned int uint;
 #define VSYNC true
 #define TITLE "Super Hang-On"
 
-#define ROAD_WIDTH 1700
+#define ROAD_WIDTH 2000
 #define SEGMENT_LENGTH 100
 #define CAMERA_DEPTH 0.5
 

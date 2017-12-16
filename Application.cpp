@@ -66,7 +66,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(europe_race, nullptr, 3.0f);
+	fade->FadeToBlack(scene_map, nullptr, 3.0f);
 
 	return ret;
 }

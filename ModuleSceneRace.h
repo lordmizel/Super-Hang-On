@@ -14,9 +14,11 @@ struct atrezzo {
 };
 
 struct rival {
-	SDL_Rect sprite;
+	Animation* currentAnimation;
+	bool isYellow = false;
 	float z = 0;
 	int speed = 1000;
+	float x = 0;
 	int hitBoxXOffset = 0;
 	int hitBoxWidth = 0;
 };
@@ -90,14 +92,9 @@ protected:
 	atrezzo tallTree;
 	atrezzo deadTree;
 
-	atrezzo test;
-
 	atrezzo startSign;
 
 	vector<rival*> rivals;
-
-	//TODO: Turn into animation
-	SDL_Rect rivalRunningFront;
 
 private:
 	SDL_Texture* graphics = nullptr;
@@ -124,6 +121,13 @@ private:
 	float time_;
 
 	SDL_Rect landscapeParis;
+
+	Animation greenRivalStraight;
+	Animation yellowRivalStraight;
+	Animation greenRivalTurnsLeft;
+	Animation yellowRivalTurnsLeft;
+	Animation greenRivalTurnsRight;
+	Animation yellowRivalTurnsRight;
 };
 
 #endif

@@ -3,7 +3,9 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleFontManager.h"
+#include <string>
 
+using namespace std;
 
 ModuleFontManager::ModuleFontManager(bool active) : Module(active)
 {
@@ -18,6 +20,17 @@ ModuleFontManager::ModuleFontManager(bool active) : Module(active)
 	numbers[7] = { 347, 211, 8, 8 };
 	numbers[8] = { 356, 211, 8, 8 };
 	numbers[9] = { 365, 211, 8, 8 };
+
+	numbersBig[0] = { 119, 129, 8, 14 };
+	numbersBig[1] = { 109, 129, 8, 14 };
+	numbersBig[2] = { 99, 129, 8, 14 };
+	numbersBig[3] = { 88, 129, 8, 14 };
+	numbersBig[4] = { 77, 129, 8, 14 };
+	numbersBig[5] = { 66, 129, 8, 14 };
+	numbersBig[6] = { 55, 129, 8, 14 };
+	numbersBig[7] = { 44, 129, 8, 14 };
+	numbersBig[8] = { 33, 129, 8, 14 };
+	numbersBig[9] = { 22, 129, 8, 14 };
 
 	characters['A'] = { 508, 280, 8, 8 };
 	characters['B'] = { 508, 289, 8, 8 };
@@ -61,6 +74,7 @@ bool ModuleFontManager::Start()
 	LOG("Loading font manager");
 
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
+	graphics2 = App->textures->Load("songs.png", 224, 160, 0);
 
 	return true;
 }
@@ -71,13 +85,60 @@ bool ModuleFontManager::CleanUp()
 	LOG("Unloading player");
 
 	App->textures->Unload(graphics);
+	App->textures->Unload(graphics2);
 
 	return true;
 }
 
-void ModuleFontManager::PrintDigit(int digit, int x, int y, Color color)
+void ModuleFontManager::DigitRendering(int numberToRender, int numDigits, int x, int y, Color color, bool fillWithZero, bool big)
 {
-	App->renderer->Blit(graphics, x, y, &numbers[digit], 0.0f, false, false, 2, 2, color);
+	int numberThreshold = 1;
+
+	for (int i = 0; i < numDigits - 1; i++) {
+		numberThreshold *= 10;
+	}
+
+	int helper = numberToRender;
+	int digitPositionX = 0;
+	bool numberInRange = false;
+
+	for (int dig = numDigits; dig > 0; dig--) {
+		if (helper < numberThreshold && !numberInRange && dig > 1) {
+			if (!fillWithZero) {
+				App->renderer->Blit(graphics, x + digitPositionX, y, &blankSpace, 0.0f, false, false, 2, 2);
+			}
+			else {
+				PrintDigit(0, x + digitPositionX, y, color, big);
+			}
+		}
+		else
+		{
+			PrintDigit(helper / numberThreshold, x + digitPositionX, y, color, big);
+			numberInRange = true;
+		}
+
+		helper = helper % numberThreshold;
+		numberThreshold = numberThreshold / 10;
+		digitPositionX += 16;
+	}
+}
+
+void ModuleFontManager::StringRendering(string stringToRender, int x, int y, Color color) {
+	int digitPositionX = 0;
+	for (int c = 0; c < stringToRender.size(); c++) {
+		App->font_manager->PrintChar(stringToRender.at(c), x + digitPositionX, y, color);
+		digitPositionX += 16;
+	}
+}
+
+void ModuleFontManager::PrintDigit(int digit, int x, int y, Color color, bool big)
+{
+	if (!big) {
+		App->renderer->Blit(graphics, x, y, &numbers[digit], 0.0f, false, false, 2, 2, color);
+	}
+	else {
+		App->renderer->Blit(graphics2, x, y, &numbersBig[digit], 0.0f, false, false, 2, 2, color);
+	}
 }
 
 void ModuleFontManager::PrintChar(char c, int x, int y, Color color) 

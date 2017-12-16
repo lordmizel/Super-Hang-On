@@ -65,70 +65,70 @@ bool ModuleUI::CleanUp() {
 
 void ModuleUI::ShowUI() {
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 - 16, SCREEN_HEIGHT / 17 - 4, &topTag, 0.0f, false, false, 2, 2);
-	DigitRendering(App->score->GetTopScore(), 8, SCREEN_WIDTH / 12 * 2, SCREEN_HEIGHT / 17, Color(255, 0, 0, 255));
+	App->font_manager->DigitRendering(App->score->GetTopScore(), 8, SCREEN_WIDTH / 12 * 2, SCREEN_HEIGHT / 17, Color(255, 0, 0, 255));
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - timeTag.w, SCREEN_HEIGHT / 17 - 4, &timeTag, 0.0f, false, false, 2, 2);
 	//TODO: Print time
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 7, SCREEN_HEIGHT / 17 - 4, &scoreTag, 0.0f, false, false, 2, 2);
-	DigitRendering(App->score->GetScore(), 8, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17, Color(0, 255, 0, 255));
+	App->font_manager->DigitRendering(App->score->GetScore(), 8, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17, Color(0, 255, 0, 255));
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 - 16, SCREEN_HEIGHT / 17 * 2 - 4, &courseAndStageText, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 3, SCREEN_HEIGHT / 17 * 2 - 4, &europeText, 0.0f, false, false, 2, 2);
-	DigitRendering(App->score->GetStage(), 2, SCREEN_WIDTH / 12 * 3, SCREEN_HEIGHT / 17 * 2 + 12);
+	App->font_manager->DigitRendering(App->score->GetStage(), 2, SCREEN_WIDTH / 12 * 3, SCREEN_HEIGHT / 17 * 2 + 12);
 	
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 7, SCREEN_HEIGHT / 17 * 2 - 4, &speedText, 0.0f, false, false, 2, 2);
 	if (App->player->GetSpeed() >= App->player->GetMaxSpeedRunning()) 
 	{
-		DigitRendering(App->player->GetSpeed(), 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4, Color(255, 0, 0, 255));
+		App->font_manager->DigitRendering(App->player->GetSpeed(), 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4, Color(255, 0, 0, 255));
 	}
 	else 
 	{
-		DigitRendering(App->player->GetSpeed(), 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4);
+		App->font_manager->DigitRendering(App->player->GetSpeed(), 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4);
 	}
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 9 + 8 + 16 * 3, SCREEN_HEIGHT / 17 * 2 - 4, &kmText, 0.0f, false, false, 2, 2);
 }
 
-void ModuleUI::DigitRendering(int numberToRender, int numDigits, int x, int y, Color color, bool fillWithZero)
-{
-	int numberThreshold = 1;
-
-	for (int i = 0; i < numDigits - 1; i++) {
-		numberThreshold *= 10;
-	}
-	
-	int helper = numberToRender;
-	int digitPositionX = 0;
-	bool numberInRange = false;
-
-	for (int dig = numDigits; dig > 0; dig--) {
-		if (helper < numberThreshold && !numberInRange) {
-			if (!fillWithZero) {
-				App->renderer->Blit(graphics, x + digitPositionX, y, &blankSpace, 0.0f, false, false, 2, 2);
-			}
-			else {
-				App->font_manager->PrintDigit(0, x + digitPositionX, y, color);
-			}
-		}
-		else
-		{
-			App->font_manager->PrintDigit(helper / numberThreshold, x + digitPositionX, y, color);
-			numberInRange = true;
-		}
-
-		helper = helper % numberThreshold;
-		numberThreshold = numberThreshold / 10;
-		digitPositionX += 16;
-	}
-}
-
-void ModuleUI::StringRendering(string stringToRender, int x, int y, Color color) {
-	int digitPositionX = 0;
-	for (int c = 0; c < stringToRender.size(); c++) {
-		App->font_manager->PrintChar(stringToRender.at(c), x + digitPositionX, y, color);
-		digitPositionX += 16;
-	}
-}
+//void ModuleUI::DigitRendering(int numberToRender, int numDigits, int x, int y, Color color, bool fillWithZero)
+//{
+//	int numberThreshold = 1;
+//
+//	for (int i = 0; i < numDigits - 1; i++) {
+//		numberThreshold *= 10;
+//	}
+//
+//	int helper = numberToRender;
+//	int digitPositionX = 0;
+//	bool numberInRange = false;
+//
+//	for (int dig = numDigits; dig > 0; dig--) {
+//		if (helper < numberThreshold && !numberInRange) {
+//			if (!fillWithZero) {
+//				App->renderer->Blit(graphics, x + digitPositionX, y, &blankSpace, 0.0f, false, false, 2, 2);
+//			}
+//			else {
+//				App->font_manager->PrintDigit(0, x + digitPositionX, y, color);
+//			}
+//		}
+//		else
+//		{
+//			App->font_manager->PrintDigit(helper / numberThreshold, x + digitPositionX, y, color);
+//			numberInRange = true;
+//		}
+//
+//		helper = helper % numberThreshold;
+//		numberThreshold = numberThreshold / 10;
+//		digitPositionX += 16;
+//	}
+//}
+//
+//void ModuleUI::StringRendering(string stringToRender, int x, int y, Color color) {
+//	int digitPositionX = 0;
+//	for (int c = 0; c < stringToRender.size(); c++) {
+//		App->font_manager->PrintChar(stringToRender.at(c), x + digitPositionX, y, color);
+//		digitPositionX += 16;
+//	}
+//}
 
 void ModuleUI::ShowRankings() {
 
@@ -158,20 +158,20 @@ void ModuleUI::ShowRankings() {
 			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) - topRanks[i].w / 2, posY, &topRanks[i], 0.0f, false, false, 2, 2, entryColor);
 
 			//Score column
-			DigitRendering(App->score->currentScore.score, 8, (SCREEN_WIDTH / 6) * 2 - 54, posY, entryColor);
+			App->font_manager->DigitRendering(App->score->currentScore.score, 8, (SCREEN_WIDTH / 6) * 2 - 54, posY, entryColor);
 
 			// Stage column
-			DigitRendering(App->score->currentScore.stage, 2, (SCREEN_WIDTH / 6) * 3 - stageText.w / 2 + 16, posY, entryColor);
+			App->font_manager->DigitRendering(App->score->currentScore.stage, 2, (SCREEN_WIDTH / 6) * 3 - stageText.w / 2 + 16, posY, entryColor);
 
 			// Name column
-			StringRendering(App->score->currentScore.name, (SCREEN_WIDTH / 6) * 4 - nameText.w / 2, posY, entryColor);
+			App->font_manager->StringRendering(App->score->currentScore.name, (SCREEN_WIDTH / 6) * 4 - nameText.w / 2, posY, entryColor);
 
 			// Time column
-			DigitRendering(App->score->currentScore.timeMin, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 - 32, posY, entryColor, true);
+			App->font_manager->DigitRendering(App->score->currentScore.timeMin, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 - 32, posY, entryColor, true);
 			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 32 - 32, posY, &minutesMark, 0.0f, false, false, 2, 2, entryColor);
-			DigitRendering(App->score->currentScore.timeSec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 48 - 32, posY, entryColor, true);
+			App->font_manager->DigitRendering(App->score->currentScore.timeSec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 48 - 32, posY, entryColor, true);
 			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 80 - 32, posY, &secondsMark, 0.0f, false, false, 2, 2, entryColor);
-			DigitRendering(App->score->currentScore.timeDec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 96 - 32, posY, entryColor, true);
+			App->font_manager->DigitRendering(App->score->currentScore.timeDec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 96 - 32, posY, entryColor, true);
 		}
 		else 
 		{
@@ -179,20 +179,20 @@ void ModuleUI::ShowRankings() {
 			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) - topRanks[i].w / 2, posY, &topRanks[i], 0.0f, false, false, 2, 2, entryColor);
 
 			//Score column
-			DigitRendering(App->score->scoreEntries[rankNumber].score, 8, (SCREEN_WIDTH / 6) * 2 - 54, posY, entryColor);
+			App->font_manager->DigitRendering(App->score->scoreEntries[rankNumber].score, 8, (SCREEN_WIDTH / 6) * 2 - 54, posY, entryColor);
 
 			// Stage column
-			DigitRendering(App->score->scoreEntries[rankNumber].stage, 2, (SCREEN_WIDTH / 6) * 3 - stageText.w / 2 + 16, posY, entryColor);
+			App->font_manager->DigitRendering(App->score->scoreEntries[rankNumber].stage, 2, (SCREEN_WIDTH / 6) * 3 - stageText.w / 2 + 16, posY, entryColor);
 
 			// Name column
-			StringRendering(App->score->scoreEntries[rankNumber].name, (SCREEN_WIDTH / 6) * 4 - nameText.w / 2, posY, entryColor);
+			App->font_manager->StringRendering(App->score->scoreEntries[rankNumber].name, (SCREEN_WIDTH / 6) * 4 - nameText.w / 2, posY, entryColor);
 
 			// Time column
-			DigitRendering(App->score->scoreEntries[rankNumber].timeMin, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 - 32, posY, entryColor, true);
+			App->font_manager->DigitRendering(App->score->scoreEntries[rankNumber].timeMin, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 - 32, posY, entryColor, true);
 			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 32 - 32, posY, &minutesMark, 0.0f, false, false, 2, 2, entryColor);
-			DigitRendering(App->score->scoreEntries[rankNumber].timeSec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 48 - 32, posY, entryColor, true);
+			App->font_manager->DigitRendering(App->score->scoreEntries[rankNumber].timeSec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 48 - 32, posY, entryColor, true);
 			App->renderer->Blit(graphics, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 80 - 32, posY, &secondsMark, 0.0f, false, false, 2, 2, entryColor);
-			DigitRendering(App->score->scoreEntries[rankNumber].timeDec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 96 - 32, posY, entryColor, true);
+			App->font_manager->DigitRendering(App->score->scoreEntries[rankNumber].timeDec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 96 - 32, posY, entryColor, true);
 
 			rankNumber++;
 		}
@@ -200,8 +200,8 @@ void ModuleUI::ShowRankings() {
 	}
 
 	if (App->score->entryInScoreTable == NULL && nameEntered == false) {
-		StringRendering("YOU.", (SCREEN_WIDTH / 6) - topRanks[0].w / 2, SCREEN_HEIGHT / 13 * (4 + Ymultiplier), { 255, 0, 0, 255 });
-		DigitRendering(App->score->currentScore.score, 8, (SCREEN_WIDTH / 6) * 2 - 54, SCREEN_HEIGHT / 13 * (4 + Ymultiplier), { 255, 0, 0, 255 });
+		App->font_manager->StringRendering("YOU.", (SCREEN_WIDTH / 6) - topRanks[0].w / 2, SCREEN_HEIGHT / 13 * (4 + Ymultiplier), { 255, 0, 0, 255 });
+		App->font_manager->DigitRendering(App->score->currentScore.score, 8, (SCREEN_WIDTH / 6) * 2 - 54, SCREEN_HEIGHT / 13 * (4 + Ymultiplier), { 255, 0, 0, 255 });
 	}
 
 	//TODO: REMEMBER TO PUT nameEntered TO FALSE AND characterIndex AND nameCharacterIndex TO 0 EVERY TIME A NEW RACE STARTS

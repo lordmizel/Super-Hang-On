@@ -16,9 +16,9 @@ public:
 
 	void ShowUI();
 	void ShowRankings();
-	
-	void StringRendering(std::string stringToRender, int x, int y, Color color = Color(255, 255, 255, 255));
-	void DigitRendering(int numberToRender, int numDigits, int x, int y, Color color = Color(255, 255, 255, 255), bool fillWithZero = false);
+
+	/*void StringRendering(std::string stringToRender, int x, int y, Color color = Color(255, 255, 255, 255));
+	void DigitRendering(int numberToRender, int numDigits, int x, int y, Color color = Color(255, 255, 255, 255), bool fillWithZero = false);*/
 
 	SDL_Texture* graphics;
 

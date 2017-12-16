@@ -6,7 +6,7 @@
 #include "ModuleRender.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleSceneMap.h"
-
+#include "ModuleFontManager.h"
 
 ModuleSceneMap::ModuleSceneMap(bool active) : Module(active)
 {
@@ -49,6 +49,8 @@ ModuleSceneMap::ModuleSceneMap(bool active) : Module(active)
 	pressButton.frames.push_back({ 3, 14, 136, 8 });
 	pressButton.frames.push_back({ 0, 0, 0, 0 });
 	pressButton.speed = 0.03f;
+
+	timer_.SetTime(10);
 }
 
 ModuleSceneMap::~ModuleSceneMap()
@@ -66,6 +68,8 @@ bool ModuleSceneMap::Start()
 		fx = App->audio->LoadFx("rtype/starting.wav");
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
+
+	timer_.Start();
 
 	return true;
 }
@@ -111,18 +115,21 @@ update_status ModuleSceneMap::Update()
 	App->renderer->Blit(graphics, 102, 189, &courseAmerica, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, 278, 157, &courseEurope, 0.0f, false, false, 2, 2);
 
-	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
+	App->font_manager->DigitRendering(timer_.GetRemainingTime(), 2, SCREEN_WIDTH / 2 - 32, SCREEN_HEIGHT / 7 * 5, Color{ 255,255,255,255 }, false, true);
 
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false) 
+	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
+	
+	// Force the user to choose Europe
+	if (timer_.IsExpired() && App->fade->isFading() == false) {
+		App->fade->FadeToBlack((Module*)App->scene_music, this);
+	}
+
+	if ((App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false) || (timer_.IsExpired() && App->fade->isFading() == false))
 	{
 		switch (courseSelect) 
 		{
 		case AFRICA:
-			App->audio->PlayFx(fx);
-			break;
 		case ASIA:
-			App->audio->PlayFx(fx);
-			break;
 		case AMERICA:
 			App->audio->PlayFx(fx);
 			break;
@@ -161,6 +168,8 @@ update_status ModuleSceneMap::Update()
 			courseSelect = AFRICA;
 		}
 	}
+
+	timer_.Update();
 
 	return UPDATE_CONTINUE;
 }
