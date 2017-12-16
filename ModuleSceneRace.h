@@ -44,8 +44,6 @@ public:
 		}
 	};
 
-	
-
 	ModuleSceneRace(bool active = true);
 	~ModuleSceneRace();
 
@@ -128,6 +126,8 @@ private:
 	Animation yellowRivalTurnsLeft;
 	Animation greenRivalTurnsRight;
 	Animation yellowRivalTurnsRight;
+
+	//Timer timeLeft;
 };
 
 #endif

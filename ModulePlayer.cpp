@@ -189,22 +189,33 @@ bool ModulePlayer::CleanUp()
 	LOG("Unloading player");
 
 	App->textures->Unload(graphics);
+	App->textures->Unload(crashes);
 
 	return true;
 }
 
-void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision)
+void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x)
 {
 	collision_types type = typeOfCollision;
-	if (!(collider.x > r.x + r.w || collider.x + collider.w < r.x || collider.y > r.y + r.h || collider.y + collider.h < r.y)) {
-		switch (type) {
-		case OBSTACLE:
-			state = CRASHING;
-			break;
-		case RIVAL:
-			break;
+	if (state == RACING || state == OUT_OF_CONTROL) {
+		if (!(collider.x > r.x + r.w || collider.x + collider.w < r.x || collider.y > r.y + r.h || collider.y + collider.h < r.y)) {
+			switch (type) {
+			case OBSTACLE:
+				state = CRASHING;
+				break;
+			case RIVAL:
+				timeOutOfControl.SetTime(1);
+				timeOutOfControl.Start();
+				if (x < SCREEN_WIDTH / 2) {
+					deviateRight = true;
+				}
+				else {
+					deviateRight = false;
+				}
+				state = OUT_OF_CONTROL;
+				break;
+			}
 		}
-		
 	}
 }
 
@@ -215,24 +226,26 @@ update_status ModulePlayer::Update()
 		App->score->ValidateScoreEntry();
 	}
 
-	if (speed < currentMaxSpeed)
+	if (state == RACING || state == CRASHING || state == OUT_OF_CONTROL) 
 	{
-		speed = speed + acceleration;
-	}
-	else if (speed > currentMaxSpeed)
-	{
-		speed = speed - acceleration;
+		if (speed < currentMaxSpeed)
+		{
+			speed = speed + acceleration;
+		}
+		else if (speed > currentMaxSpeed)
+		{
+			speed = speed - acceleration;
+		}
 	}
 
 	switch (state) {
 	case(BEFORE_RACE):
+		App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - forward.frames[0].w + 50, SCREEN_HEIGHT - forward.frames[0].h * 2, &forward.frames[0], 0.0f, false, false, 2, 2);
 		break;
 
 	case(RACING):
-		//TODO: DELETE THIS WHOLE IF STATEMENT!! ONLY FOR DEBUG!!
-		if (App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
-		{
-			state = OUT_OF_CONTROL;
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+			Pause();
 		}
 
 		if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) {
@@ -285,6 +298,10 @@ update_status ModulePlayer::Update()
 		break;
 
 	case(CRASHING):
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+			Pause();
+		}
+
 		if (speed > 200 && current_animation != &smallCrash) {
 			current_animation = &bigCrash;
 		}
@@ -317,20 +334,61 @@ update_status ModulePlayer::Update()
 			state = RACING;
 		}
 
-		break;
-	case(OUT_OF_CONTROL):
-		if (speed < 90) {
-			speed = 90;
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+			Pause();
 		}
 
 		break;
-	case(AFTER_RACE):
+
+	case(OUT_OF_CONTROL):
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+			Pause();
+		}
+
+		if (speed > 90) {
+			speed = 90;
+		}
+		currentMaxSpeed = 90;
+		if (deviateRight) {
+			current_animation = &leanedRight;
+			positionX += 20;
+		}
+		else {
+			current_animation = &leanedLeft;
+			positionX -= 20;
+		}
+		timeOutOfControl.Update();
+		if (timeOutOfControl.IsExpired()) {
+			state = RACING;
+		}
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		break;
+
+	case(GAME_OVER):
+		break;
+
+	case(SCORE_SCREEN):
+		break;
+
+	case(PAUSE):
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)	///////
+		{
+			state = previousState;
+			current_animation->speed = previousAnimationSpeed;
+		}
+
+		if (previousState == CRASHING) {
+			App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w + 50, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		}
+		else {
+			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		}
+		
+
 		break;
 	}
 	
-		collider = { SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, SCREEN_HEIGHT - 50, current_animation->GetCurrentFrame().w * 2, 50 };
-		//SDL_RenderFillRect(App->renderer->renderer, &collider);
-	
+	collider = { SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, SCREEN_HEIGHT - 50, current_animation->GetCurrentFrame().w * 2, 50 };
 	return UPDATE_CONTINUE;
 }
 
@@ -499,4 +557,11 @@ void ModulePlayer::ManageAnimations() {
 			current_animation = &forward;
 		}
 	}
+}
+
+void ModulePlayer::Pause() {
+	previousAnimationSpeed = current_animation->speed;
+	current_animation->speed = 0.0f;
+	previousState = state;
+	state = PAUSE;
 }

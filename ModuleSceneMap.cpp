@@ -115,7 +115,7 @@ update_status ModuleSceneMap::Update()
 	App->renderer->Blit(graphics, 102, 189, &courseAmerica, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, 278, 157, &courseEurope, 0.0f, false, false, 2, 2);
 
-	App->font_manager->DigitRendering(timer_.GetRemainingTime(), 2, SCREEN_WIDTH / 2 - 32, SCREEN_HEIGHT / 7 * 5, Color{ 255,255,255,255 }, false, true);
+	App->font_manager->DigitRendering(timer_.GetRemainingTime(), 2, SCREEN_WIDTH / 2 - 16, SCREEN_HEIGHT / 7 * 5, Color{ 255,255,255,255 }, false, true);
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 	

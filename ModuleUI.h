@@ -17,9 +17,6 @@ public:
 	void ShowUI();
 	void ShowRankings();
 
-	/*void StringRendering(std::string stringToRender, int x, int y, Color color = Color(255, 255, 255, 255));
-	void DigitRendering(int numberToRender, int numDigits, int x, int y, Color color = Color(255, 255, 255, 255), bool fillWithZero = false);*/
-
 	SDL_Texture* graphics;
 
 	SDL_Rect topRanks[7];
@@ -37,6 +34,8 @@ private:
 	SDL_Rect speedText;
 	SDL_Rect kmText;
 	SDL_Rect europeText;
+
+	SDL_Rect pauseTag;
 
 	//Score screen
 	SDL_Rect initialEntryCountdown;

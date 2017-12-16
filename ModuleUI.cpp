@@ -41,6 +41,8 @@ ModuleUI::ModuleUI(bool active) : Module(active)
 
 	minutesMark = { 521, 280, 8, 8 };
 	secondsMark = { 521, 289, 8, 8 };
+
+	pauseTag = { 5, 929, 52, 8 };
 }
 
 ModuleUI::~ModuleUI()
@@ -87,48 +89,11 @@ void ModuleUI::ShowUI() {
 		App->font_manager->DigitRendering(App->player->GetSpeed(), 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4);
 	}
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 9 + 8 + 16 * 3, SCREEN_HEIGHT / 17 * 2 - 4, &kmText, 0.0f, false, false, 2, 2);
-}
 
-//void ModuleUI::DigitRendering(int numberToRender, int numDigits, int x, int y, Color color, bool fillWithZero)
-//{
-//	int numberThreshold = 1;
-//
-//	for (int i = 0; i < numDigits - 1; i++) {
-//		numberThreshold *= 10;
-//	}
-//
-//	int helper = numberToRender;
-//	int digitPositionX = 0;
-//	bool numberInRange = false;
-//
-//	for (int dig = numDigits; dig > 0; dig--) {
-//		if (helper < numberThreshold && !numberInRange) {
-//			if (!fillWithZero) {
-//				App->renderer->Blit(graphics, x + digitPositionX, y, &blankSpace, 0.0f, false, false, 2, 2);
-//			}
-//			else {
-//				App->font_manager->PrintDigit(0, x + digitPositionX, y, color);
-//			}
-//		}
-//		else
-//		{
-//			App->font_manager->PrintDigit(helper / numberThreshold, x + digitPositionX, y, color);
-//			numberInRange = true;
-//		}
-//
-//		helper = helper % numberThreshold;
-//		numberThreshold = numberThreshold / 10;
-//		digitPositionX += 16;
-//	}
-//}
-//
-//void ModuleUI::StringRendering(string stringToRender, int x, int y, Color color) {
-//	int digitPositionX = 0;
-//	for (int c = 0; c < stringToRender.size(); c++) {
-//		App->font_manager->PrintChar(stringToRender.at(c), x + digitPositionX, y, color);
-//		digitPositionX += 16;
-//	}
-//}
+	if (App->player->state == ModulePlayer::PAUSE) {
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pauseTag.w, SCREEN_HEIGHT / 2 - pauseTag.h, &pauseTag, 0.0f, false, false, 2, 2);
+	}
+}
 
 void ModuleUI::ShowRankings() {
 

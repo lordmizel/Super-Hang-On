@@ -4,6 +4,7 @@
 #include "Module.h"
 #include "Animation.h"
 #include "Point.h"
+#include "Timer.h"
 
 struct SDL_Texture;
 
@@ -16,7 +17,9 @@ public:
 		CRASHING,
 		RECOVERING,
 		OUT_OF_CONTROL,
-		AFTER_RACE
+		GAME_OVER,
+		SCORE_SCREEN,
+		PAUSE
 	};
 
 	enum collision_types {
@@ -38,7 +41,8 @@ public:
 
 	void AlterXPosition(int alt) { positionX += alt; }
 
-	void DetectCollision(SDL_Rect r, collision_types typeOfCollision);
+	void DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x = 0.0f);
+	void Pause();
 	
 	player_state state;
 
@@ -88,7 +92,12 @@ private:
 	int maxSpeedBraking = 85;
 	bool offRoad = false;
 
-	time_t now;
+	bool deviateRight;
+	Timer timeOutOfControl;
+
+	//PAUSE PARAMETERS
+	player_state previousState;
+	float previousAnimationSpeed;
 };
 
 #endif

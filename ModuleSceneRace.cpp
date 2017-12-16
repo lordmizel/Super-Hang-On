@@ -206,7 +206,7 @@ void ModuleSceneRace::DrawRoad()
 		x += dx;
 		dx += current.curve;
 
-		if (n == startPos) {
+		if (n == startPos && App->player->state != ModulePlayer::PAUSE) {
 			if (current.curve > 0){
 				App->player->AlterXPosition(-App->player->GetSpeed() / 6);
 				landscapePositionX -= App->player->GetSpeed() / (float)landscapeParallaxFactor;
@@ -280,9 +280,17 @@ void ModuleSceneRace::DrawRoad()
 		}
 	}
 
+	
 	for (int i = 0; i < rivals.size(); i++) {
-		rivals[i]->z += rivals[i]->speed;
+		if (App->player->state != ModulePlayer::PAUSE) {
+			rivals[i]->z += rivals[i]->speed;
+			rivals[i]->currentAnimation->speed = 0.2f;
+		}
+		else {
+			rivals[i]->currentAnimation->speed = 0.0f;
+		}
 	}
+	
 	
 	if (maxy >= MAX_LANDSCAPE_ALTITUDE) 
 	{
@@ -299,11 +307,12 @@ update_status ModuleSceneRace::Update()
 {
 	time_t now = time(NULL);
 	int seconds = difftime(g_timer, now);
-	if (seconds != 0){
-		pos += App->player->GetSpeed() / 1.5f;
-		App->score->UpdateScore(App->player->GetSpeed());
+	if (App->player->state != ModulePlayer::PAUSE) {
+		if (seconds != 0) {
+			pos += App->player->GetSpeed() / 1.5f;
+			App->score->UpdateScore(App->player->GetSpeed());
+		}
 	}
-	
 	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex])
 	{
 		if (biomeIndex != biomes.size() - 1) {
@@ -317,8 +326,8 @@ update_status ModuleSceneRace::Update()
 
 	DrawRoad();
 
-	//App->ui->ShowUI();
-	App->ui->ShowRankings();
+	App->ui->ShowUI();
+	//App->ui->ShowRankings();
 
 	return UPDATE_CONTINUE;
 }
