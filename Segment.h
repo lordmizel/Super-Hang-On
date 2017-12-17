@@ -76,7 +76,10 @@ public:
 			destW = object.sprite.w * scaling;
 		}
 		
-		SDL_Rect hitBox = { (int)destX + object.hitBoxXOffset * scaling, (int)destY + object.sprite.h * scaling - 10,  (int) destW, 10 };
+		SDL_Rect hitBox = { static_cast<int>(destX + object.hitBoxXOffset * scaling), 
+			static_cast<int>(destY + object.sprite.h * scaling - 10),
+			static_cast<int>(destW),
+			10 };
 		//SDL_RenderFillRect(App->renderer->renderer, &hitBox);		//DEBUG
 
 		App->renderer->Blit(tex, (int)destX, (int)destY, &object.sprite, 0.f, false, false, scaling, scaling);
@@ -86,14 +89,14 @@ public:
 		}
 	}
 
-	void DrawRival(rival* racer, SDL_Texture* tex, float posX)
+	void DrawRival(rival* racer, SDL_Texture* tex)
 	{
 		bool behindStuff;
 		float virtualW = W;
 		if (virtualW > SCREEN_WIDTH / 2) {
 			virtualW = SCREEN_WIDTH / 2;
 		}
-		float scaling = virtualW / SEGMENT_LENGTH * 0.65;
+		float scaling = virtualW / SEGMENT_LENGTH * 0.65f;
 		//if (scaling >= 1) scaling = 1;
 
 		float destY = Y - racer->currentAnimation->GetCurrentFrame().h * scaling;
@@ -118,7 +121,10 @@ public:
 			destW = racer->currentAnimation->GetCurrentFrame().w * scaling;
 		}
 
-		SDL_Rect hitBox = { (int)destX + racer->hitBoxXOffset * scaling, (int)destY + racer->currentAnimation->GetCurrentFrame().h * scaling - 10,  (int)destW, 10 };
+		SDL_Rect hitBox = { static_cast<int>(destX + racer->hitBoxXOffset * scaling),
+			static_cast<int>(destY + racer->currentAnimation->GetCurrentFrame().h * scaling - 10),
+			static_cast<int>(destW),
+			10 };
 		SDL_RenderFillRect(App->renderer->renderer, &hitBox);		//DEBUG
 
 		

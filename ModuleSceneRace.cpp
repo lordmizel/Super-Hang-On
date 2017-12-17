@@ -107,10 +107,10 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	rival5->isYellow = true;
 
 	rivals.push_back(rival1);
-	//rivals.push_back(rival2);
-	//rivals.push_back(rival3);
-	//rivals.push_back(rival4);
-	//rivals.push_back(rival5);
+	rivals.push_back(rival2);
+	rivals.push_back(rival3);
+	rivals.push_back(rival4);
+	rivals.push_back(rival5);
 
 	stage = 1;
 	time_ = 60;
@@ -147,6 +147,11 @@ bool ModuleSceneRace::CleanUp()
 	App->textures->Unload(graphics);
 	App->textures->Unload(decoration);
 	App->textures->Unload(drivers);
+
+	// Destroy rivals
+	for (rival* p : rivals) {
+		delete p;
+	}
 	return true;
 }
 
@@ -171,7 +176,7 @@ void ModuleSceneRace::DrawRoad()
 	float x = 0, dx = 0;
 	int startPos = seg_pos / SEGMENT_LENGTH;
 	int camH = (int)(1500 + lines[startPos].y);
-	int maxy = SCREEN_HEIGHT;
+	float maxy = SCREEN_HEIGHT;
 
 	if ((int)landscapePositionX < -SCREEN_WIDTH) {
 		landscapePositionX = landscapePositionX + SCREEN_WIDTH;
@@ -221,7 +226,7 @@ void ModuleSceneRace::DrawRoad()
 
 		current.clip = maxy;
 		if (current.Y >= maxy) continue;
-		maxy = (int)(current.Y);
+		maxy = current.Y;
 
 		Segment previous;
 		if (n == 0)
@@ -245,11 +250,11 @@ void ModuleSceneRace::DrawRoad()
 	//Draw Objects and Rivals
 	for (int n = startPos + 199; n >= startPos; n--) {
 		if (!lines[n%N].atrezzos.empty()) {
-			for (int i = 0; i < lines[n%N].atrezzos.size(); i++) {
+			for (unsigned int i = 0; i < lines[n%N].atrezzos.size(); i++) {
 				lines[n%N].DrawObject(lines[n%N].atrezzos[i].first, decoration, lines[n%N].atrezzos[i].second);
 			}
 		}
-		for (int i = 0; i < rivals.size(); i++) {
+		for (unsigned int i = 0; i < rivals.size(); i++) {
 			if (n%N == (int)rivals[i]->z % N && (int)rivals[i]->z % N > startPos) {
 				if (rivals[i]->isYellow) {
 					if (lines[n%N].curve < 0) {
@@ -275,13 +280,20 @@ void ModuleSceneRace::DrawRoad()
 						rivals[i]->currentAnimation = &greenRivalStraight;
 					}
 				}
-				lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers, 0);
+				lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers);
+			}
+			else if ((int)rivals[i]->z < startPos) {
+				// If the player overtakes this rival, then teleport the rival
+				// forward to make him appear again
+				rivals[i]->z += 200 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (300 - 200)));
+				// Random e [-0.8f, 0.8f]
+				rivals[i]->x = -0.8f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.8f - (-0.8f))));
 			}
 		}
 	}
 
 	
-	for (int i = 0; i < rivals.size(); i++) {
+	for (unsigned int i = 0; i < rivals.size(); i++) {
 		if (App->player->state != ModulePlayer::PAUSE) {
 			rivals[i]->z += rivals[i]->speed;
 			rivals[i]->currentAnimation->speed = 0.2f;
@@ -306,10 +318,10 @@ void ModuleSceneRace::DrawRoad()
 update_status ModuleSceneRace::Update()
 {
 	time_t now = time(NULL);
-	int seconds = difftime(g_timer, now);
+	int seconds = static_cast<int>(difftime(g_timer, now));
 	if (App->player->state != ModulePlayer::PAUSE) {
 		if (seconds != 0) {
-			pos += App->player->GetSpeed() / 1.5f;
+			pos += static_cast<int>(App->player->GetSpeed() / 1.5f);
 			App->score->UpdateScore(App->player->GetSpeed());
 		}
 	}

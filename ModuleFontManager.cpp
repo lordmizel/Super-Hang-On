@@ -125,7 +125,7 @@ void ModuleFontManager::DigitRendering(int numberToRender, int numDigits, int x,
 
 void ModuleFontManager::StringRendering(string stringToRender, int x, int y, Color color) {
 	int digitPositionX = 0;
-	for (int c = 0; c < stringToRender.size(); c++) {
+	for (unsigned int c = 0; c < stringToRender.size(); c++) {
 		App->font_manager->PrintChar(stringToRender.at(c), x + digitPositionX, y, color);
 		digitPositionX += 16;
 	}

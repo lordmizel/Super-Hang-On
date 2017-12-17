@@ -496,11 +496,11 @@ void ModulePlayer::ManageAnimations() {
 		if (current_animation == &leanedRight || current_animation == &leanedRightBraking) {
 			if (braking)
 			{
-				current_animation == &leanedRightBraking;
+				current_animation = &leanedRightBraking;
 			}
 			else
 			{
-				current_animation == &leanedRight;
+				current_animation = &leanedRight;
 			}
 		}
 	}

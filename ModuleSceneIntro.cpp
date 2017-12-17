@@ -46,7 +46,7 @@ ModuleSceneIntro::ModuleSceneIntro(bool active) : Module(active)
 	// Arrow animation
 	arrow.frames.push_back({ 4, 4, 4, 6 });
 	arrow.frames.push_back({ 1, 1, 1, 1 });
-	arrow.speed = 0.1;
+	arrow.speed = 0.1f;
 
 	// HangOn Letters
 	titleLetters[0].x = 733;

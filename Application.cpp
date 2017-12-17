@@ -15,12 +15,19 @@
 #include "ModuleEuropeRace.h"
 #include "ModulePlayer.h"
 
+// For srand()
+#include <cstdlib>
+#include <ctime>
+
 using namespace std;
 
 time_t g_timer = time(NULL);
 
 Application::Application()
 {
+	// Initialize random number generator
+	srand(static_cast <unsigned> (time(0)));
+
 	// Order matters: they will init/start/pre/update/post in this order
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(window = new ModuleWindow());

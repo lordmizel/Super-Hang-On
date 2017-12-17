@@ -100,14 +100,8 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
 	}
 
-	if (rect.h == 72) {
-		rect.w *= scaledW;
-		rect.h *= scaledH;
-	}
-	else {
-		rect.w *= scaledW;
-		rect.h *= scaledH;
-	}
+	rect.w = static_cast<int>(rect.w * scaledW);
+	rect.h = static_cast<int>(rect.h * scaledH);
 
 	if(SDL_RenderCopy(renderer, texture, section, &rect) != 0)
 	{

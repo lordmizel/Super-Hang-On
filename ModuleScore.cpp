@@ -77,7 +77,7 @@ bool ModuleScore::CleanUp()
 void ModuleScore::ValidateScoreEntry() {
 	bool validEntry = false;
 	//Recorrer lista de puntuaciones y ver si supera las puntuaciones guardadas
-	for (int i = 0; i < scoreEntries.size(); i++) {
+	for (unsigned int i = 0; i < scoreEntries.size(); i++) {
 		if (currentScore.score > scoreEntries[i].score) {
 			entryInScoreTable = i;
 			validEntry = true;

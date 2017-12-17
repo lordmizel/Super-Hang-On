@@ -97,7 +97,7 @@ update_status ModuleSceneMusic::Update()
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song3.frames[0].w, SCREEN_HEIGHT / 8 * 4, &(song3.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - song4.frames[0].w, SCREEN_HEIGHT / 8 * 5, &(song4.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
-	App->font_manager->DigitRendering(timer_.GetRemainingTime(), 2, SCREEN_WIDTH / 2 - 16, SCREEN_HEIGHT / 7 * 5, Color{ 255,255,255,255 }, false, true);
+	App->font_manager->DigitRendering(static_cast<int>(timer_.GetRemainingTime()), 2, SCREEN_WIDTH / 2 - 16, SCREEN_HEIGHT / 7 * 5, Color{ 255,255,255,255 }, false, true);
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 

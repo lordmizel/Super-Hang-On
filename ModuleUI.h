@@ -49,8 +49,8 @@ private:
 	SDL_Rect secondsMark;
 	
 	bool nameEntered = false;
-	int characterIndex = 0;
-	int nameCharacterIndex = 0;
+	unsigned int characterIndex = 0;
+	unsigned int nameCharacterIndex = 0;
 };
 
 #endif

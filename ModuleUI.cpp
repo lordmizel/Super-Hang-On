@@ -181,7 +181,7 @@ void ModuleUI::NameEntry() {
 	int positionX = 0;
 	string nameEntryString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.</";
 
-	for (int i = 0; i < nameEntryString.size(); i++) {
+	for (unsigned int i = 0; i < nameEntryString.size(); i++) {
 		if (i == characterIndex) {
 			color = { 255, 0, 0, 255 };
 		}
