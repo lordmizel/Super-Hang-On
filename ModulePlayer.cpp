@@ -173,12 +173,19 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
-	state = RACING;
+	state = BEFORE_RACE;
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
 	crashes = App->textures->Load("falls.png", 224, 64, 32);
 
 	position.x = SCREEN_WIDTH / 2 - 16 * 2;
 	position.y = SCREEN_HEIGHT - 73 * 2;
+
+	timeWaitingAtStart.SetTime(4);
+	timeWaitingAtStart.Start();
+
+	timeLeftInRace.SetTime(5);
+
+	ResetPlayer();
 
 	return true;
 }
@@ -221,10 +228,10 @@ void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision, 
 
 update_status ModulePlayer::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)	///////
-	{
-		App->score->ValidateScoreEntry();
-	}
+	//if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)	///////
+	//{
+	//	
+	//}
 
 	if (state == RACING || state == CRASHING || state == OUT_OF_CONTROL) 
 	{
@@ -240,7 +247,17 @@ update_status ModulePlayer::Update()
 
 	switch (state) {
 	case(BEFORE_RACE):
-		App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - forward.frames[0].w + 50, SCREEN_HEIGHT - forward.frames[0].h * 2, &forward.frames[0], 0.0f, false, false, 2, 2);
+		current_animation = &forward;
+		previousAnimationSpeed = current_animation->speed;
+		current_animation->speed = 0.0f;
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		
+		timeWaitingAtStart.Update();
+		if (timeWaitingAtStart.IsExpired()) {
+			current_animation->speed = previousAnimationSpeed;
+			timeLeftInRace.Start();
+			state = RACING;
+		}
 		break;
 
 	case(RACING):
@@ -365,9 +382,23 @@ update_status ModulePlayer::Update()
 		break;
 
 	case(GAME_OVER):
+		
+		gameOverTimer.Update();
+		if (gameOverTimer.IsExpired()) {
+			App->score->ValidateScoreEntry();
+			state = SCORE_SCREEN;
+		}
+
+		if (previousState == CRASHING) {
+			App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w + 50, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		}
+		else {
+			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		}
 		break;
 
 	case(SCORE_SCREEN):
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		break;
 
 	case(PAUSE):
@@ -375,6 +406,8 @@ update_status ModulePlayer::Update()
 		{
 			state = previousState;
 			current_animation->speed = previousAnimationSpeed;
+			timeOutOfControl.Resume();
+			timeLeftInRace.Resume();
 		}
 
 		if (previousState == CRASHING) {
@@ -384,10 +417,19 @@ update_status ModulePlayer::Update()
 			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		}
 		
-
 		break;
 	}
 	
+	if (state == RACING || state == CRASHING || state == RECOVERING || state == OUT_OF_CONTROL) {
+		timeLeftInRace.Update();
+		if (timeLeftInRace.IsExpired()) {
+			gameOverTimer.SetTime(5);
+			gameOverTimer.Start();
+			current_animation->speed = 0.0f;
+			state = GAME_OVER;
+		}
+	}
+
 	collider = { SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, SCREEN_HEIGHT - 50, current_animation->GetCurrentFrame().w * 2, 50 };
 	return UPDATE_CONTINUE;
 }
@@ -563,5 +605,10 @@ void ModulePlayer::Pause() {
 	previousAnimationSpeed = current_animation->speed;
 	current_animation->speed = 0.0f;
 	previousState = state;
+	timeOutOfControl.Pause();
 	state = PAUSE;
+}
+
+void ModulePlayer::ResetPlayer() {
+	speed = 0;
 }

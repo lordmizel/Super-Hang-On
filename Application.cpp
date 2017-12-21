@@ -38,13 +38,13 @@ Application::Application()
 	modules.push_back(font_manager = new ModuleFontManager());
 
 	// Game Modules
-	modules.push_back(ui = new ModuleUI());
-	modules.push_back(score = new ModuleScore());
 	modules.push_back(scene_intro = new ModuleSceneIntro(false));
 	modules.push_back(scene_map = new ModuleSceneMap(false));
 	modules.push_back(scene_music = new ModuleSceneMusic(false));
 	modules.push_back(europe_race = new ModuleEuropeRace(false));
 	modules.push_back(player = new ModulePlayer(false));
+	modules.push_back(ui = new ModuleUI(false));
+	modules.push_back(score = new ModuleScore());
 	
 
 	// Modules to draw on top of game logic
@@ -73,7 +73,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	fade->FadeToBlack(scene_map, nullptr, 3.0f);
+	fade->FadeToBlack(europe_race, nullptr, 3.0f);
 
 	return ret;
 }

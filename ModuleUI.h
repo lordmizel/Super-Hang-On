@@ -36,6 +36,7 @@ private:
 	SDL_Rect europeText;
 
 	SDL_Rect pauseTag;
+	SDL_Rect gameOverTag;
 
 	//Score screen
 	SDL_Rect initialEntryCountdown;

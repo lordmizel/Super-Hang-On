@@ -7,6 +7,9 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleSceneMap.h"
 #include "ModuleFontManager.h"
+#include "ModulePlayer.h"
+#include "ModuleEuropeRace.h"
+#include "ModuleUI.h"
 
 ModuleSceneMap::ModuleSceneMap(bool active) : Module(active)
 {
@@ -60,6 +63,10 @@ ModuleSceneMap::~ModuleSceneMap()
 bool ModuleSceneMap::Start()
 {
 	LOG("Loading race intro");
+
+	App->player->Disable();
+	App->ui->Disable();
+	App->europe_race->Disable();
 
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
 

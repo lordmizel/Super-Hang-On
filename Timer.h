@@ -28,6 +28,7 @@ public:
 	}
 
 	void Resume() {
+		last_chrono_time = steady_clock::now();
 		paused = false;
 	}
 

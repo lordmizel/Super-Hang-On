@@ -5,6 +5,7 @@
 #include "ModuleScore.h"
 #include "ModuleUI.h"
 #include "ModulePlayer.h"
+#include "ModuleFadeToBlack.h"
 #include "ModuleInput.h"
 #include <string>
 
@@ -43,6 +44,7 @@ ModuleUI::ModuleUI(bool active) : Module(active)
 	secondsMark = { 521, 289, 8, 8 };
 
 	pauseTag = { 5, 929, 52, 8 };
+	gameOverTag = { 242, 915, 122, 15 };
 }
 
 ModuleUI::~ModuleUI()
@@ -67,10 +69,15 @@ bool ModuleUI::CleanUp() {
 
 void ModuleUI::ShowUI() {
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 - 16, SCREEN_HEIGHT / 17 - 4, &topTag, 0.0f, false, false, 2, 2);
-	App->font_manager->DigitRendering(App->score->GetTopScore(), 8, SCREEN_WIDTH / 12 * 2, SCREEN_HEIGHT / 17, Color(255, 0, 0, 255));
+	if (App->score->GetTopScore() > App->score->GetScore()) {
+		App->font_manager->DigitRendering(App->score->GetTopScore(), 8, SCREEN_WIDTH / 12 * 2, SCREEN_HEIGHT / 17, Color(255, 0, 0, 255));
+	}
+	else {
+		App->font_manager->DigitRendering(App->score->GetScore(), 8, SCREEN_WIDTH / 12 * 2, SCREEN_HEIGHT / 17, Color(255, 0, 0, 255));
+	}
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - timeTag.w, SCREEN_HEIGHT / 17 - 4, &timeTag, 0.0f, false, false, 2, 2);
-	//TODO: Print time
+	App->font_manager->DigitRendering((int)App->player->timeLeftInRace.GetRemainingTime(), 2, SCREEN_WIDTH / 2 - 17, SCREEN_HEIGHT / 17 + 26, Color{ 255,255,255,255 }, false, true);
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 7, SCREEN_HEIGHT / 17 - 4, &scoreTag, 0.0f, false, false, 2, 2);
 	App->font_manager->DigitRendering(App->score->GetScore(), 8, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17, Color(0, 255, 0, 255));
@@ -92,6 +99,10 @@ void ModuleUI::ShowUI() {
 
 	if (App->player->state == ModulePlayer::PAUSE) {
 		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pauseTag.w, SCREEN_HEIGHT / 2 - pauseTag.h, &pauseTag, 0.0f, false, false, 2, 2);
+	}
+
+	if (App->player->state == ModulePlayer::GAME_OVER) {
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - gameOverTag.w, SCREEN_HEIGHT / 2 - gameOverTag.h, &gameOverTag, 0.0f, false, false, 2, 2);
 	}
 }
 
@@ -160,6 +171,10 @@ void ModuleUI::ShowRankings() {
 			App->font_manager->DigitRendering(App->score->scoreEntries[rankNumber].timeDec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 96 - 32, posY, entryColor, true);
 
 			rankNumber++;
+
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false) {
+				App->fade->FadeToBlack((Module*)App->scene_map, this);
+			}
 		}
 		Ymultiplier++;
 	}
@@ -173,6 +188,8 @@ void ModuleUI::ShowRankings() {
 	if (App->score->entryInScoreTable != NULL && nameEntered == false) {
 		NameEntry();
 	}
+
+	
 }
 
 void ModuleUI::NameEntry() {

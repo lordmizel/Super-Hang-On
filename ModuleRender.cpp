@@ -152,7 +152,3 @@ bool ModuleRender::DrawPolygon(Color c, short x1, short y1, short w1, short x2, 
 
 	return ret;
 }
-
-//bool ModuleRender::DrawRectangle(Color c, SDL_Rect rect) {
-//	return ret;
-//}

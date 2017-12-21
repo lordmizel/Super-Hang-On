@@ -51,10 +51,15 @@ public:
 
 	SDL_Rect collider;
 
+	Timer timeWaitingAtStart;
+	Timer timeLeftInRace;
+
 private:
 
 	void ManageAnimations();
 	void ManageSpeed();
+
+	void ResetPlayer();
 
 	SDL_Texture* graphics = nullptr;
 	SDL_Texture* crashes = nullptr;
@@ -94,6 +99,7 @@ private:
 
 	bool deviateRight;
 	Timer timeOutOfControl;
+	Timer gameOverTimer;
 
 	//PAUSE PARAMETERS
 	player_state previousState;

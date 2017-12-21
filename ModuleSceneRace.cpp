@@ -46,8 +46,20 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	tallTree.sprite = { 287, 363, 40, 128 };
 	deadTree.sprite = { 62, 419, 45, 70 };
 
+	semaphoreAnimation.frames.push_back({ 340, 422, 30, 72 });
+	semaphoreAnimation.frames.push_back({ 371, 422, 30, 72 });
+	semaphoreAnimation.frames.push_back({ 402, 422, 30, 72 });
+	semaphoreAnimation.frames.push_back({ 433, 422, 30, 72 });
+	semaphoreAnimation.speed = 0.007;
+	semaphoreAnimation.loop = false;
+	semaphore.sprite = { 433, 422, 30, 72 };
+
 	startSign.sprite = { 333, 2, 314, 103 };
 	startSign.hitBoxWidth = 50;
+
+	rightLegOfSign.sprite = { 0, 0, 0, 0 };
+	rightLegOfSign.hitBoxXOffset = 264;
+	rightLegOfSign.hitBoxWidth = 50;
 
 	greenRivalStraight.frames.push_back({ 91, 440, 32, 72 });
 	greenRivalStraight.frames.push_back({ 129, 440, 32, 72 });
@@ -73,52 +85,16 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	yellowRivalTurnsRight.frames.push_back({ 295, 836, 45, 72 });
 	yellowRivalTurnsRight.speed = 0.2f;
 
-	rival* rival1 = new rival();
-	rival1->currentAnimation = &greenRivalTurnsLeft;
-	rival1->z = 46;
-	rival1->speed = 1;
-	rival1->x = -0.8f;
-	rival1->isYellow = true;
-
-	rival* rival2 = new rival();
-	rival2->currentAnimation = &greenRivalStraight;
-	rival2->z = 48;
-	rival2->speed = 1;
-	rival2->x = -0.4f;
-
-	rival* rival3 = new rival();
-	rival3->currentAnimation = &greenRivalStraight;
-	rival3->z = 50;
-	rival3->speed = 1;
-	rival3->x = 0;
-	rival3->isYellow = true;
-
-	rival* rival4 = new rival();
-	rival4->currentAnimation = &greenRivalStraight;
-	rival4->z = 48;
-	rival4->speed = 1;
-	rival4->x = 0.4f;
-
-	rival* rival5 = new rival();
-	rival5->currentAnimation = &greenRivalStraight;
-	rival5->z = 46;
-	rival5->speed = 1;
-	rival5->x = 0.8f;
-	rival5->isYellow = true;
-
-	rivals.push_back(rival1);
-	rivals.push_back(rival2);
-	rivals.push_back(rival3);
-	rivals.push_back(rival4);
-	rivals.push_back(rival5);
-
-	stage = 1;
-	time_ = 60;
+	
 }
 
 
 ModuleSceneRace::~ModuleSceneRace()
-{}
+{
+	for (rival* p : rivals) {
+		delete p;
+	}
+}
 
 
 // Load assets
@@ -130,28 +106,111 @@ bool ModuleSceneRace::Start()
 	decoration = App->textures->Load("stuff.png", 255, 0, 255);
 	drivers = App->textures->Load("bikes.png", 255, 0, 204);
 
+	biomeIndex = 0;
 	currentBiome = biomes[biomeIndex];
 
 	landscapePositionY = (float)MAX_LANDSCAPE_ALTITUDE;
 
 	App->player->Enable();
+	App->ui->Enable();
+
+	App->score->ResetScore();
+
+	semaphoreAnimation.Reset();
+
+	/*rival* */rival1 = new rival();
+	rival1->currentAnimation = &greenRivalTurnsLeft;
+	rival1->z = 11;
+	rival1->speed = 0.5;
+	rival1->x = -0.9f;
+	rival1->isYellow = true;
+
+	/*rival* */rival2 = new rival();
+	rival2->currentAnimation = &greenRivalStraight;
+	rival2->z = 14;
+	rival2->speed = 1.2;
+	rival2->x = -0.5f;
+
+	/*rival* */rival3 = new rival();
+	rival3->currentAnimation = &greenRivalStraight;
+	rival3->z = 17;
+	rival3->speed = 1.5;
+	rival3->x = -0.1;
+	rival3->isYellow = true;
+
+	/*rival* */rival4 = new rival();
+	rival4->currentAnimation = &greenRivalStraight;
+	rival4->z = 14;
+	rival4->speed = 1;
+	rival4->x = 0.3f;
+
+	/*rival* */rival5 = new rival();
+	rival5->currentAnimation = &greenRivalStraight;
+	rival5->z = 11;
+	rival5->speed = 0.8;
+	rival5->x = 0.7f;
+	rival5->isYellow = true;
+
+	rivals.push_back(rival1);
+	rivals.push_back(rival2);
+	rivals.push_back(rival3);
+	rivals.push_back(rival4);
+	rivals.push_back(rival5);
+
+	ResetRace();
 
 	return true;
+}
+
+
+update_status ModuleSceneRace::Update()
+{
+	time_t now = time(NULL);
+	int seconds = static_cast<int>(difftime(g_timer, now));
+	if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) {
+		if (seconds != 0) {
+			pos += static_cast<int>(App->player->GetSpeed() / 1.5f);
+			App->score->UpdateScore(App->player->GetSpeed());
+		}
+	}
+	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex])
+	{
+		if (biomeIndex != biomes.size() - 1) {
+			biomeIndex++;
+		}
+	}
+
+	App->renderer->DrawQuad(skyBox, currentBiome.skyColor.r, currentBiome.skyColor.g, currentBiome.skyColor.b, 255, false);
+
+	BiomeChange();
+
+	DrawRoad();
+
+	if (App->player->state != ModulePlayer::SCORE_SCREEN) {
+		App->ui->ShowUI();
+	}
+	else {
+		App->ui->ShowRankings();
+	}
+
+	if (App->player->state == BEFORE_RACE) {
+		App->renderer->Blit(decoration, 98, SCREEN_HEIGHT - semaphoreAnimation.GetCurrentFrame().h * 4 - 21, &semaphoreAnimation.GetCurrentFrame(), 0.0f, false, false, 2.266f, 2.266f);
+	}
+
+	return UPDATE_CONTINUE;
 }
 
 
 // UnLoad assets
 bool ModuleSceneRace::CleanUp()
 {
-	LOG("Unloading space scene");
+	LOG("Unloading race scene");
 	App->textures->Unload(graphics);
 	App->textures->Unload(decoration);
 	App->textures->Unload(drivers);
 
 	// Destroy rivals
-	for (rival* p : rivals) {
-		delete p;
-	}
+	
 	return true;
 }
 
@@ -211,7 +270,7 @@ void ModuleSceneRace::DrawRoad()
 		x += dx;
 		dx += current.curve;
 
-		if (n == startPos && App->player->state != ModulePlayer::PAUSE) {
+		if (n == startPos && App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) {
 			if (current.curve > 0){
 				App->player->AlterXPosition(-App->player->GetSpeed() / 6);
 				landscapePositionX -= App->player->GetSpeed() / (float)landscapeParallaxFactor;
@@ -292,9 +351,8 @@ void ModuleSceneRace::DrawRoad()
 		}
 	}
 
-	
 	for (unsigned int i = 0; i < rivals.size(); i++) {
-		if (App->player->state != ModulePlayer::PAUSE) {
+		if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::BEFORE_RACE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) {
 			rivals[i]->z += rivals[i]->speed;
 			rivals[i]->currentAnimation->speed = 0.2f;
 		}
@@ -302,7 +360,6 @@ void ModuleSceneRace::DrawRoad()
 			rivals[i]->currentAnimation->speed = 0.0f;
 		}
 	}
-	
 	
 	if (maxy >= MAX_LANDSCAPE_ALTITUDE) 
 	{
@@ -313,37 +370,6 @@ void ModuleSceneRace::DrawRoad()
 		landscapePositionY = MAX_LANDSCAPE_ALTITUDE;
 	}
 }
-
-
-update_status ModuleSceneRace::Update()
-{
-	time_t now = time(NULL);
-	int seconds = static_cast<int>(difftime(g_timer, now));
-	if (App->player->state != ModulePlayer::PAUSE) {
-		if (seconds != 0) {
-			pos += static_cast<int>(App->player->GetSpeed() / 1.5f);
-			App->score->UpdateScore(App->player->GetSpeed());
-		}
-	}
-	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex])
-	{
-		if (biomeIndex != biomes.size() - 1) {
-			biomeIndex++;
-		}
-	}
-
-	App->renderer->DrawQuad(skyBox, currentBiome.skyColor.r, currentBiome.skyColor.g, currentBiome.skyColor.b, 255, false);
-
-	BiomeChange();
-
-	DrawRoad();
-
-	App->ui->ShowUI();
-	//App->ui->ShowRankings();
-
-	return UPDATE_CONTINUE;
-}
-
 
 void ModuleSceneRace::BiomeChange() {
 	//Adapt light grass
@@ -434,6 +460,14 @@ void ModuleSceneRace::ChangeAltitude(float &altitudeVariation, float targetVaria
 	}
 }
 
+
+void ModuleSceneRace::ResetRace() {
+	rival5->z = 11;
+	rival5->x = 0.7f;
+	LOG("HERE I AM")
+
+	pos = -20;
+}
 
 ModuleSceneRace::biome::biome()
 {

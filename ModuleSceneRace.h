@@ -5,7 +5,6 @@
 #include "Animation.h"
 
 class Segment;
-//class Rival;
 
 struct atrezzo {
 	SDL_Rect sprite;
@@ -17,7 +16,7 @@ struct rival {
 	Animation* currentAnimation;
 	bool isYellow = false;
 	float z = 0;
-	int speed = 1000;
+	float speed;
 	float x = 0;
 	int hitBoxXOffset = 0;
 	int hitBoxWidth = 0;
@@ -91,10 +90,22 @@ protected:
 	atrezzo deadTree;
 
 	atrezzo startSign;
+	atrezzo rightLegOfSign;
+
+	Animation semaphoreAnimation;
+	atrezzo semaphore;
+	
+	rival* rival1;
+	rival* rival2;
+	rival* rival3;
+	rival* rival4;
+	rival* rival5;
 
 	vector<rival*> rivals;
 
 private:
+	void ResetRace();
+
 	SDL_Texture* graphics = nullptr;
 	SDL_Texture* decoration = nullptr;
 	SDL_Texture* drivers = nullptr;

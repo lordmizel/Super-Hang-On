@@ -29,7 +29,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	int GetTopScore() { return topScore; }
+	int GetTopScore() { return scoreEntries[0].score; }
 	int GetScore() { return currentScore.score; }
 	int GetStage() { return currentScore.stage; }
 
@@ -53,8 +53,6 @@ private:
 	std::string fileName = "scores.txt";
 	std::ifstream readFile;
 	std::ofstream writeFile;
-
-	
 };
 
 #endif

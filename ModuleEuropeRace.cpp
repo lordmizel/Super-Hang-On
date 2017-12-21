@@ -78,7 +78,9 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 			ChangeAltitude(altitudeVariation, -50.0f, i, 1100, 1500);
 		}*/
 
-		if (i == 50) { line.atrezzos.push_back(make_pair(startSign, -3)); }
+		if (i == 30) { line.atrezzos.push_back(make_pair(startSign, -3)); }
+		if (i == 30) { line.atrezzos.push_back(make_pair(rightLegOfSign, -3)); }
+		if (i == 29) { line.atrezzos.push_back(make_pair(semaphore, -2)); }
 		if (i == 400) { line.atrezzos.push_back(make_pair(discoNora, 1)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampLeft, -2)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampRight, 2)); }
@@ -89,7 +91,7 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 	
 
 	N = lines.size();
-	pos = 0;
+	//pos = 0;
 }
 
 ModuleEuropeRace::~ModuleEuropeRace()

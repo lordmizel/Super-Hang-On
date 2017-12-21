@@ -11,7 +11,6 @@ using namespace std;
 
 ModuleScore::ModuleScore(bool active) : Module(active)
 {
-	
 }
 
 ModuleScore::~ModuleScore()
@@ -21,6 +20,9 @@ ModuleScore::~ModuleScore()
 bool ModuleScore::Start()
 {
 	LOG("Loading score module");
+
+	ResetScore();
+
 	string inputString;
 
 	readFile.open(fileName);
@@ -46,9 +48,6 @@ bool ModuleScore::Start()
 
 	readFile.close();
 
-	//TODO: This should happen when race starts, not when this module is initialized
-	ResetScore();
-
 	//TODO: DELETE THIS, ONLY FOR DEBUG
 	currentScore.score = 1400000;
 	currentScore.stage = 2;
@@ -63,14 +62,11 @@ bool ModuleScore::Start()
 
 update_status ModuleScore::Update()
 {
-	//LOG("%d", currentScore.score)
 	return UPDATE_CONTINUE;
 }
 
 bool ModuleScore::CleanUp()
 {
-	
-
 	return true;
 }
 

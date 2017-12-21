@@ -80,7 +80,7 @@ public:
 			static_cast<int>(destY + object.sprite.h * scaling - 10),
 			static_cast<int>(destW),
 			10 };
-		//SDL_RenderFillRect(App->renderer->renderer, &hitBox);		//DEBUG
+		SDL_RenderFillRect(App->renderer->renderer, &hitBox);		//DEBUG
 
 		App->renderer->Blit(tex, (int)destX, (int)destY, &object.sprite, 0.f, false, false, scaling, scaling);
 
@@ -125,16 +125,10 @@ public:
 			static_cast<int>(destY + racer->currentAnimation->GetCurrentFrame().h * scaling - 10),
 			static_cast<int>(destW),
 			10 };
-		SDL_RenderFillRect(App->renderer->renderer, &hitBox);		//DEBUG
 
 		
-		/*if (destX < 0 || destY > SCREEN_HEIGHT) {
-			return;
-		}
-		if (racer->currentAnimation->GetCurrentFrame().h< 0) {
-			racer->currentAnimation->GetCurrentFrame().h = 0;
-		}*/
-		App->renderer->Blit(tex, (int)destX, (int)destY, &racer->currentAnimation->GetCurrentFrame(), 0.f, false, false, scaling, scaling);
+		if(clip > destY)
+			App->renderer->Blit(tex, (int)destX, (int)destY, &racer->currentAnimation->GetCurrentFrame(), 0.f, false, false, scaling, scaling);
 
 		if (scaling >= 0.65) {
 			App->player->DetectCollision(hitBox, ModulePlayer::collision_types::RIVAL, destX + racer->currentAnimation->GetCurrentFrame().w * scaling);
