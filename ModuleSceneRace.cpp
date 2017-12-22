@@ -56,6 +56,10 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 
 	startSign.sprite = { 333, 2, 314, 103 };
 	startSign.hitBoxWidth = 50;
+	checkSign.sprite = { 333, 108, 314, 103 };
+	checkSign.hitBoxWidth = 50;
+	goalSign.sprite = { 333, 214, 314, 103 };
+	goalSign.hitBoxWidth = 50;
 
 	rightLegOfSign.sprite = { 0, 0, 0, 0 };
 	rightLegOfSign.hitBoxXOffset = 264;
@@ -85,7 +89,9 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	yellowRivalTurnsRight.frames.push_back({ 295, 836, 45, 72 });
 	yellowRivalTurnsRight.speed = 0.2f;
 
-	
+	extendedPlayTag.frames.push_back({ 242, 939, 104, 8 });
+	extendedPlayTag.frames.push_back({ 0, 0, 0, 0 });
+	extendedPlayTag.speed = 0.1f;
 }
 
 
@@ -107,6 +113,7 @@ bool ModuleSceneRace::Start()
 	drivers = App->textures->Load("bikes.png", 255, 0, 204);
 
 	biomeIndex = 0;
+
 	currentBiome = biomes[biomeIndex];
 
 	landscapePositionY = (float)MAX_LANDSCAPE_ALTITUDE;
@@ -118,33 +125,33 @@ bool ModuleSceneRace::Start()
 
 	semaphoreAnimation.Reset();
 
-	/*rival* */rival1 = new rival();
+	rival1 = new rival();
 	rival1->currentAnimation = &greenRivalTurnsLeft;
 	rival1->z = 11;
 	rival1->speed = 0.5;
 	rival1->x = -0.9f;
 	rival1->isYellow = true;
 
-	/*rival* */rival2 = new rival();
+	rival2 = new rival();
 	rival2->currentAnimation = &greenRivalStraight;
 	rival2->z = 14;
 	rival2->speed = 1.2;
 	rival2->x = -0.5f;
 
-	/*rival* */rival3 = new rival();
+	rival3 = new rival();
 	rival3->currentAnimation = &greenRivalStraight;
 	rival3->z = 17;
 	rival3->speed = 1.5;
 	rival3->x = -0.1;
 	rival3->isYellow = true;
 
-	/*rival* */rival4 = new rival();
+	rival4 = new rival();
 	rival4->currentAnimation = &greenRivalStraight;
 	rival4->z = 14;
 	rival4->speed = 1;
 	rival4->x = 0.3f;
 
-	/*rival* */rival5 = new rival();
+	rival5 = new rival();
 	rival5->currentAnimation = &greenRivalStraight;
 	rival5->z = 11;
 	rival5->speed = 0.8;
@@ -196,6 +203,14 @@ update_status ModuleSceneRace::Update()
 	if (App->player->state == BEFORE_RACE) {
 		App->renderer->Blit(decoration, 98, SCREEN_HEIGHT - semaphoreAnimation.GetCurrentFrame().h * 4 - 21, &semaphoreAnimation.GetCurrentFrame(), 0.0f, false, false, 2.266f, 2.266f);
 	}
+
+	if (showExtendedPlay) {
+		App->renderer->Blit(drivers, SCREEN_WIDTH / 2 - extendedPlayTag.frames[0].w, SCREEN_HEIGHT / 2 - extendedPlayTag.frames[0].h, &extendedPlayTag.GetCurrentFrame(), 0.0f, false, false, 2, 2);
+		extendedPlayTime.Update();
+		LOG("EXTENDED PLAY")
+	}
+
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -351,6 +366,19 @@ void ModuleSceneRace::DrawRoad()
 		}
 	}
 
+	if (checkPointIndex != checkPoints.size()) {
+		if (startPos > checkPoints[checkPointIndex]) {
+			showExtendedPlay = true;
+			App->player->timeLeftInRace.AddTime(30);
+			extendedPlayTime.SetTime(2);
+			extendedPlayTime.Start();
+			checkPointIndex++;
+		}
+	}
+	if (extendedPlayTime.IsExpired()) {
+		showExtendedPlay = false;
+	}
+
 	for (unsigned int i = 0; i < rivals.size(); i++) {
 		if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::BEFORE_RACE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) {
 			rivals[i]->z += rivals[i]->speed;
@@ -467,6 +495,9 @@ void ModuleSceneRace::ResetRace() {
 	LOG("HERE I AM")
 
 	pos = -20;
+
+	checkPointIndex = 0;
+	biomeIndex = 0;
 }
 
 ModuleSceneRace::biome::biome()

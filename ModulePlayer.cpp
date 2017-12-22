@@ -183,7 +183,7 @@ bool ModulePlayer::Start()
 	timeWaitingAtStart.SetTime(4);
 	timeWaitingAtStart.Start();
 
-	timeLeftInRace.SetTime(5);
+	timeLeftInRace.SetTime(30);
 
 	ResetPlayer();
 
@@ -248,13 +248,11 @@ update_status ModulePlayer::Update()
 	switch (state) {
 	case(BEFORE_RACE):
 		current_animation = &forward;
-		previousAnimationSpeed = current_animation->speed;
-		current_animation->speed = 0.0f;
-		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		
+		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - forward.frames[0].w, position.y, &forward.frames[0], 0.0f, false, false, 2, 2);
 		
 		timeWaitingAtStart.Update();
 		if (timeWaitingAtStart.IsExpired()) {
-			current_animation->speed = previousAnimationSpeed;
 			timeLeftInRace.Start();
 			state = RACING;
 		}
@@ -402,7 +400,7 @@ update_status ModulePlayer::Update()
 		break;
 
 	case(PAUSE):
-		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)	///////
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 		{
 			state = previousState;
 			current_animation->speed = previousAnimationSpeed;

@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Animation.h"
+#include "Timer.h"
 
 class Segment;
 
@@ -66,6 +67,9 @@ protected:
 	biome currentBiome;
 	vector<int> biomeBorders;
 
+	vector<int> checkPoints;
+	int checkPointIndex;
+
 	atrezzo arrowLeft;
 	atrezzo arrowRight;
 	atrezzo bridalStone;
@@ -90,6 +94,8 @@ protected:
 	atrezzo deadTree;
 
 	atrezzo startSign;
+	atrezzo checkSign;
+	atrezzo goalSign;
 	atrezzo rightLegOfSign;
 
 	Animation semaphoreAnimation;
@@ -126,8 +132,6 @@ private:
 	int foregroundParallaxFactor = 200;
 
 	void DrawRoad();
-	int stage;
-	float time_;
 
 	SDL_Rect landscapeParis;
 
@@ -138,7 +142,9 @@ private:
 	Animation greenRivalTurnsRight;
 	Animation yellowRivalTurnsRight;
 
-	//Timer timeLeft;
+	Animation extendedPlayTag;
+	bool showExtendedPlay;
+	Timer extendedPlayTime;
 };
 
 #endif

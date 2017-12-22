@@ -48,15 +48,13 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 	
 	biomeBorders.push_back(1000);
 	biomeBorders.push_back(2000);
-	/*biomeBorders.push_back(3000);
-	biomeBorders.push_back(4000);
-	biomeBorders.push_back(5000);*/
 	biomeBorders.push_back(6000);
-	biomeBorders.push_back(NULL);
 	
 	currentBiome = biomes[biomeIndex];
 
-	for (int i = 0; i <10000; i++)
+	checkPoints.push_back(1000);
+
+	for (int i = 0; i <6000; i++)
 	{
 		Segment line;
 		line.z = (float)i * SEGMENT_LENGTH;
@@ -84,6 +82,13 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		if (i == 400) { line.atrezzos.push_back(make_pair(discoNora, 1)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampLeft, -2)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampRight, 2)); }
+
+		for (vector<int>::iterator it = checkPoints.begin(); it != checkPoints.end(); ++it) {
+			if (i == *it) {
+				line.atrezzos.push_back(make_pair(checkSign, -3));
+				line.atrezzos.push_back(make_pair(rightLegOfSign, -3));
+			}
+		}
 
 		lines.push_back(line);
 	}
