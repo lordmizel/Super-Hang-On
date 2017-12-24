@@ -18,6 +18,9 @@ public:
 		RECOVERING,
 		OUT_OF_CONTROL,
 		GAME_OVER,
+		PAST_GOAL,
+		GOING_TO_END,
+		END_SCENE,
 		SCORE_SCREEN,
 		PAUSE
 	};
@@ -40,6 +43,7 @@ public:
 	inline int GetAbsoluteX() const { return absoluteX; }
 
 	void AlterXPosition(int alt) { positionX += alt; }
+	void CenterMaxX(float max);
 
 	void DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x = 0.0f);
 	void Pause();
@@ -53,6 +57,7 @@ public:
 
 	Timer timeWaitingAtStart;
 	Timer timeLeftInRace;
+	Timer timePastGoal;
 
 private:
 
@@ -89,6 +94,7 @@ private:
 	int positionX = 0;
 	int movementX = 50;
 	int absoluteX = 0;
+	int maxXPosition;
 
 	int maxSpeedAuto = 90;
 	int maxSpeedRunning = 290;

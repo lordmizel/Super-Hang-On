@@ -65,6 +65,11 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	rightLegOfSign.hitBoxXOffset = 264;
 	rightLegOfSign.hitBoxWidth = 50;
 
+	crowd = { 340, 322, 268, 93 };
+	victoryPose = { 612, 409, 36, 87 };
+	crowd.small = true;
+	victoryPose.small = true;
+
 	greenRivalStraight.frames.push_back({ 91, 440, 32, 72 });
 	greenRivalStraight.frames.push_back({ 129, 440, 32, 72 });
 	greenRivalStraight.speed = 0.2f;
@@ -88,6 +93,10 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	yellowRivalTurnsRight.frames.push_back({ 244, 836, 45, 72 });
 	yellowRivalTurnsRight.frames.push_back({ 295, 836, 45, 72 });
 	yellowRivalTurnsRight.speed = 0.2f;
+
+	falsePlayer.frames.push_back({ 91, 280, 32, 72 });
+	falsePlayer.frames.push_back({ 129, 280, 32, 72 });
+	falsePlayer.speed = 0.2f;
 
 	extendedPlayTag.frames.push_back({ 242, 939, 104, 8 });
 	extendedPlayTag.frames.push_back({ 0, 0, 0, 0 });
@@ -158,11 +167,18 @@ bool ModuleSceneRace::Start()
 	rival5->x = 0.7f;
 	rival5->isYellow = true;
 
+	endPlayer = new rival();
+	endPlayer->currentAnimation = &falsePlayer;
+	endPlayer->z = 0;
+	endPlayer->speed = 0;
+	endPlayer->x = -0.1;
+
 	rivals.push_back(rival1);
 	rivals.push_back(rival2);
 	rivals.push_back(rival3);
 	rivals.push_back(rival4);
 	rivals.push_back(rival5);
+	rivals.push_back(endPlayer);
 
 	ResetRace();
 
@@ -174,15 +190,18 @@ update_status ModuleSceneRace::Update()
 {
 	time_t now = time(NULL);
 	int seconds = static_cast<int>(difftime(g_timer, now));
-	if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) {
-		if (seconds != 0) {
+	if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) 
+	{
+		if (seconds != 0) 
+		{
 			pos += static_cast<int>(App->player->GetSpeed() / 1.5f);
 			App->score->UpdateScore(App->player->GetSpeed());
 		}
 	}
 	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex])
 	{
-		if (biomeIndex != biomes.size() - 1) {
+		if (biomeIndex != biomes.size() - 1) 
+		{
 			biomeIndex++;
 		}
 	}
@@ -193,24 +212,26 @@ update_status ModuleSceneRace::Update()
 
 	DrawRoad();
 
-	if (App->player->state != ModulePlayer::SCORE_SCREEN) {
+	if (App->player->state != ModulePlayer::SCORE_SCREEN) 
+	{
 		App->ui->ShowUI();
 	}
-	else {
+	else 
+	{
 		App->ui->ShowRankings();
 	}
 
-	if (App->player->state == BEFORE_RACE) {
+	if (App->player->state == BEFORE_RACE) 
+	{
 		App->renderer->Blit(decoration, 98, SCREEN_HEIGHT - semaphoreAnimation.GetCurrentFrame().h * 4 - 21, &semaphoreAnimation.GetCurrentFrame(), 0.0f, false, false, 2.266f, 2.266f);
 	}
 
-	if (showExtendedPlay) {
+	if (showExtendedPlay) 
+	{
 		App->renderer->Blit(drivers, SCREEN_WIDTH / 2 - extendedPlayTag.frames[0].w, SCREEN_HEIGHT / 2 - extendedPlayTag.frames[0].h, &extendedPlayTag.GetCurrentFrame(), 0.0f, false, false, 2, 2);
 		extendedPlayTime.Update();
-		LOG("EXTENDED PLAY")
 	}
 
-	
 
 	return UPDATE_CONTINUE;
 }
@@ -252,17 +273,21 @@ void ModuleSceneRace::DrawRoad()
 	int camH = (int)(1500 + lines[startPos].y);
 	float maxy = SCREEN_HEIGHT;
 
-	if ((int)landscapePositionX < -SCREEN_WIDTH) {
+	if ((int)landscapePositionX < -SCREEN_WIDTH) 
+	{
 		landscapePositionX = landscapePositionX + SCREEN_WIDTH;
 	}
-	if ((int)landscapePositionX > SCREEN_WIDTH) {
+	if ((int)landscapePositionX > SCREEN_WIDTH) 
+	{
 		landscapePositionX = landscapePositionX - SCREEN_WIDTH;
 	}
 
-	if ((int)foregroundPositionX < -SCREEN_WIDTH) {
+	if ((int)foregroundPositionX < -SCREEN_WIDTH) 
+	{
 		foregroundPositionX = foregroundPositionX + SCREEN_WIDTH;
 	}
-	if ((int)foregroundPositionX > SCREEN_WIDTH) {
+	if ((int)foregroundPositionX > SCREEN_WIDTH) 
+	{
 		foregroundPositionX = foregroundPositionX - SCREEN_WIDTH;
 	}
 
@@ -274,7 +299,8 @@ void ModuleSceneRace::DrawRoad()
 	App->renderer->Blit(graphics, (int)foregroundPositionX - SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, (int)foregroundPositionX + SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	
-	for (int n = startPos; n < startPos + 200; n++) {
+	for (int n = startPos; n < startPos + 200; n++) 
+	{
 		Color grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
 		Color rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
 		Color rumble2 = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.rumbleDark;
@@ -285,13 +311,16 @@ void ModuleSceneRace::DrawRoad()
 		x += dx;
 		dx += current.curve;
 
-		if (n == startPos && App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) {
-			if (current.curve > 0){
+		if (n == startPos && App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) 
+		{
+			if (current.curve > 0)
+			{
 				App->player->AlterXPosition(-App->player->GetSpeed() / 6);
 				landscapePositionX -= App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX -= App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
-			else if(current.curve < 0) {
+			else if(current.curve < 0) 
+			{
 				App->player->AlterXPosition(App->player->GetSpeed() / 6);
 				landscapePositionX += App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX += App->player->GetSpeed() / (float)foregroundParallaxFactor;
@@ -304,16 +333,23 @@ void ModuleSceneRace::DrawRoad()
 
 		Segment previous;
 		if (n == 0)
+		{
 			previous = lines[lines.size() - 1 % N];
+		}
 		else
+		{
 			previous = lines[(n - 1) % N];
+		}
 
 		int laneNumber = 10;
-		for (int i = laneNumber; i > 0; i--) {
-			if ((short)previous.Y != (short)current.Y) {
+		for (int i = laneNumber; i > 0; i--) 
+		{
+			if ((short)previous.Y != (short)current.Y) 
+			{
 				App->renderer->DrawPolygon(grass, SCREEN_WIDTH / 2, (short)previous.Y, SCREEN_WIDTH, SCREEN_WIDTH / 2, (short)current.Y, SCREEN_WIDTH);
 			}
 		}
+
 		App->renderer->DrawPolygon(rumble2, (short)previous.X, (short)previous.Y, (short)(previous.W*1.15), (short)current.X, (short)current.Y, (short)(current.W*1.15));
 		App->renderer->DrawPolygon(rumble, (short)previous.X, (short)previous.Y, (short)(previous.W*1.03), (short)current.X, (short)current.Y, (short)(current.W*1.03));
 		
@@ -328,25 +364,33 @@ void ModuleSceneRace::DrawRoad()
 				lines[n%N].DrawObject(lines[n%N].atrezzos[i].first, decoration, lines[n%N].atrezzos[i].second);
 			}
 		}
-		for (unsigned int i = 0; i < rivals.size(); i++) {
-			if (n%N == (int)rivals[i]->z % N && (int)rivals[i]->z % N > startPos) {
-				if (rivals[i]->isYellow) {
-					if (lines[n%N].curve < 0) {
+		for (unsigned int i = 0; i < rivals.size(); i++) 
+		{
+			if (n%N == (int)rivals[i]->z % N && (int)rivals[i]->z % N > startPos) 
+			{
+				if (rivals[i]->isYellow && i < rivals.size() - 1) 
+				{
+					if (lines[n%N].curve < 0) 
+					{
 						rivals[i]->currentAnimation = &yellowRivalTurnsLeft;
 					}
-					else if (lines[n%N].curve > 0) {
+					else if (lines[n%N].curve > 0) 
+					{
 						rivals[i]->currentAnimation = &yellowRivalTurnsRight;
 					}
-					else
+					else if (i < rivals.size() - 1)
 					{
 						rivals[i]->currentAnimation = &yellowRivalStraight;
 					}
 				}
-				else {
-					if (lines[n%N].curve < 0) {
+				else if (i < rivals.size() - 1)
+				{
+					if (lines[n%N].curve < 0) 
+					{
 						rivals[i]->currentAnimation = &greenRivalTurnsLeft;
 					}
-					else if (lines[n%N].curve > 0) {
+					else if (lines[n%N].curve > 0) 
+					{
 						rivals[i]->currentAnimation = &greenRivalTurnsRight;
 					}
 					else
@@ -356,7 +400,8 @@ void ModuleSceneRace::DrawRoad()
 				}
 				lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers);
 			}
-			else if ((int)rivals[i]->z < startPos) {
+			else if ((int)rivals[i]->z < startPos && i < rivals.size() - 1) 
+			{
 				// If the player overtakes this rival, then teleport the rival
 				// forward to make him appear again
 				rivals[i]->z += 200 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (300 - 200)));
@@ -366,25 +411,15 @@ void ModuleSceneRace::DrawRoad()
 		}
 	}
 
-	if (checkPointIndex != checkPoints.size()) {
-		if (startPos > checkPoints[checkPointIndex]) {
-			showExtendedPlay = true;
-			App->player->timeLeftInRace.AddTime(30);
-			extendedPlayTime.SetTime(2);
-			extendedPlayTime.Start();
-			checkPointIndex++;
-		}
-	}
-	if (extendedPlayTime.IsExpired()) {
-		showExtendedPlay = false;
-	}
-
-	for (unsigned int i = 0; i < rivals.size(); i++) {
-		if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::BEFORE_RACE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) {
+	for (unsigned int i = 0; i < rivals.size(); i++) 
+	{
+		if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::BEFORE_RACE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) 
+		{
 			rivals[i]->z += rivals[i]->speed;
 			rivals[i]->currentAnimation->speed = 0.2f;
 		}
-		else {
+		else 
+		{
 			rivals[i]->currentAnimation->speed = 0.0f;
 		}
 	}
@@ -397,72 +432,139 @@ void ModuleSceneRace::DrawRoad()
 	{
 		landscapePositionY = MAX_LANDSCAPE_ALTITUDE;
 	}
+
+	//CheckPoint Management
+	if (checkPointIndex != checkPoints.size())
+	{
+		if (startPos > checkPoints[checkPointIndex])
+		{
+			showExtendedPlay = true;
+			App->player->timeLeftInRace.AddTime(30);
+			extendedPlayTime.SetTime(2);
+			extendedPlayTime.Start();
+			checkPointIndex++;
+		}
+	}
+	if (extendedPlayTime.IsExpired())
+	{
+		showExtendedPlay = false;
+	}
+
+	//Final Stretch Management
+	if (startPos > goalPoint - 500 && startPos < goalPoint - 150)
+	{
+		App->player->CenterMaxX(ROAD_WIDTH);
+		for (int i = 0; i < rivals.size() - 1; ++i) 
+		{
+			rivals[i]->speed = 2.5f;
+		}
+	}
+	else if (startPos > goalPoint - 150)
+	{
+		App->player->CenterMaxX(0);
+	}
+
+	if (startPos > goalPoint && App->player->state == ModulePlayer::RACING) 
+	{
+		endPlayer->z = ((startPos + 9) * SEGMENT_LENGTH) / 100;
+		endPlayer->speed = 1.0f;
+		App->player->timePastGoal.SetTime(3.5f);
+		App->player->timePastGoal.Start();
+		App->player->state = ModulePlayer::PAST_GOAL;
+	}
+
+	if (startPos > goalPoint + 284 && App->player->state == ModulePlayer::GOING_TO_END) 
+	{
+		startPos = goalPoint + 284;
+		endPlayer->z = 0;
+		endPlayer->speed = 0;
+		App->player->state = ModulePlayer::END_SCENE;
+	}
 }
 
-void ModuleSceneRace::BiomeChange() {
+void ModuleSceneRace::BiomeChange() 
+{
 	//Adapt light grass
-	if (currentBiome.grassLight.r != biomes[biomeIndex].grassLight.r) {
+	if (currentBiome.grassLight.r != biomes[biomeIndex].grassLight.r) 
+	{
 		currentBiome.grassLight.r < biomes[biomeIndex].grassLight.r ? currentBiome.grassLight.r += 2 : currentBiome.grassLight.r -= 2;
 	}
-	if (currentBiome.grassLight.g != biomes[biomeIndex].grassLight.g) {
+	if (currentBiome.grassLight.g != biomes[biomeIndex].grassLight.g) 
+	{
 		currentBiome.grassLight.g < biomes[biomeIndex].grassLight.g ? currentBiome.grassLight.g += 2 : currentBiome.grassLight.g -= 2;
 	}
-	if (currentBiome.grassLight.b != biomes[biomeIndex].grassLight.b) {
+	if (currentBiome.grassLight.b != biomes[biomeIndex].grassLight.b) 
+	{
 		currentBiome.grassLight.b < biomes[biomeIndex].grassLight.b ? currentBiome.grassLight.b += 2 : currentBiome.grassLight.b -= 2;
 	}
 
 	//Adapt dark grass
-	if (currentBiome.grassDark.r != biomes[biomeIndex].grassDark.r) {
+	if (currentBiome.grassDark.r != biomes[biomeIndex].grassDark.r) 
+	{
 		currentBiome.grassDark.r < biomes[biomeIndex].grassDark.r ? currentBiome.grassDark.r += 2 : currentBiome.grassDark.r -= 2;
 	}
-	if (currentBiome.grassDark.g != biomes[biomeIndex].grassDark.g) {
+	if (currentBiome.grassDark.g != biomes[biomeIndex].grassDark.g) 
+	{
 		currentBiome.grassDark.g < biomes[biomeIndex].grassDark.g ? currentBiome.grassDark.g += 2 : currentBiome.grassDark.g -= 2;
 	}
-	if (currentBiome.grassDark.b != biomes[biomeIndex].grassDark.b) {
+	if (currentBiome.grassDark.b != biomes[biomeIndex].grassDark.b) 
+	{
 		currentBiome.grassDark.b < biomes[biomeIndex].grassDark.b ? currentBiome.grassDark.b += 2 : currentBiome.grassDark.b -= 2;
 	}
 
 	//Adapt light rumble
-	if (currentBiome.rumbleLight.r != biomes[biomeIndex].rumbleLight.r) {
+	if (currentBiome.rumbleLight.r != biomes[biomeIndex].rumbleLight.r) 
+	{
 		currentBiome.rumbleLight.r < biomes[biomeIndex].rumbleLight.r ? currentBiome.rumbleLight.r += 2 : currentBiome.rumbleLight.r -= 2;
 	}
-	if (currentBiome.rumbleLight.g != biomes[biomeIndex].rumbleLight.g) {
+	if (currentBiome.rumbleLight.g != biomes[biomeIndex].rumbleLight.g) 
+	{
 		currentBiome.rumbleLight.g < biomes[biomeIndex].rumbleLight.g ? currentBiome.grassLight.g += 2 : currentBiome.rumbleLight.g -= 2;
 	}
-	if (currentBiome.rumbleLight.b != biomes[biomeIndex].rumbleLight.b) {
+	if (currentBiome.rumbleLight.b != biomes[biomeIndex].rumbleLight.b) 
+	{
 		currentBiome.rumbleLight.b < biomes[biomeIndex].rumbleLight.b ? currentBiome.rumbleLight.b += 2 : currentBiome.rumbleLight.b -= 2;
 	}
 
 	//Adapt dark rumble
-	if (currentBiome.rumbleDark.r != biomes[biomeIndex].rumbleDark.r) {
+	if (currentBiome.rumbleDark.r != biomes[biomeIndex].rumbleDark.r) 
+	{
 		currentBiome.rumbleDark.r < biomes[biomeIndex].rumbleDark.r ? currentBiome.rumbleDark.r += 2 : currentBiome.rumbleDark.r -= 2;
 	}
-	if (currentBiome.rumbleDark.g != biomes[biomeIndex].rumbleDark.g) {
+	if (currentBiome.rumbleDark.g != biomes[biomeIndex].rumbleDark.g) 
+	{
 		currentBiome.rumbleDark.g < biomes[biomeIndex].rumbleDark.g ? currentBiome.rumbleDark.g += 2 : currentBiome.rumbleDark.g -= 2;
 	}
-	if (currentBiome.rumbleDark.b != biomes[biomeIndex].rumbleDark.b) {
+	if (currentBiome.rumbleDark.b != biomes[biomeIndex].rumbleDark.b) 
+	{
 		currentBiome.rumbleDark.b < biomes[biomeIndex].rumbleDark.b ? currentBiome.rumbleDark.b += 2 : currentBiome.rumbleDark.b -= 2;
 	}
 
 	//Adapt road
-	if (currentBiome.roadColor.r != biomes[biomeIndex].roadColor.r) {
+	if (currentBiome.roadColor.r != biomes[biomeIndex].roadColor.r) 
+	{
 		currentBiome.roadColor.r < biomes[biomeIndex].roadColor.r ? currentBiome.roadColor.r += 2 : currentBiome.roadColor.r -= 2;
 	}
-	if (currentBiome.roadColor.g != biomes[biomeIndex].roadColor.g) {
+	if (currentBiome.roadColor.g != biomes[biomeIndex].roadColor.g) 
+	{
 		currentBiome.roadColor.g < biomes[biomeIndex].roadColor.g ? currentBiome.roadColor.g += 2 : currentBiome.roadColor.g -= 2;
 	}
-	if (currentBiome.roadColor.b != biomes[biomeIndex].roadColor.b) {
+	if (currentBiome.roadColor.b != biomes[biomeIndex].roadColor.b) 
+	{
 		currentBiome.roadColor.b < biomes[biomeIndex].roadColor.b ? currentBiome.roadColor.b += 2 : currentBiome.roadColor.b -= 2;
 	}
 
 	//Adapt sky
-	if (currentBiome.skyColor.r != biomes[biomeIndex].skyColor.r) {
+	if (currentBiome.skyColor.r != biomes[biomeIndex].skyColor.r) 
+	{
 		currentBiome.skyColor.r < biomes[biomeIndex].skyColor.r ? currentBiome.skyColor.r += 2 : currentBiome.skyColor.r -= 2;
 	}
-	if (currentBiome.skyColor.g != biomes[biomeIndex].skyColor.g) {
+	if (currentBiome.skyColor.g != biomes[biomeIndex].skyColor.g) 
+	{
 		currentBiome.skyColor.g < biomes[biomeIndex].skyColor.g ? currentBiome.skyColor.g += 2 : currentBiome.skyColor.g -= 2;
 	}
-	if (currentBiome.skyColor.b != biomes[biomeIndex].skyColor.b) {
+	if (currentBiome.skyColor.b != biomes[biomeIndex].skyColor.b) 
+	{
 		currentBiome.skyColor.b < biomes[biomeIndex].skyColor.b ? currentBiome.skyColor.b += 2 : currentBiome.skyColor.b -= 2;
 	}
 
@@ -473,26 +575,30 @@ void ModuleSceneRace::BiomeChange() {
 
 //Avoid a targetVariation inferior to -50 when calling ChangeAltitude(). 
 //It works, but the slope down is so steep it makes it look like the bike is flying.
-void ModuleSceneRace::ChangeAltitude(float &altitudeVariation, float targetVariation, int currentSegment, int startingSegment, int endSegment, int heldSegments) {
+void ModuleSceneRace::ChangeAltitude(float &altitudeVariation, float targetVariation, int currentSegment, int startingSegment, int endSegment, int heldSegments) 
+{
 	int segmentsToMidpoint = (endSegment - startingSegment - heldSegments) / 2;
 	float variation = (float)targetVariation / segmentsToMidpoint;
 
-	if (currentSegment <= startingSegment + segmentsToMidpoint) {
+	if (currentSegment <= startingSegment + segmentsToMidpoint) 
+	{
 		altitudeVariation += variation;
 	}
-	else if (currentSegment >= startingSegment + segmentsToMidpoint + heldSegments) {
+	else if (currentSegment >= startingSegment + segmentsToMidpoint + heldSegments) 
+	{
 		altitudeVariation -= variation;
 	}
-	if (currentSegment == endSegment) {
+	if (currentSegment == endSegment) 
+	{
 		altitudeVariation = 0;
 	}
 }
 
 
-void ModuleSceneRace::ResetRace() {
+void ModuleSceneRace::ResetRace() 
+{
 	rival5->z = 11;
 	rival5->x = 0.7f;
-	LOG("HERE I AM")
 
 	pos = -20;
 

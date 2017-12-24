@@ -12,6 +12,8 @@
 
 ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 {
+	goalPoint = 2000;
+
 	landscapeParis = { 8, 197, 320, 74 };
 	parisBuildings = { 336, 104, 320, 15 };
 	landscapeSea = { 8, 274, 320, 72 };
@@ -83,6 +85,8 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampLeft, -2)); }
 		if (i == 500) { line.atrezzos.push_back(make_pair(lampRight, 2)); }
 
+		
+
 		for (vector<int>::iterator it = checkPoints.begin(); it != checkPoints.end(); ++it) {
 			if (i == *it) {
 				line.atrezzos.push_back(make_pair(checkSign, -3));
@@ -90,10 +94,14 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 			}
 		}
 
+		if (i == goalPoint) { line.atrezzos.push_back(make_pair(goalSign, -3)); }
+		if (i == goalPoint) { line.atrezzos.push_back(make_pair(rightLegOfSign, -3)); }
+
+		if (i == goalPoint + 300) { line.atrezzos.push_back(make_pair(crowd, -0.9f)); }
+		if (i == goalPoint + 296) { line.atrezzos.push_back(make_pair(victoryPose, -0.1f)); }
+
 		lines.push_back(line);
 	}
-
-	
 
 	N = lines.size();
 	//pos = 0;

@@ -22,9 +22,7 @@ public:
 	float clip;
 	float cover;
 
-	vector<pair<atrezzo, int>> atrezzos;
-
-	/*vector<pair<Rival, int>> rivals;*/
+	vector<pair<atrezzo, float>> atrezzos;
 
 	int width = SCREEN_WIDTH;
 	int height = SCREEN_HEIGHT;
@@ -50,10 +48,16 @@ public:
 		W = (float)(scale * roadWidth * width / 2);
 	}
 
-	void DrawObject(atrezzo object, SDL_Texture* tex, int posX)
+	void DrawObject(atrezzo object, SDL_Texture* tex, float posX)
 	{
 		bool behindStuff;
-		float scaling = 2 * W / SEGMENT_LENGTH;
+		float scaling;
+		if (object.small) {
+			scaling = W / SEGMENT_LENGTH *  0.65;
+		}
+		else {
+			scaling = W / SEGMENT_LENGTH * 2;
+		}
 		float destY = Y - object.sprite.h * scaling;
 		float destX = X + (W * posX);
 		int destH = object.sprite.h * (int)scaling;
@@ -80,8 +84,7 @@ public:
 			static_cast<int>(destY + object.sprite.h * scaling - 10),
 			static_cast<int>(destW),
 			10 };
-		SDL_RenderFillRect(App->renderer->renderer, &hitBox);		//DEBUG
-
+		
 		App->renderer->Blit(tex, (int)destX, (int)destY, &object.sprite, 0.f, false, false, scaling, scaling);
 
 		if (scaling >= 1) {

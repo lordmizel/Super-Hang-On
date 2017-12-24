@@ -11,6 +11,7 @@ struct atrezzo {
 	SDL_Rect sprite;
 	int hitBoxXOffset = 0;
 	int hitBoxWidth = 0;
+	bool small = false;
 };
 
 struct rival {
@@ -58,7 +59,6 @@ public:
 	int seg_pos;
 
 protected:
-	
 	void BiomeChange();
 	void ChangeAltitude(float &altitudeVariation, float targetVariation, int currentSegment, int startingSegment, int endSegment, int heldSegments = 0);
 
@@ -69,6 +69,8 @@ protected:
 
 	vector<int> checkPoints;
 	int checkPointIndex;
+
+	int goalPoint;
 
 	atrezzo arrowLeft;
 	atrezzo arrowRight;
@@ -98,6 +100,9 @@ protected:
 	atrezzo goalSign;
 	atrezzo rightLegOfSign;
 
+	atrezzo crowd;
+	atrezzo victoryPose;
+
 	Animation semaphoreAnimation;
 	atrezzo semaphore;
 	
@@ -106,6 +111,7 @@ protected:
 	rival* rival3;
 	rival* rival4;
 	rival* rival5;
+	rival* endPlayer;
 
 	vector<rival*> rivals;
 
@@ -141,6 +147,7 @@ private:
 	Animation yellowRivalTurnsLeft;
 	Animation greenRivalTurnsRight;
 	Animation yellowRivalTurnsRight;
+	Animation falsePlayer;
 
 	Animation extendedPlayTag;
 	bool showExtendedPlay;

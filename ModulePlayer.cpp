@@ -201,6 +201,18 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
+void ModulePlayer::CenterMaxX(float max)
+{
+	if (maxXPosition > max)
+	{
+		maxXPosition -= 30;
+	}
+	else
+	{
+		maxXPosition = max;
+	}
+}
+
 void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x)
 {
 	collision_types type = typeOfCollision;
@@ -265,34 +277,34 @@ update_status ModulePlayer::Update()
 
 		if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) {
 			positionX -= movementX / 2;
-			if (positionX > -ROAD_WIDTH * 4) {
+			if (positionX > -maxXPosition) {
 				absoluteX -= movementX / 2;
 			}
 		}
 		else if (current_animation == &leanedLeft || current_animation == &leanedLeftBraking) {
 			positionX -= movementX;
-			if (positionX > -ROAD_WIDTH * 4) {
+			if (positionX > -maxXPosition) {
 				absoluteX -= movementX;
 			}
 		}
 		else if (current_animation == &leaningRight || current_animation == &unLeanRight || current_animation == &leaningRightBraking || current_animation == &unLeanRightBraking) {
 			positionX += movementX / 2;
-			if (positionX < ROAD_WIDTH * 4) {
+			if (positionX < maxXPosition) {
 				absoluteX += movementX / 2;
 			}
 		}
 		else if (current_animation == &leanedRight || current_animation == &leanedRightBraking) {
 			positionX += movementX;
-			if (positionX < ROAD_WIDTH * 4) {
+			if (positionX < maxXPosition) {
 				absoluteX += movementX;
 			}
 		}
 
-		if (positionX > ROAD_WIDTH * 4) {
-			positionX = ROAD_WIDTH * 4;
+		if (positionX > maxXPosition) {
+			positionX = maxXPosition;
 		}
-		if (positionX < -ROAD_WIDTH * 4) {
-			positionX = -ROAD_WIDTH * 4;
+		if (positionX < -maxXPosition) {
+			positionX = -maxXPosition;
 		}
 
 		if (positionX > ROAD_WIDTH) {
@@ -338,12 +350,12 @@ update_status ModulePlayer::Update()
 	case(RECOVERING):
 		speed = 0;
 		if (positionX > 0) {
-			positionX -= 20;
+			positionX -= 30;
 		}
 		else if (positionX < 0) {
-			positionX += 20;
+			positionX += 30;
 		}
-		if(positionX > -20 && positionX < 20)
+		if(positionX > -30 && positionX < 30)
 		{
 			positionX = 0;
 			state = RACING;
@@ -399,6 +411,32 @@ update_status ModulePlayer::Update()
 		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		break;
 
+	case(PAST_GOAL):
+		speed = 0;
+		if (positionX > 0) {
+			positionX -= 30;
+		}
+		else if (positionX < 0) {
+			positionX += 30;
+		}
+		if (positionX > -30 && positionX < 30)
+		{
+			positionX = 0;
+		}
+
+		timeLeftInRace.Pause();
+
+		timePastGoal.Update();
+		if (timePastGoal.IsExpired()) {
+			state = GOING_TO_END;
+		}
+		break;
+	case(GOING_TO_END):
+		speed = 200;
+		break;
+	case(END_SCENE):
+		speed = 0;
+		break;
 	case(PAUSE):
 		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 		{
@@ -608,5 +646,6 @@ void ModulePlayer::Pause() {
 }
 
 void ModulePlayer::ResetPlayer() {
+	maxXPosition = ROAD_WIDTH * 4;
 	speed = 0;
 }
