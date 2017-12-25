@@ -408,7 +408,9 @@ update_status ModulePlayer::Update()
 		break;
 
 	case(SCORE_SCREEN):
-		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		if (!raceHasEnded) {
+			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
+		}
 		break;
 
 	case(PAST_GOAL):
@@ -433,9 +435,15 @@ update_status ModulePlayer::Update()
 		break;
 	case(GOING_TO_END):
 		speed = 200;
+		raceHasEnded = true;
 		break;
 	case(END_SCENE):
 		speed = 0;
+		timeEndScene.Update();
+
+		if (timeEndScene.IsExpired()) {
+			state = SCORE_SCREEN;
+		}
 		break;
 	case(PAUSE):
 		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
@@ -647,5 +655,6 @@ void ModulePlayer::Pause() {
 
 void ModulePlayer::ResetPlayer() {
 	maxXPosition = ROAD_WIDTH * 4;
+	raceHasEnded = false;
 	speed = 0;
 }

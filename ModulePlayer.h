@@ -11,6 +11,7 @@ struct SDL_Texture;
 class ModulePlayer : public Module
 {
 public:
+
 	enum player_state {
 		BEFORE_RACE,
 		RACING,
@@ -58,6 +59,7 @@ public:
 	Timer timeWaitingAtStart;
 	Timer timeLeftInRace;
 	Timer timePastGoal;
+	Timer timeEndScene;
 
 private:
 
@@ -106,6 +108,8 @@ private:
 	bool deviateRight;
 	Timer timeOutOfControl;
 	Timer gameOverTimer;
+
+	bool raceHasEnded;
 
 	//PAUSE PARAMETERS
 	player_state previousState;

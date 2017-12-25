@@ -137,7 +137,7 @@ private:
 	int landscapeParallaxFactor = 300;
 	int foregroundParallaxFactor = 200;
 
-	void DrawRoad();
+	void ManageRoad();
 
 	SDL_Rect landscapeParis;
 
@@ -152,6 +152,8 @@ private:
 	Animation extendedPlayTag;
 	bool showExtendedPlay;
 	Timer extendedPlayTime;
+
+	bool singleton;
 };
 
 #endif

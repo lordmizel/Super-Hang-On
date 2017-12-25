@@ -49,8 +49,8 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		landscapeCity, cityBuildings));
 	
 	biomeBorders.push_back(1000);
-	biomeBorders.push_back(2000);
-	biomeBorders.push_back(6000);
+	biomeBorders.push_back(1500);
+	/*biomeBorders.push_back(3000);*/
 	
 	currentBiome = biomes[biomeIndex];
 
@@ -58,14 +58,14 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 
 	for (int i = 0; i <6000; i++)
 	{
-		Segment line;
-		line.z = (float)i * SEGMENT_LENGTH;
-		line.y += currentAltitude + altitudeVariation;
-		currentAltitude = line.y;
+		Segment segment;
+		segment.z = (float)i * SEGMENT_LENGTH;
+		segment.y += currentAltitude + altitudeVariation;
+		currentAltitude = segment.y;
 
-		line.curve = 0;
-		if (i > 300 && i < 700) line.curve = 4;
-		if (i > 500 && i < 600) line.curve = -1;
+		segment.curve = 0;
+		if (i > 300 && i < 700) segment.curve = 4;
+		if (i > 500 && i < 600) segment.curve = -1;
 
 
 		if (i > 800 && i < 1500) {
@@ -78,33 +78,32 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 			ChangeAltitude(altitudeVariation, -50.0f, i, 1100, 1500);
 		}*/
 
-		if (i == 30) { line.atrezzos.push_back(make_pair(startSign, -3)); }
-		if (i == 30) { line.atrezzos.push_back(make_pair(rightLegOfSign, -3)); }
-		if (i == 29) { line.atrezzos.push_back(make_pair(semaphore, -2)); }
-		if (i == 400) { line.atrezzos.push_back(make_pair(discoNora, 1)); }
-		if (i == 500) { line.atrezzos.push_back(make_pair(lampLeft, -2)); }
-		if (i == 500) { line.atrezzos.push_back(make_pair(lampRight, 2)); }
+		if (i == 30) { segment.atrezzos.push_back(make_pair(startSign, -3)); }
+		if (i == 30) { segment.atrezzos.push_back(make_pair(rightLegOfSign, -3)); }
+		if (i == 29) { segment.atrezzos.push_back(make_pair(semaphore, -2)); }
+		if (i == 400) { segment.atrezzos.push_back(make_pair(discoNora, 1)); }
+		if (i == 500) { segment.atrezzos.push_back(make_pair(lampLeft, -2)); }
+		if (i == 500) { segment.atrezzos.push_back(make_pair(lampRight, 2)); }
 
 		
 
 		for (vector<int>::iterator it = checkPoints.begin(); it != checkPoints.end(); ++it) {
 			if (i == *it) {
-				line.atrezzos.push_back(make_pair(checkSign, -3));
-				line.atrezzos.push_back(make_pair(rightLegOfSign, -3));
+				segment.atrezzos.push_back(make_pair(checkSign, -3));
+				segment.atrezzos.push_back(make_pair(rightLegOfSign, -3));
 			}
 		}
 
-		if (i == goalPoint) { line.atrezzos.push_back(make_pair(goalSign, -3)); }
-		if (i == goalPoint) { line.atrezzos.push_back(make_pair(rightLegOfSign, -3)); }
+		if (i == goalPoint) { segment.atrezzos.push_back(make_pair(goalSign, -3)); }
+		if (i == goalPoint) { segment.atrezzos.push_back(make_pair(rightLegOfSign, -3)); }
 
-		if (i == goalPoint + 300) { line.atrezzos.push_back(make_pair(crowd, -0.9f)); }
-		if (i == goalPoint + 296) { line.atrezzos.push_back(make_pair(victoryPose, -0.1f)); }
+		if (i == goalPoint + 300) { segment.atrezzos.push_back(make_pair(crowd, -0.9f)); }
+		if (i == goalPoint + 296) { segment.atrezzos.push_back(make_pair(victoryPose, -0.1f)); }
 
-		lines.push_back(line);
+		lines.push_back(segment);
 	}
 
 	N = lines.size();
-	//pos = 0;
 }
 
 ModuleEuropeRace::~ModuleEuropeRace()

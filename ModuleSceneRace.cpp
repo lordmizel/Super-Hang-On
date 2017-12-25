@@ -16,6 +16,8 @@
 
 ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 {
+	singleton = false;
+
 	arrowLeft.sprite = { 6, 4, 46, 42 };
 	arrowRight.sprite = { 61, 4, 46, 62};
 	bridalStone.sprite = { 119, 7, 116, 40 };
@@ -101,6 +103,20 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	extendedPlayTag.frames.push_back({ 242, 939, 104, 8 });
 	extendedPlayTag.frames.push_back({ 0, 0, 0, 0 });
 	extendedPlayTag.speed = 0.1f;
+
+	rival1 = new rival();
+	rival2 = new rival();
+	rival3 = new rival();
+	rival4 = new rival();
+	rival5 = new rival();
+	endPlayer = new rival();
+
+	rivals.push_back(rival1);
+	rivals.push_back(rival2);
+	rivals.push_back(rival3);
+	rivals.push_back(rival4);
+	rivals.push_back(rival5);
+	rivals.push_back(endPlayer);
 }
 
 
@@ -121,10 +137,6 @@ bool ModuleSceneRace::Start()
 	decoration = App->textures->Load("stuff.png", 255, 0, 255);
 	drivers = App->textures->Load("bikes.png", 255, 0, 204);
 
-	biomeIndex = 0;
-
-	currentBiome = biomes[biomeIndex];
-
 	landscapePositionY = (float)MAX_LANDSCAPE_ALTITUDE;
 
 	App->player->Enable();
@@ -134,51 +146,7 @@ bool ModuleSceneRace::Start()
 
 	semaphoreAnimation.Reset();
 
-	rival1 = new rival();
-	rival1->currentAnimation = &greenRivalTurnsLeft;
-	rival1->z = 11;
-	rival1->speed = 0.5;
-	rival1->x = -0.9f;
-	rival1->isYellow = true;
-
-	rival2 = new rival();
-	rival2->currentAnimation = &greenRivalStraight;
-	rival2->z = 14;
-	rival2->speed = 1.2;
-	rival2->x = -0.5f;
-
-	rival3 = new rival();
-	rival3->currentAnimation = &greenRivalStraight;
-	rival3->z = 17;
-	rival3->speed = 1.5;
-	rival3->x = -0.1;
-	rival3->isYellow = true;
-
-	rival4 = new rival();
-	rival4->currentAnimation = &greenRivalStraight;
-	rival4->z = 14;
-	rival4->speed = 1;
-	rival4->x = 0.3f;
-
-	rival5 = new rival();
-	rival5->currentAnimation = &greenRivalStraight;
-	rival5->z = 11;
-	rival5->speed = 0.8;
-	rival5->x = 0.7f;
-	rival5->isYellow = true;
-
-	endPlayer = new rival();
-	endPlayer->currentAnimation = &falsePlayer;
-	endPlayer->z = 0;
-	endPlayer->speed = 0;
-	endPlayer->x = -0.1;
-
-	rivals.push_back(rival1);
-	rivals.push_back(rival2);
-	rivals.push_back(rival3);
-	rivals.push_back(rival4);
-	rivals.push_back(rival5);
-	rivals.push_back(endPlayer);
+	
 
 	ResetRace();
 
@@ -198,9 +166,13 @@ update_status ModuleSceneRace::Update()
 			App->score->UpdateScore(App->player->GetSpeed());
 		}
 	}
-	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex])
+
+	LOG("Segment %d", seg_pos / SEGMENT_LENGTH)
+	LOG("Border %d", biomeBorders[biomeIndex])
+
+	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex] && App->player->state != BEFORE_RACE)
 	{
-		if (biomeIndex != biomes.size() - 1) 
+		if (biomeIndex < biomeBorders.size() - 1) 
 		{
 			biomeIndex++;
 		}
@@ -208,9 +180,11 @@ update_status ModuleSceneRace::Update()
 
 	App->renderer->DrawQuad(skyBox, currentBiome.skyColor.r, currentBiome.skyColor.g, currentBiome.skyColor.b, 255, false);
 
-	BiomeChange();
+	if (App->player->state == RACING) {
+		BiomeChange();
+	}
 
-	DrawRoad();
+	ManageRoad();
 
 	if (App->player->state != ModulePlayer::SCORE_SCREEN) 
 	{
@@ -232,7 +206,6 @@ update_status ModuleSceneRace::Update()
 		extendedPlayTime.Update();
 	}
 
-
 	return UPDATE_CONTINUE;
 }
 
@@ -244,14 +217,12 @@ bool ModuleSceneRace::CleanUp()
 	App->textures->Unload(graphics);
 	App->textures->Unload(decoration);
 	App->textures->Unload(drivers);
-
-	// Destroy rivals
 	
 	return true;
 }
 
 
-void ModuleSceneRace::DrawRoad()
+void ModuleSceneRace::ManageRoad()
 {
 	seg_pos = pos;
 	if (pos % SEGMENT_LENGTH != 0) 
@@ -478,6 +449,8 @@ void ModuleSceneRace::DrawRoad()
 		startPos = goalPoint + 284;
 		endPlayer->z = 0;
 		endPlayer->speed = 0;
+		App->player->timeEndScene.SetTime(2);
+		App->player->timeEndScene.Start();
 		App->player->state = ModulePlayer::END_SCENE;
 	}
 }
@@ -597,13 +570,67 @@ void ModuleSceneRace::ChangeAltitude(float &altitudeVariation, float targetVaria
 
 void ModuleSceneRace::ResetRace() 
 {
+	LOG("Resetting Race")
+
+	biomeIndex = 0;
+
+	currentBiome = biomes[biomeIndex];
+	currentBiome.background1 = biomes[biomeIndex].background1;
+	currentBiome.background2 = biomes[biomeIndex].background2;
+	currentBiome.grassDark = biomes[biomeIndex].grassDark;
+	currentBiome.grassLight = biomes[biomeIndex].grassLight;
+	currentBiome.roadColor = biomes[biomeIndex].roadColor;
+	currentBiome.rumbleDark = biomes[biomeIndex].rumbleDark;
+	currentBiome.rumbleLight = biomes[biomeIndex].rumbleLight;
+	currentBiome.skyColor = biomes[biomeIndex].skyColor;
+
+	/*if (!singleton) {*/
+		
+
+		singleton = true;
+	/*}*/
+
+	rival1->currentAnimation = &greenRivalTurnsLeft;
+	rival1->z = 11;
+	rival1->speed = 0.5;
+	rival1->x = -0.9f;
+	rival1->isYellow = true;
+
+	rival2->currentAnimation = &greenRivalStraight;
+	rival2->z = 14;
+	rival2->speed = 1.2;
+	rival2->x = -0.5f;
+
+	rival3->currentAnimation = &greenRivalStraight;
+	rival3->z = 17;
+	rival3->speed = 1.5;
+	rival3->x = -0.1;
+	rival3->isYellow = true;
+
+	rival4->currentAnimation = &greenRivalStraight;
+	rival4->z = 14;
+	rival4->speed = 1;
+	rival4->x = 0.3f;
+
+	rival5->currentAnimation = &greenRivalStraight;
+	rival5->z = 11;
+	rival5->speed = 0.8;
+	rival5->x = 0.7f;
+	rival5->isYellow = true;
+
+	endPlayer->currentAnimation = &falsePlayer;
+	endPlayer->z = 0;
+	endPlayer->speed = 0;
+	endPlayer->x = -0.1;
+
+	
+
 	rival5->z = 11;
 	rival5->x = 0.7f;
 
 	pos = -20;
 
 	checkPointIndex = 0;
-	biomeIndex = 0;
 }
 
 ModuleSceneRace::biome::biome()
