@@ -240,11 +240,6 @@ void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision, 
 
 update_status ModulePlayer::Update()
 {
-	//if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)	///////
-	//{
-	//	
-	//}
-
 	if (state == RACING || state == CRASHING || state == OUT_OF_CONTROL) 
 	{
 		if (speed < currentMaxSpeed)
@@ -256,6 +251,8 @@ update_status ModulePlayer::Update()
 			speed = speed - acceleration;
 		}
 	}
+
+	LOG("%f", timeLeftInRace.GetTotalTimeElapsed())
 
 	switch (state) {
 	case(BEFORE_RACE):
@@ -358,6 +355,7 @@ update_status ModulePlayer::Update()
 		if(positionX > -30 && positionX < 30)
 		{
 			positionX = 0;
+			current_animation = &forward;
 			state = RACING;
 		}
 
@@ -392,7 +390,6 @@ update_status ModulePlayer::Update()
 		break;
 
 	case(GAME_OVER):
-		
 		gameOverTimer.Update();
 		if (gameOverTimer.IsExpired()) {
 			App->score->ValidateScoreEntry();
@@ -442,6 +439,8 @@ update_status ModulePlayer::Update()
 		timeEndScene.Update();
 
 		if (timeEndScene.IsExpired()) {
+			App->score->ValidateScoreEntry();
+			timeLeftInRace.Resume();
 			state = SCORE_SCREEN;
 		}
 		break;
@@ -657,4 +656,5 @@ void ModulePlayer::ResetPlayer() {
 	maxXPosition = ROAD_WIDTH * 4;
 	raceHasEnded = false;
 	speed = 0;
+	timeLeftInRace.ResetTotalTime();
 }

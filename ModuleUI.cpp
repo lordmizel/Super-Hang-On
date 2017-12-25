@@ -110,6 +110,15 @@ void ModuleUI::ShowRankings() {
 
 	int rankNumber = 0;
 
+	if (App->score->entryInScoreTable == NULL) 
+	{
+		readyToCloseScreen = true;
+	}
+	else 
+	{
+		readyToCloseScreen = false;
+	}
+
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - initialEntryCountdown.w * 2 / 2, SCREEN_HEIGHT / 13, &initialEntryCountdown, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - courseSelected.w * 2 / 2, SCREEN_HEIGHT / 13 * 2, &courseSelected, 0.0f, false, false, 2, 2);
 
@@ -124,6 +133,13 @@ void ModuleUI::ShowRankings() {
 
 	for (int i = 0; i < sizeof(topRanks) / sizeof(topRanks[0]); i++)
 	{
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false && readyToCloseScreen == true) {
+			nameEntered = false;
+			characterIndex = 0;
+			nameCharacterIndex = 0;
+			App->fade->FadeToBlack((Module*)App->scene_map, this);
+		}
+
 		int posY = SCREEN_HEIGHT / 13 * (4 + Ymultiplier);
 		Color entryColor = { 255, 255, 255, 255 };
 
@@ -171,10 +187,6 @@ void ModuleUI::ShowRankings() {
 			App->font_manager->DigitRendering(App->score->scoreEntries[rankNumber].timeDec, 2, (SCREEN_WIDTH / 6) * 5 - timeText.w / 2 + 96 - 32, posY, entryColor, true);
 
 			rankNumber++;
-
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false) {
-				App->fade->FadeToBlack((Module*)App->scene_map, this);
-			}
 		}
 		Ymultiplier++;
 	}
@@ -189,7 +201,7 @@ void ModuleUI::ShowRankings() {
 		NameEntry();
 	}
 
-	
+	LOG("Entry in score table: %d", App->score->entryInScoreTable)
 }
 
 void ModuleUI::NameEntry() {
@@ -229,7 +241,9 @@ void ModuleUI::NameEntry() {
 		if (characterIndex == nameEntryString.size() - 1)
 		{
 			App->score->SaveScoreEntry();
+			readyToCloseScreen = true;
 			nameEntered = true;
+			App->score->entryInScoreTable = NULL;
 		}
 		else if (characterIndex == nameEntryString.size() - 2)
 		{

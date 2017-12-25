@@ -52,6 +52,8 @@ private:
 	bool nameEntered = false;
 	unsigned int characterIndex = 0;
 	unsigned int nameCharacterIndex = 0;
+
+	bool readyToCloseScreen;
 };
 
 #endif

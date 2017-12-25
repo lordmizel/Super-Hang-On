@@ -48,9 +48,8 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		Color(0, 0, 96, 255), Color(0, 0, 0, 225),
 		landscapeCity, cityBuildings));
 	
-	biomeBorders.push_back(1000);
+	biomeBorders.push_back(950);
 	biomeBorders.push_back(1500);
-	/*biomeBorders.push_back(3000);*/
 	
 	currentBiome = biomes[biomeIndex];
 

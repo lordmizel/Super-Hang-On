@@ -167,9 +167,6 @@ update_status ModuleSceneRace::Update()
 		}
 	}
 
-	LOG("Segment %d", seg_pos / SEGMENT_LENGTH)
-	LOG("Border %d", biomeBorders[biomeIndex])
-
 	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex] && App->player->state != BEFORE_RACE)
 	{
 		if (biomeIndex < biomeBorders.size() - 1) 
@@ -584,12 +581,6 @@ void ModuleSceneRace::ResetRace()
 	currentBiome.rumbleLight = biomes[biomeIndex].rumbleLight;
 	currentBiome.skyColor = biomes[biomeIndex].skyColor;
 
-	/*if (!singleton) {*/
-		
-
-		singleton = true;
-	/*}*/
-
 	rival1->currentAnimation = &greenRivalTurnsLeft;
 	rival1->z = 11;
 	rival1->speed = 0.5;
@@ -622,8 +613,6 @@ void ModuleSceneRace::ResetRace()
 	endPlayer->z = 0;
 	endPlayer->speed = 0;
 	endPlayer->x = -0.1;
-
-	
 
 	rival5->z = 11;
 	rival5->x = 0.7f;

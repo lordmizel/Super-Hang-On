@@ -71,13 +71,16 @@ bool ModuleScore::CleanUp()
 }
 
 void ModuleScore::ValidateScoreEntry() {
-	bool validEntry = false;
 	//Recorrer lista de puntuaciones y ver si supera las puntuaciones guardadas
 	for (unsigned int i = 0; i < scoreEntries.size(); i++) {
-		if (currentScore.score > scoreEntries[i].score) {
+		if (currentScore.score > scoreEntries[i].score) 
+		{
 			entryInScoreTable = i;
-			validEntry = true;
 			break;
+		}
+		else 
+		{
+			entryInScoreTable = NULL;
 		}
 	}
 }
@@ -106,7 +109,7 @@ void ModuleScore::SaveScoreEntry() {
 
 void ModuleScore::ResetScore()
 {
-	currentScore.score = 0;
+	currentScore.score = 1400000;
 	currentScore.stage = 1;
 	currentScore.name = "   ";
 	currentScore.time = 0;
