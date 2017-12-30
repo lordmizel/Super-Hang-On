@@ -17,6 +17,7 @@ public:
 	void ShowUI();
 	void ShowRankings();
 	void ShowLapTimes();
+	void ShowBonusPoints(int time);
 
 	SDL_Texture* graphics;
 
@@ -41,6 +42,7 @@ private:
 	SDL_Rect pauseTag;
 	SDL_Rect gameOverTag;
 	SDL_Rect lapTimesTag;
+	SDL_Rect bonusPointsTag;
 
 	//Score screen
 	SDL_Rect initialEntryCountdown;

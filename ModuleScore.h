@@ -45,7 +45,6 @@ public:
 	void SaveLapData();
 	void CompareLapTime(int currentTime);
 
-
 	std::vector<scoreEntry> scoreEntries;
 	int entryInScoreTable = NULL;
 

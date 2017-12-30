@@ -143,7 +143,7 @@ void ModuleScore::SaveLapData()
 		}
 	}
 
-	writeFile.close();
+	writeLapFile.close();
 }
 
 void ModuleScore::CompareLapTime(int currentTime)
@@ -151,7 +151,7 @@ void ModuleScore::CompareLapTime(int currentTime)
 	int actualLapTime = currentTime - reductionTime;
 	currentLaps.push_back(actualLapTime);
 
-	if (actualLapTime < storedLaps[checkPointsPassed]) {
+	if (actualLapTime < storedLaps[checkPointsPassed] || storedLaps[checkPointsPassed] == 0) {
 		storedLaps[checkPointsPassed] = actualLapTime;
 	}
 

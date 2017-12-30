@@ -405,16 +405,19 @@ update_status ModulePlayer::Update()
 			positionX = 0;
 		}
 
+		App->ui->ShowLapTimes();
 		timeLeftInRace.Pause();
 
 		timePastGoal.Update();
 		if (timePastGoal.IsExpired()) {
+			App->score->currentScore.score = App->score->currentScore.score + (int)timeLeftInRace.GetRemainingTime() * 1000000;
 			raceEnded = true;
 			state = GOING_TO_END;
 		}
 		break;
 	case(GOING_TO_END):
 		speed = 200;
+		App->ui->ShowBonusPoints((int)timeLeftInRace.GetRemainingTime());
 		raceHasEnded = true;
 		break;
 	case(END_SCENE):

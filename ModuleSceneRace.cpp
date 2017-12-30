@@ -191,7 +191,7 @@ update_status ModuleSceneRace::Update()
 	if (showExtendedPlay) 
 	{
 		App->ui->ShowLapTimes();
-		App->renderer->Blit(drivers, SCREEN_WIDTH / 2 - extendedPlayTag.frames[0].w, SCREEN_HEIGHT / 2 - extendedPlayTag.frames[0].h, &extendedPlayTag.GetCurrentFrame(), 0.0f, false, false, 2, 2);
+		App->renderer->Blit(drivers, SCREEN_WIDTH / 2 - extendedPlayTag.frames[0].w, SCREEN_HEIGHT / 2 - extendedPlayTag.frames[0].h - 16, &extendedPlayTag.GetCurrentFrame(), 0.0f, false, false, 2, 2);
 		extendedPlayTime.Update();
 	}
 
@@ -440,10 +440,11 @@ void ModuleSceneRace::ManageRoad()
 		App->player->CenterMaxX(0);
 	}
 
-	if (startPos > goalPoint && App->player->state == ModulePlayer::RACING) 
+	if (startPos > goalPoint && (App->player->state == ModulePlayer::RACING || App->player->state == ModulePlayer::OUT_OF_CONTROL))
 	{
 		endPlayer->z = ((startPos + 9) * SEGMENT_LENGTH) / 100;
 		endPlayer->speed = 1.0f;
+		App->score->CompareLapTime((int)(App->player->timeLeftInRace.GetTotalTimeElapsed() * 100));
 		App->player->timePastGoal.SetTime(3.5f);
 		App->player->timePastGoal.Start();
 		App->player->state = ModulePlayer::PAST_GOAL;
