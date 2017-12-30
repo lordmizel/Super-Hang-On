@@ -52,8 +52,6 @@ ModuleSceneMap::ModuleSceneMap(bool active) : Module(active)
 	pressButton.frames.push_back({ 3, 14, 136, 8 });
 	pressButton.frames.push_back({ 0, 0, 0, 0 });
 	pressButton.speed = 0.03f;
-
-	timer_.SetTime(10);
 }
 
 ModuleSceneMap::~ModuleSceneMap()
@@ -71,11 +69,13 @@ bool ModuleSceneMap::Start()
 	graphics = App->textures->Load("bikes.png", 255, 0, 204);
 
 	App->audio->PlayMusic("opening.ogg", 1.0f);
+
 	if (fx == 0)
 		fx = App->audio->LoadFx("rtype/starting.wav");
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	timer_.SetTime(10);
 	timer_.Start();
 
 	return true;

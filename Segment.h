@@ -60,7 +60,7 @@ public:
 		}
 		float destY = Y - object.sprite.h * scaling;
 		float destX = X + (W * posX);
-		int destH = object.sprite.h * (int)scaling;
+		int destH = (int)(object.sprite.h * scaling);
 		float destW;
 		
 		// Apply clipping only if needed (if the sprite must be cut)
@@ -100,18 +100,19 @@ public:
 			virtualW = SCREEN_WIDTH / 2;
 		}
 		float scaling = virtualW / SEGMENT_LENGTH * 0.65f;
-		//if (scaling >= 1) scaling = 1;
 
-		float destY = Y - racer->currentAnimation->GetCurrentFrame().h * scaling;
+		float destY = Y - 72/*racer->currentAnimation->GetCurrentFrame().h*/ * scaling;
 		float destX = X + (W * racer->x);
-		int destH = racer->currentAnimation->GetCurrentFrame().h * (int)scaling;
+		int destH = (int)(/*racer->currentAnimation->GetCurrentFrame().h*/72 * scaling);
 		float destW;
+
 
 		// Apply clipping only if needed (if the sprite must be cut)
 		if (destY + destH > clip) {
 			behindStuff = true;
 			float clipH = destY + destH - clip;
-			//racer->currentAnimation->GetCurrentFrame().h = (int)(racer->currentAnimation->GetCurrentFrame().h - racer->currentAnimation->GetCurrentFrame().h * clipH / destH);
+			//object.sprite.h = (int)(object.sprite.h - object.sprite.h * clipH / destH);
+			//racer->currentAnimation->GetCurrentFrame().h = (int)(/*racer->currentAnimation->GetCurrentFrame().h*/72 - 72/*racer->currentAnimation->GetCurrentFrame().h*/ * clipH / destH);
 		}
 		else {
 			behindStuff = false;
@@ -123,11 +124,13 @@ public:
 		else {
 			destW = racer->currentAnimation->GetCurrentFrame().w * scaling;
 		}
+		/*SDL_Rect drawSprite = { racer->currentAnimation->GetCurrentFrame().x,  }*/
 
 		SDL_Rect hitBox = { static_cast<int>(destX + racer->hitBoxXOffset * scaling),
 			static_cast<int>(destY + racer->currentAnimation->GetCurrentFrame().h * scaling - 10),
 			static_cast<int>(destW),
 			10 };
+
 
 		
 		if(clip > destY)

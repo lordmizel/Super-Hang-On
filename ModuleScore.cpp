@@ -49,12 +49,12 @@ bool ModuleScore::Start()
 	readFile.close();
 
 	//TODO: DELETE THIS, ONLY FOR DEBUG
-	currentScore.score = 1400000;
+	/*currentScore.score = 1400000;
 	currentScore.stage = 2;
-	currentScore.time = 12345;
+	currentScore.time = 0;
 	currentScore.timeMin = (currentScore.time / 100) / 60;
 	currentScore.timeSec = (currentScore.time / 100) % 60;
-	currentScore.timeDec = currentScore.time % 100;
+	currentScore.timeDec = currentScore.time % 100;*/
 
 	return true;
 }
@@ -70,17 +70,24 @@ bool ModuleScore::CleanUp()
 	return true;
 }
 
-void ModuleScore::ValidateScoreEntry() {
+void ModuleScore::ValidateScoreEntry(double totalTime) {
+	LOG("TopScore: %d", scoreEntries[0].score)
+	LOG("Your score: %d", currentScore.score)
+	App->score->currentScore.time = (int)(totalTime * 100);
+	currentScore.timeMin = (currentScore.time / 100) / 60;
+	currentScore.timeSec = (currentScore.time / 100) % 60;
+	currentScore.timeDec = currentScore.time % 100;
+
 	//Recorrer lista de puntuaciones y ver si supera las puntuaciones guardadas
 	for (unsigned int i = 0; i < scoreEntries.size(); i++) {
 		if (currentScore.score > scoreEntries[i].score) 
 		{
 			entryInScoreTable = i;
+			scoreIsHighEnough = true;
 			break;
 		}
-		else 
-		{
-			entryInScoreTable = NULL;
+		else {
+			scoreIsHighEnough = false;
 		}
 	}
 }
@@ -109,6 +116,8 @@ void ModuleScore::SaveScoreEntry() {
 
 void ModuleScore::ResetScore()
 {
+	scoreIsHighEnough = false;
+
 	currentScore.score = 1400000;
 	currentScore.stage = 1;
 	currentScore.name = "   ";

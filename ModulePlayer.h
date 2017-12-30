@@ -61,6 +61,8 @@ public:
 	Timer timePastGoal;
 	Timer timeEndScene;
 
+	bool raceEnded;
+
 private:
 
 	void ManageAnimations();
@@ -114,6 +116,11 @@ private:
 	//PAUSE PARAMETERS
 	player_state previousState;
 	float previousAnimationSpeed;
+
+	uint collision = 0;
+	uint skid = 0;
+	uint crash = 0;
+	uint scream = 0;
 };
 
 #endif

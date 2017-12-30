@@ -12,14 +12,14 @@
 
 ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 {
-	goalPoint = 2000;
+	goalPoint = 9800;
 
 	landscapeParis = { 8, 197, 320, 74 };
 	parisBuildings = { 336, 104, 320, 15 };
-	landscapeSea = { 8, 274, 320, 72 };
-	seaRocks = { 336, 122, 320, 15 };
 	landscapeAlpine = { 677, 3, 320, 61 };
 	alpineMountains = { 336, 352, 320, 21 };
+	landscapeWindmills = { 677, 358, 320, 43 };
+	windmillVillage = { 335, 378, 320, 21 };
 	landscapeSunset = { 677, 251, 320, 39 };
 	sunsetBuildings = { 335, 333, 320, 16 };
 
@@ -27,14 +27,6 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		Color(224, 224, 224, 255), Color(96, 96, 96, 255),
 		Color(32, 32, 32, 255), Color(224, 224, 224, 225),
 		landscapeParis, parisBuildings));
-	biomes.push_back(coast = biome(Color(224, 224, 64, 255), Color(224, 224, 64, 255),
-		Color(224, 224, 224, 255), Color(128, 128, 128, 255),
-		Color(192, 192, 192, 255), Color(32, 0, 224, 225),
-		landscapeSea, seaRocks));
-	biomes.push_back(sunset = biome(Color(224, 160, 0, 255), Color(192, 128, 0, 255),
-		Color(224, 192, 192, 255), Color(64, 32, 32, 255),
-		Color(64, 64, 64, 255), Color(224, 64, 0, 225),
-		landscapeSunset, sunsetBuildings));
 	biomes.push_back(alpine = biome(Color(0, 224, 96, 255), Color(0, 192, 64, 255),
 		Color(192, 192, 192, 255), Color(64, 64, 64, 255),
 		Color(64, 64, 64, 255), Color(224, 224, 224, 225),
@@ -43,19 +35,29 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		Color(224, 192, 224, 255), Color(96, 64, 64, 255),
 		Color(96, 64, 64, 255), Color(192, 224, 224, 225),
 		landscapeWindmills, windmillVillage));
+	biomes.push_back(sunset = biome(Color(224, 160, 0, 255), Color(192, 128, 0, 255),
+		Color(224, 192, 192, 255), Color(64, 32, 32, 255),
+		Color(64, 64, 64, 255), Color(224, 64, 0, 225),
+		landscapeSunset, sunsetBuildings));
 	biomes.push_back(city = biome(Color(0, 0, 32, 255), Color(0, 0, 32, 255),
 		Color(224, 224, 128, 255), Color(0, 0, 96, 255),
 		Color(0, 0, 96, 255), Color(0, 0, 0, 225),
 		landscapeCity, cityBuildings));
 	
-	biomeBorders.push_back(950);
-	biomeBorders.push_back(1500);
+	biomeBorders.push_back(1700);
+	biomeBorders.push_back(3900);
+	biomeBorders.push_back(6000);
+	biomeBorders.push_back(99999); //Needed to avoid bug
 	
 	currentBiome = biomes[biomeIndex];
 
-	checkPoints.push_back(1000);
+	checkPoints.push_back(1300);
+	checkPoints.push_back(3000);
+	checkPoints.push_back(4700);
+	checkPoints.push_back(6400);
+	checkPoints.push_back(8100);
 
-	for (int i = 0; i <6000; i++)
+	for (int i = 0; i <12000; i++)
 	{
 		Segment segment;
 		segment.z = (float)i * SEGMENT_LENGTH;
@@ -63,28 +65,136 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		currentAltitude = segment.y;
 
 		segment.curve = 0;
+
+		//First part (0-1300)
+		if (i == 30) segment.atrezzos.push_back(make_pair(startSign, -3));
+		if (i == 30) segment.atrezzos.push_back(make_pair(rightLegOfSign, -3));
+		if (i == 29) segment.atrezzos.push_back(make_pair(semaphore, -2));
+
 		if (i > 300 && i < 700) segment.curve = 4;
 		if (i > 500 && i < 600) segment.curve = -1;
+		if (i > 900 && i < 600) segment.curve = -1;
+		if (i > 950 && i < 1000) segment.curve = 1;
+		if (i > 1000 && i < 1050) segment.curve = -1;
+		if (i > 1050 && i < 1100) segment.curve = 1;
+		if (i > 1100 && i < 1150) segment.curve = -1;
+		if (i > 1150 && i < 1200) segment.curve = 1;
+		if (i > 1200 && i < 1250) segment.curve = -1;
+
+		if (i > 400 && i < 600) ChangeAltitude(altitudeVariation, -50.0f, i, 400, 600);
+		if (i > 800 && i < 900) ChangeAltitude(altitudeVariation, 150.0f, i, 800, 900);
+
+		for (int j = 50; j <= 1250; j += 60) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(retroLamp, -2.4f));
+				segment.atrezzos.push_back(make_pair(retroLamp, 2));
+				break;
+			}
+		}
+		for (int j = 150; j <= 300; j += 50) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(arrowRight, -2));
+				break;
+			}
+		}
+		if (i == 1025) segment.atrezzos.push_back(make_pair(streetMirror, -2));
+		if (i == 1025) segment.atrezzos.push_back(make_pair(streetMirror, -2));
+		if (i == 1175) segment.atrezzos.push_back(make_pair(phoneBooth, 2));
 
 
-		if (i > 800 && i < 1500) {
-			ChangeAltitude(altitudeVariation, 150.0f, i, 800, 1500);
+		//Second part (1300 - 3000)
+		if (i > 1400 && i < 1500) segment.curve = -3;
+		if (i > 1600 && i < 1700) segment.curve = -3;
+		if (i > 1800 && i < 2500) segment.curve = 4;
+		if (i > 2500 && i < 2600) segment.curve = -4;
+		if (i > 2800 && i < 2900) segment.curve = 3;
+
+		if (i > 1550 && i < 2100) ChangeAltitude(altitudeVariation, 180.0f, i, 1550, 2100);
+		if (i > 2000 && i < 2500) ChangeAltitude(altitudeVariation, -20.0f, i, 2000, 2500);
+		if (i > 2600 && i < 2800) ChangeAltitude(altitudeVariation, -40.0f, i, 2600, 2800);
+
+		for (int j = 1250; j <= 1400; j += 40) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(discoNora, -2.5));
+				segment.atrezzos.push_back(make_pair(arrowLeft, 1.5));
+				break;
+			}
+		}
+		if (i == 1500) segment.atrezzos.push_back(make_pair(bridalStone, -4));
+		if (i == 1500) segment.atrezzos.push_back(make_pair(bridalStone, 2));
+		for (int j = 1520; j <= 1650; j += 30) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(streetMirror, 1.5));
+				break;
+			}
+		}
+		for (int j = 1650; j <= 2400; j += 50) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(arrowRight, -2));
+				break;
+			}
+		}
+		for (int j = 1800; j < 2700; j += 30) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(smallTree, -6.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (-2.5f - (-6.0f))))));
+				segment.atrezzos.push_back(make_pair(smallTree, 2.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (6.0f - 2.0f)))));
+				break;
+			}
+		}
+		for (int j = 1800; j < 2700; j += 55) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(tallTree, -6.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (-2.5f - (-6.0f))))));
+				segment.atrezzos.push_back(make_pair(tallTree, 2.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (6.0f - 2.0f)))));
+				break;
+			}
+		}
+		for (int j = 2750; j < 2900; j += 40) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(morobare, -3.5));
+				segment.atrezzos.push_back(make_pair(morobare, 2));
+				break;
+			}
 		}
 
-		//if (i > 0) line.y = (float)(sin(i / 30.0) * 15000);
 
-		/*if (i > 1100 && i < 1500) {
-			ChangeAltitude(altitudeVariation, -50.0f, i, 1100, 1500);
-		}*/
+		//Third Part (3000 - 4700)
+		if (i > 3200 && i < 3350) segment.curve = 3;
+		if (i > 3500 && i < 3650) segment.curve = -3;
+		if (i > 3900 && i < 4500) segment.curve = -4;
 
-		if (i == 30) { segment.atrezzos.push_back(make_pair(startSign, -3)); }
-		if (i == 30) { segment.atrezzos.push_back(make_pair(rightLegOfSign, -3)); }
-		if (i == 29) { segment.atrezzos.push_back(make_pair(semaphore, -2)); }
-		if (i == 400) { segment.atrezzos.push_back(make_pair(discoNora, 1)); }
-		if (i == 500) { segment.atrezzos.push_back(make_pair(lampLeft, -2)); }
-		if (i == 500) { segment.atrezzos.push_back(make_pair(lampRight, 2)); }
+		if (i > 3100 && i < 3300) ChangeAltitude(altitudeVariation, 80.0f, i, 3100, 3300);
+		if (i > 3300 && i < 3400) ChangeAltitude(altitudeVariation, -40.0f, i, 3300, 3400);
+		if (i > 3400 && i < 3600) ChangeAltitude(altitudeVariation, 130.0f, i, 3400, 3600);
+		if (i > 3600 && i < 3700) ChangeAltitude(altitudeVariation, -40.0f, i, 3600, 3700);
+		if (i > 3700 && i < 4200) ChangeAltitude(altitudeVariation, 130.0f, i, 3700, 4200);
+		if (i > 4200 && i < 4600) ChangeAltitude(altitudeVariation, -40.0f, i, 4200, 4600);
 
+
+		//Fourth part (4700 - 6400)
+		if (i > 4750 && i < 6350) segment.curve = 2;
+		if (i > 4800 && i < 5100) segment.curve = -2;
+		if (i > 5400 && i < 5800) segment.curve = -2;
+
+		if (i > 4800 && i < 5300) ChangeAltitude(altitudeVariation, -40.0f, i, 4800, 5300);
+		if (i > 5300 && i < 5800) ChangeAltitude(altitudeVariation, 40.0f, i, 5300, 5800);
+		if (i > 5800 && i < 6300) ChangeAltitude(altitudeVariation, 170.0f, i, 5800, 6300);
 		
+
+		for (int j = 3100; j < 3900; j += 30) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(smallTree, -6.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (-2.5f - (-6.0f))))));
+				segment.atrezzos.push_back(make_pair(smallTree, 2.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (6.0f - 2.0f)))));
+				break;
+			}
+		}
+		for (int j = 3100; j < 3900; j += 10) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(bigRock, -6.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (-2.5f - (-6.0f))))));
+				segment.atrezzos.push_back(make_pair(bigRock, 2.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (6.0f - 2.0f)))));
+				break;
+			}
+		}
+
 
 		for (vector<int>::iterator it = checkPoints.begin(); it != checkPoints.end(); ++it) {
 			if (i == *it) {

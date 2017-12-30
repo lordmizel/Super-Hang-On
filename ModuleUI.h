@@ -22,6 +22,8 @@ public:
 	SDL_Rect topRanks[7];
 
 private:
+	/*const int scoreScreenDivision = SCREEN_WIDTH / 7 - 16;*/
+
 	void NameEntry();
 
 	SDL_Rect blankSpace;

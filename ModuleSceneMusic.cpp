@@ -44,9 +44,7 @@ ModuleSceneMusic::ModuleSceneMusic(bool active) : Module(active)
 	pressButton.frames.push_back({ 0, 0, 0, 0 });
 	pressButton.speed = 0.03f;
 
-	timer_.SetTime(10);
-
-	selectedSong = SONG1;
+	
 	
 }
 
@@ -66,6 +64,9 @@ bool ModuleSceneMusic::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	selectedSong = SONG1;
+
+	timer_.SetTime(10);
 	timer_.Start();
 
 	return true;
@@ -181,6 +182,8 @@ update_status ModuleSceneMusic::Update()
 			App->audio->musicChosen = "hardRoad.ogg";
 			break;
 		}
+
+		App->audio->MusicFadeOut(1);
 		App->fade->FadeToBlack((Module*)App->europe_race, this);
 	}
 
@@ -194,16 +197,16 @@ void ModuleSceneMusic::ChangeSongPlaying()
 	switch (selectedSong)
 	{
 	case SONG1:
-		App->audio->PlayMusic("outRideACrisis.ogg", 1.0f);
+		App->audio->PlayMusic("outRideACrisis.ogg", 0.0f);
 		break;
 	case SONG2:
-		App->audio->PlayMusic("sprinter.ogg", 1.0f);
+		App->audio->PlayMusic("sprinter.ogg", 0.0f);
 		break;
 	case SONG3:
-		App->audio->PlayMusic("winningRun.ogg", 1.0f);
+		App->audio->PlayMusic("winningRun.ogg", 0.0f);
 		break;
 	case SONG4:
-		App->audio->PlayMusic("hardRoad.ogg", 1.0f);
+		App->audio->PlayMusic("hardRoad.ogg", 0.0f);
 		break;
 	}
 }

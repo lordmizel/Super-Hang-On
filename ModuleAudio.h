@@ -29,6 +29,9 @@ public:
 	// Play a previously loaded WAV
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
+	bool PauseFx(unsigned int id);
+	void MusicFadeOut(float fade_time);
+
 	char* musicChosen;
 
 private:

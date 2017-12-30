@@ -19,7 +19,7 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	singleton = false;
 
 	arrowLeft.sprite = { 6, 4, 46, 42 };
-	arrowRight.sprite = { 61, 4, 46, 62};
+	arrowRight.sprite = { 61, 4, 46, 42};
 	bridalStone.sprite = { 119, 7, 116, 40 };
 	nokSparkPlugs.sprite = { 245, 5, 86, 71 };
 	birdBird.sprite = { 3, 55, 76, 56 };
@@ -27,6 +27,7 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	rustyDrum.sprite = { 159, 56, 44, 56 };
 	smallCacti.sprite = { 212, 89, 54, 57 };
 	bigRock.sprite = { 95, 117, 96, 56 };
+	bigRock.small = true;
 	morobare.sprite = { 4, 130, 80, 48 };
 	tallCactus.sprite = { 5, 186, 36, 88 };
 	phoneBooth.sprite = { 62, 187, 40, 96 };
@@ -146,8 +147,6 @@ bool ModuleSceneRace::Start()
 
 	semaphoreAnimation.Reset();
 
-	
-
 	ResetRace();
 
 	return true;
@@ -163,13 +162,15 @@ update_status ModuleSceneRace::Update()
 		if (seconds != 0) 
 		{
 			pos += static_cast<int>(App->player->GetSpeed() / 1.5f);
-			App->score->UpdateScore(App->player->GetSpeed());
+			if (App->player->state != ModulePlayer::GOING_TO_END) {
+				App->score->UpdateScore(App->player->GetSpeed());
+			}
 		}
 	}
 
 	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex] && App->player->state != BEFORE_RACE)
 	{
-		if (biomeIndex < biomeBorders.size() - 1) 
+		if (biomeIndex < biomes.size() - 1) 
 		{
 			biomeIndex++;
 		}
@@ -182,15 +183,6 @@ update_status ModuleSceneRace::Update()
 	}
 
 	ManageRoad();
-
-	if (App->player->state != ModulePlayer::SCORE_SCREEN) 
-	{
-		App->ui->ShowUI();
-	}
-	else 
-	{
-		App->ui->ShowRankings();
-	}
 
 	if (App->player->state == BEFORE_RACE) 
 	{
@@ -366,14 +358,23 @@ void ModuleSceneRace::ManageRoad()
 						rivals[i]->currentAnimation = &greenRivalStraight;
 					}
 				}
-				lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers);
+				if (App->player->raceEnded == false) 
+				{
+					lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers);
+				}
 			}
-			else if ((int)rivals[i]->z < startPos && i < rivals.size() - 1) 
+			else if ((int)rivals[i]->z < startPos - 20 && i < rivals.size() - 1) 
 			{
 				// If the player overtakes this rival, then teleport the rival
 				// forward to make him appear again
 				rivals[i]->z += 200 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (300 - 200)));
 				// Random e [-0.8f, 0.8f]
+				rivals[i]->x = -0.8f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.8f - (-0.8f))));
+			}
+			else if (((int)rivals[i]->z > startPos + 500 && i < rivals.size() - 1 && App->player->state != ModulePlayer::GOING_TO_END) 
+				|| ((int)rivals[i]->z > startPos + 200 && i < rivals.size() - 1 && (App->player->state == ModulePlayer::CRASHING || App->player->state == ModulePlayer::RECOVERING))) {
+				
+				rivals[i]->z = startPos - 10;
 				rivals[i]->x = -0.8f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.8f - (-0.8f))));
 			}
 		}
@@ -410,6 +411,7 @@ void ModuleSceneRace::ManageRoad()
 			App->player->timeLeftInRace.AddTime(30);
 			extendedPlayTime.SetTime(2);
 			extendedPlayTime.Start();
+			App->score->currentScore.stage++;
 			checkPointIndex++;
 		}
 	}
@@ -419,15 +421,20 @@ void ModuleSceneRace::ManageRoad()
 	}
 
 	//Final Stretch Management
-	if (startPos > goalPoint - 500 && startPos < goalPoint - 150)
+	if (startPos > goalPoint - 700 && startPos < goalPoint - 250)
 	{
 		App->player->CenterMaxX(ROAD_WIDTH);
 		for (int i = 0; i < rivals.size() - 1; ++i) 
 		{
-			rivals[i]->speed = 2.5f;
+			if ((int)rivals[i]->z > startPos) {
+				rivals[i]->speed = 2.5f;
+			}
+			else {
+				rivals[i]->speed = 1.0f;
+			}
 		}
 	}
-	else if (startPos > goalPoint - 150)
+	else if (startPos > goalPoint - 250)
 	{
 		App->player->CenterMaxX(0);
 	}
@@ -583,13 +590,13 @@ void ModuleSceneRace::ResetRace()
 
 	rival1->currentAnimation = &greenRivalTurnsLeft;
 	rival1->z = 11;
-	rival1->speed = 0.5;
+	rival1->speed = 1.1;
 	rival1->x = -0.9f;
 	rival1->isYellow = true;
 
 	rival2->currentAnimation = &greenRivalStraight;
 	rival2->z = 14;
-	rival2->speed = 1.2;
+	rival2->speed = 1.4;
 	rival2->x = -0.5f;
 
 	rival3->currentAnimation = &greenRivalStraight;
@@ -600,12 +607,12 @@ void ModuleSceneRace::ResetRace()
 
 	rival4->currentAnimation = &greenRivalStraight;
 	rival4->z = 14;
-	rival4->speed = 1;
+	rival4->speed = 1.3;
 	rival4->x = 0.3f;
 
 	rival5->currentAnimation = &greenRivalStraight;
 	rival5->z = 11;
-	rival5->speed = 0.8;
+	rival5->speed = 1.2;
 	rival5->x = 0.7f;
 	rival5->isYellow = true;
 

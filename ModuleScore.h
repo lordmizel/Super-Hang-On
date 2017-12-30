@@ -8,20 +8,20 @@
 
 struct SDL_Texture;
 
+struct scoreEntry {
+	int score;
+	int stage;
+	std::string name;
+	int time;
+
+	int timeMin;
+	int timeSec;
+	int timeDec;
+};
+
 class ModuleScore : public Module
 {
 public:
-	struct scoreEntry {
-		int score;
-		int stage;
-		std::string name;
-		int time;
-
-		int timeMin;
-		int timeSec;
-		int timeDec;
-	};
-
 	ModuleScore(bool active = true);
 	~ModuleScore();
 
@@ -37,7 +37,7 @@ public:
 
 	void UpdateScore(int deltaScore) { currentScore.score += deltaScore; }
 
-	void ValidateScoreEntry();
+	void ValidateScoreEntry(double totalTime);
 	void SaveScoreEntry();
 	void ResetScore();
 
@@ -45,6 +45,8 @@ public:
 	int entryInScoreTable = NULL;
 
 	scoreEntry currentScore;
+
+	bool scoreIsHighEnough;
 
 private:
 	int topScore;

@@ -7,6 +7,8 @@
 #include "ModuleFontManager.h"
 #include "ModulePlayer.h"
 #include "ModuleScore.h"
+#include "ModuleAudio.h"
+#include "ModuleUI.h"
 #include "SDL/include/SDL.h"
 
 ModulePlayer::ModulePlayer(bool active) : Module(active)
@@ -24,7 +26,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	leaningLeft.frames.push_back({ 244, 280, 45, 72 });
 	leaningLeft.frames.push_back({ 295, 280, 45, 72 });
 	leaningLeft.loop = false;
-	leaningLeft.speed = 0.2f;
+	leaningLeft.speed = 0.05f;
 
 	// Leaned Left
 	leanedLeft.frames.push_back({ 345, 280, 62, 72 });
@@ -39,7 +41,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	unLeanLeft.frames.push_back({ 129, 280, 32, 72 });
 	unLeanLeft.frames.push_back({ 91, 280, 32, 72 });
 	unLeanLeft.loop = false;
-	unLeanLeft.speed = 0.2f;
+	unLeanLeft.speed = 0.1f;
 
 	// Leaning Left
 	leaningRight.frames.push_back({ 91, 596, 32, 72 });
@@ -49,7 +51,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	leaningRight.frames.push_back({ 244, 596, 45, 72 });
 	leaningRight.frames.push_back({ 295, 596, 45, 72 });
 	leaningRight.loop = false;
-	leaningRight.speed = 0.2f;
+	leaningRight.speed = 0.05f;
 
 	// Leaned Left
 	leanedRight.frames.push_back({ 345, 596, 62, 72 });
@@ -64,7 +66,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	unLeanRight.frames.push_back({ 129, 596, 32, 72 });
 	unLeanRight.frames.push_back({ 91, 596, 32, 72 });
 	unLeanRight.loop = false;
-	unLeanRight.speed = 0.2f;
+	unLeanRight.speed = 0.1f;
 
 	// Forward Braking
 	forwardBraking.frames.push_back({ 91, 360, 32, 72 });
@@ -79,7 +81,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	leaningLeftBraking.frames.push_back({ 244, 360, 45, 72 });
 	leaningLeftBraking.frames.push_back({ 295, 360, 45, 72 });
 	leaningLeftBraking.loop = false;
-	leaningLeftBraking.speed = 0.2f;
+	leaningLeftBraking.speed = 0.05f;
 
 	// Leaned Left Braking
 	leanedLeftBraking.frames.push_back({ 345, 360, 62, 72 });
@@ -94,7 +96,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	unLeanLeftBraking.frames.push_back({ 129, 360, 32, 72 });
 	unLeanLeftBraking.frames.push_back({ 91, 360, 32, 72 });
 	unLeanLeftBraking.loop = false;
-	unLeanLeftBraking.speed = 0.2f;
+	unLeanLeftBraking.speed = 0.1f;
 
 	// Leaning Left Braking
 	leaningRightBraking.frames.push_back({ 91, 676, 32, 72 });
@@ -104,7 +106,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	leaningRightBraking.frames.push_back({ 244, 676, 45, 72 });
 	leaningRightBraking.frames.push_back({ 295, 676, 45, 72 });
 	leaningRightBraking.loop = false;
-	leaningRightBraking.speed = 0.2f;
+	leaningRightBraking.speed = 0.05f;
 
 	// Leaned Left Braking
 	leanedRightBraking.frames.push_back({ 345, 676, 62, 72 });
@@ -119,7 +121,7 @@ ModulePlayer::ModulePlayer(bool active) : Module(active)
 	unLeanRightBraking.frames.push_back({ 129, 676, 32, 72 });
 	unLeanRightBraking.frames.push_back({ 91, 676, 32, 72 });
 	unLeanRightBraking.loop = false;
-	unLeanRightBraking.speed = 0.2f;
+	unLeanRightBraking.speed = 0.1f;
 
 	// Small crash
 	smallCrash.frames.push_back({ 0, 0, 220, 124 });
@@ -185,6 +187,22 @@ bool ModulePlayer::Start()
 
 	timeLeftInRace.SetTime(30);
 
+	if (collision == 0) {
+		collision = App->audio->LoadFx("collision.wav");
+	}
+
+	if (crash == 0) {
+		crash = App->audio->LoadFx("crash.wav");
+	}
+
+	if (scream == 0) {
+		scream = App->audio->LoadFx("wilhelm.wav");
+	}
+
+	if (skid == 0) {
+		skid = App->audio->LoadFx("skid.wav");
+	}
+
 	ResetPlayer();
 
 	return true;
@@ -201,43 +219,6 @@ bool ModulePlayer::CleanUp()
 	return true;
 }
 
-void ModulePlayer::CenterMaxX(float max)
-{
-	if (maxXPosition > max)
-	{
-		maxXPosition -= 30;
-	}
-	else
-	{
-		maxXPosition = max;
-	}
-}
-
-void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x)
-{
-	collision_types type = typeOfCollision;
-	if (state == RACING || state == OUT_OF_CONTROL) {
-		if (!(collider.x > r.x + r.w || collider.x + collider.w < r.x || collider.y > r.y + r.h || collider.y + collider.h < r.y)) {
-			switch (type) {
-			case OBSTACLE:
-				state = CRASHING;
-				break;
-			case RIVAL:
-				timeOutOfControl.SetTime(1);
-				timeOutOfControl.Start();
-				if (x < SCREEN_WIDTH / 2) {
-					deviateRight = true;
-				}
-				else {
-					deviateRight = false;
-				}
-				state = OUT_OF_CONTROL;
-				break;
-			}
-		}
-	}
-}
-
 update_status ModulePlayer::Update()
 {
 	if (state == RACING || state == CRASHING || state == OUT_OF_CONTROL) 
@@ -252,8 +233,6 @@ update_status ModulePlayer::Update()
 		}
 	}
 
-	LOG("%f", timeLeftInRace.GetTotalTimeElapsed())
-
 	switch (state) {
 	case(BEFORE_RACE):
 		current_animation = &forward;
@@ -263,11 +242,13 @@ update_status ModulePlayer::Update()
 		timeWaitingAtStart.Update();
 		if (timeWaitingAtStart.IsExpired()) {
 			timeLeftInRace.Start();
+			App->audio->PlayMusic(App->audio->musicChosen, 0.0f);
 			state = RACING;
 		}
 		break;
 
 	case(RACING):
+
 		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
 			Pause();
 		}
@@ -392,7 +373,7 @@ update_status ModulePlayer::Update()
 	case(GAME_OVER):
 		gameOverTimer.Update();
 		if (gameOverTimer.IsExpired()) {
-			App->score->ValidateScoreEntry();
+			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
 			state = SCORE_SCREEN;
 		}
 
@@ -427,6 +408,7 @@ update_status ModulePlayer::Update()
 
 		timePastGoal.Update();
 		if (timePastGoal.IsExpired()) {
+			raceEnded = true;
 			state = GOING_TO_END;
 		}
 		break;
@@ -439,7 +421,7 @@ update_status ModulePlayer::Update()
 		timeEndScene.Update();
 
 		if (timeEndScene.IsExpired()) {
-			App->score->ValidateScoreEntry();
+			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
 			timeLeftInRace.Resume();
 			state = SCORE_SCREEN;
 		}
@@ -463,7 +445,8 @@ update_status ModulePlayer::Update()
 		break;
 	}
 	
-	if (state == RACING || state == CRASHING || state == RECOVERING || state == OUT_OF_CONTROL) {
+	if (state == RACING || state == CRASHING || state == RECOVERING || state == OUT_OF_CONTROL) 
+	{
 		timeLeftInRace.Update();
 		if (timeLeftInRace.IsExpired()) {
 			gameOverTimer.SetTime(5);
@@ -471,6 +454,15 @@ update_status ModulePlayer::Update()
 			current_animation->speed = 0.0f;
 			state = GAME_OVER;
 		}
+	}
+
+	if (state != SCORE_SCREEN)
+	{
+		App->ui->ShowUI();
+	}
+	else
+	{
+		App->ui->ShowRankings();
 	}
 
 	collider = { SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, SCREEN_HEIGHT - 50, current_animation->GetCurrentFrame().w * 2, 50 };
@@ -644,6 +636,52 @@ void ModulePlayer::ManageAnimations() {
 	}
 }
 
+void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x)
+{
+	collision_types type = typeOfCollision;
+	if (state == RACING || state == OUT_OF_CONTROL) {
+		if (!(collider.x > r.x + r.w || collider.x + collider.w < r.x || collider.y > r.y + r.h || collider.y + collider.h < r.y)) {
+			switch (type) {
+			case OBSTACLE:
+				if (speed > 200) {
+					App->audio->PlayFx(crash, 0);
+					App->audio->PlayFx(scream, 0);
+				}
+				else {
+					App->audio->PlayFx(crash, 0);
+				}
+				state = CRASHING;
+				break;
+			case RIVAL:
+				timeOutOfControl.SetTime(1);
+				timeOutOfControl.Start();
+				if (x < SCREEN_WIDTH / 2) {
+					deviateRight = true;
+				}
+				else {
+					deviateRight = false;
+				}
+				App->audio->PlayFx(collision, 0);
+				App->audio->PlayFx(skid, 0);
+				state = OUT_OF_CONTROL;
+				break;
+			}
+		}
+	}
+}
+
+void ModulePlayer::CenterMaxX(float max)
+{
+	if (maxXPosition > max)
+	{
+		maxXPosition -= 30;
+	}
+	else
+	{
+		maxXPosition = max;
+	}
+}
+
 void ModulePlayer::Pause() {
 	previousAnimationSpeed = current_animation->speed;
 	current_animation->speed = 0.0f;
@@ -655,6 +693,24 @@ void ModulePlayer::Pause() {
 void ModulePlayer::ResetPlayer() {
 	maxXPosition = ROAD_WIDTH * 4;
 	raceHasEnded = false;
+	positionX = 0;
 	speed = 0;
 	timeLeftInRace.ResetTotalTime();
+	raceEnded = false;
+
+	//Animation bug patch
+	leaningLeft.speed = 0.05f;
+	leanedLeft.speed = 0.2f;
+	unLeanLeft.speed = 0.1f;
+	leaningRight.speed = 0.05f;
+	leanedRight.speed = 0.2f;
+	unLeanRight.speed = 0.1f;
+	leaningLeftBraking.speed = 0.05f;
+	leanedLeftBraking.speed = 0.2f;
+	unLeanLeftBraking.speed = 0.1f;
+	leaningRightBraking.speed = 0.05f;
+	leanedRightBraking.speed = 0.2f;
+	unLeanRightBraking.speed = 0.1f;
+	bigCrash.speed = 0.04f;
+	smallCrash.speed = 0.04f;
 }
