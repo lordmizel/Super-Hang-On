@@ -48,14 +48,6 @@ bool ModuleScore::Start()
 
 	readFile.close();
 
-	//TODO: DELETE THIS, ONLY FOR DEBUG
-	/*currentScore.score = 1400000;
-	currentScore.stage = 2;
-	currentScore.time = 0;
-	currentScore.timeMin = (currentScore.time / 100) / 60;
-	currentScore.timeSec = (currentScore.time / 100) % 60;
-	currentScore.timeDec = currentScore.time % 100;*/
-
 	return true;
 }
 
@@ -71,14 +63,11 @@ bool ModuleScore::CleanUp()
 }
 
 void ModuleScore::ValidateScoreEntry(double totalTime) {
-	LOG("TopScore: %d", scoreEntries[0].score)
-	LOG("Your score: %d", currentScore.score)
 	App->score->currentScore.time = (int)(totalTime * 100);
 	currentScore.timeMin = (currentScore.time / 100) / 60;
 	currentScore.timeSec = (currentScore.time / 100) % 60;
 	currentScore.timeDec = currentScore.time % 100;
 
-	//Recorrer lista de puntuaciones y ver si supera las puntuaciones guardadas
 	for (unsigned int i = 0; i < scoreEntries.size(); i++) {
 		if (currentScore.score > scoreEntries[i].score) 
 		{
@@ -118,9 +107,55 @@ void ModuleScore::ResetScore()
 {
 	scoreIsHighEnough = false;
 
+	currentLaps.clear();
+	storedLaps.clear();
+	reductionTime = 0;
+	checkPointsPassed = 0;
+
 	currentScore.score = 1400000;
 	currentScore.stage = 1;
 	currentScore.name = "   ";
 	currentScore.time = 0;
+}
+
+void ModuleScore::OpenLapData(std::string & file)
+{
+	string inputString;
+	lapFileName = file;
+
+	readLapFile.open(lapFileName);
+
+	while (!readLapFile.eof()) {
+		getline(readLapFile, inputString, ';');
+		storedLaps.push_back(stoi(inputString));
+	}
+	readLapFile.close();
+}
+
+void ModuleScore::SaveLapData()
+{
+	writeLapFile.open(lapFileName, std::ios::out | std::ios::trunc);
+
+	for (int i = 0; i < storedLaps.size(); i++) {
+		writeLapFile << storedLaps[i];
+		if (i < storedLaps.size() - 1) {
+			writeLapFile << ";";
+		}
+	}
+
+	writeFile.close();
+}
+
+void ModuleScore::CompareLapTime(int currentTime)
+{
+	int actualLapTime = currentTime - reductionTime;
+	currentLaps.push_back(actualLapTime);
+
+	if (actualLapTime < storedLaps[checkPointsPassed]) {
+		storedLaps[checkPointsPassed] = actualLapTime;
+	}
+
+	reductionTime = currentTime;
+	checkPointsPassed++;
 }
 

@@ -12,6 +12,8 @@
 
 ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 {
+	lapRecordsFile = "europelaps.txt";
+
 	goalPoint = 9800;
 
 	landscapeParis = { 8, 197, 320, 74 };

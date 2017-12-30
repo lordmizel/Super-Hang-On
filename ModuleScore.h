@@ -32,6 +32,7 @@ public:
 	int GetTopScore() { return scoreEntries[0].score; }
 	int GetScore() { return currentScore.score; }
 	int GetStage() { return currentScore.stage; }
+	std::pair<int, int> GetLapTimes() { return std::make_pair(storedLaps[checkPointsPassed-1], currentLaps[checkPointsPassed-1]); }
 
 	void setTime(int64_t t) { current_time = t; }
 
@@ -40,6 +41,10 @@ public:
 	void ValidateScoreEntry(double totalTime);
 	void SaveScoreEntry();
 	void ResetScore();
+	void OpenLapData(std::string &file);
+	void SaveLapData();
+	void CompareLapTime(int currentTime);
+
 
 	std::vector<scoreEntry> scoreEntries;
 	int entryInScoreTable = NULL;
@@ -55,6 +60,15 @@ private:
 	std::string fileName = "scores.txt";
 	std::ifstream readFile;
 	std::ofstream writeFile;
+
+	std::string lapFileName;
+	std::ifstream readLapFile;
+	std::ofstream writeLapFile;
+
+	std::vector<int> storedLaps;
+	std::vector<int> currentLaps;
+	int reductionTime;
+	int checkPointsPassed;
 };
 
 #endif

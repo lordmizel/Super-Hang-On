@@ -373,6 +373,7 @@ update_status ModulePlayer::Update()
 	case(GAME_OVER):
 		gameOverTimer.Update();
 		if (gameOverTimer.IsExpired()) {
+			App->score->SaveLapData();
 			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
 			state = SCORE_SCREEN;
 		}
@@ -421,6 +422,7 @@ update_status ModulePlayer::Update()
 		timeEndScene.Update();
 
 		if (timeEndScene.IsExpired()) {
+			App->score->SaveLapData();
 			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
 			timeLeftInRace.Resume();
 			state = SCORE_SCREEN;

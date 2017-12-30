@@ -115,6 +115,8 @@ protected:
 
 	vector<rival*> rivals;
 
+	std::string lapRecordsFile;
+
 private:
 	void ResetRace();
 
@@ -153,7 +155,7 @@ private:
 	bool showExtendedPlay;
 	Timer extendedPlayTime;
 
-	bool singleton;
+	
 };
 
 #endif

@@ -22,6 +22,7 @@ ModuleUI::ModuleUI(bool active) : Module(active)
 	speedText = { 138, 221, 40, 8 };
 	kmText = { 184, 221, 16, 8 };
 	europeText = { 325, 264, 48, 8 };
+	lapTimesTag = { 62, 929, 95, 20 };
 	
 	//Score screen
 	initialEntryCountdown = { 6, 915, 210, 8 };
@@ -206,6 +207,26 @@ void ModuleUI::ShowRankings() {
 	}
 
 	LOG("Entry in score table: %d", App->score->entryInScoreTable)
+}
+
+void ModuleUI::ShowLapTimes()
+{
+	int yourTime = App->score->GetLapTimes().second;
+	int bestTime = App->score->GetLapTimes().first;
+	int posX = SCREEN_WIDTH / 2;
+	int posY = SCREEN_HEIGHT / 2;
+
+	App->font_manager->DigitRendering((yourTime / 100) / 60, 2, posX, posY, Color(255, 255, 0, 255));
+	App->renderer->Blit(graphics, posX + 32, posY, &minutesMark, 0.0f, false, false, 2, 2, Color(255, 255, 0, 255));
+	App->font_manager->DigitRendering((yourTime / 100) % 60, 2, posX + 48, posY, Color(255, 255, 0, 255));
+	App->renderer->Blit(graphics, posX + 80, posY, &secondsMark, 0.0f, false, false, 2, 2, Color(255, 255, 0, 255));
+	App->font_manager->DigitRendering(yourTime % 100, 2, posX + 96, posY, Color(255, 255, 0, 255));
+
+	App->font_manager->DigitRendering((bestTime / 100) / 60, 2, posX, posY + 32, Color(255, 255, 0, 255));
+	App->renderer->Blit(graphics, posX + 32, posY + 32, &minutesMark, 0.0f, false, false, 2, 2, Color(255, 255, 0, 255));
+	App->font_manager->DigitRendering((bestTime / 100) % 60, 2, posX + 48, posY + 32, Color(255, 255, 0, 255));
+	App->renderer->Blit(graphics, posX + 80, posY + 32, &secondsMark, 0.0f, false, false, 2, 2, Color(255, 255, 0, 255));
+	App->font_manager->DigitRendering(bestTime % 100, 2, posX + 96, posY + 32, Color(255, 255, 0, 255));
 }
 
 void ModuleUI::NameEntry() {

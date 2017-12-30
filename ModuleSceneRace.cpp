@@ -16,8 +16,6 @@
 
 ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 {
-	singleton = false;
-
 	arrowLeft.sprite = { 6, 4, 46, 42 };
 	arrowRight.sprite = { 61, 4, 46, 42};
 	bridalStone.sprite = { 119, 7, 116, 40 };
@@ -144,6 +142,7 @@ bool ModuleSceneRace::Start()
 	App->ui->Enable();
 
 	App->score->ResetScore();
+	App->score->OpenLapData(lapRecordsFile);
 
 	semaphoreAnimation.Reset();
 
@@ -191,6 +190,7 @@ update_status ModuleSceneRace::Update()
 
 	if (showExtendedPlay) 
 	{
+		App->ui->ShowLapTimes();
 		App->renderer->Blit(drivers, SCREEN_WIDTH / 2 - extendedPlayTag.frames[0].w, SCREEN_HEIGHT / 2 - extendedPlayTag.frames[0].h, &extendedPlayTag.GetCurrentFrame(), 0.0f, false, false, 2, 2);
 		extendedPlayTime.Update();
 	}
@@ -411,6 +411,7 @@ void ModuleSceneRace::ManageRoad()
 			App->player->timeLeftInRace.AddTime(30);
 			extendedPlayTime.SetTime(2);
 			extendedPlayTime.Start();
+			App->score->CompareLapTime((int)(App->player->timeLeftInRace.GetTotalTimeElapsed() * 100));
 			App->score->currentScore.stage++;
 			checkPointIndex++;
 		}
