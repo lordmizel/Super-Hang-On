@@ -279,10 +279,10 @@ update_status ModulePlayer::Update()
 		}
 
 		if (positionX > maxXPosition) {
-			positionX = maxXPosition;
+			positionX = (float)maxXPosition;
 		}
 		if (positionX < -maxXPosition) {
-			positionX = -maxXPosition;
+			positionX = -(float)maxXPosition;
 		}
 
 		if (positionX > ROAD_WIDTH) {
@@ -685,7 +685,7 @@ void ModulePlayer::CenterMaxX(float max)
 	}
 	else
 	{
-		maxXPosition = max;
+		maxXPosition = (int)max;
 	}
 }
 

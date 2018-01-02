@@ -81,6 +81,8 @@ bool Application::Init()
 update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
+	clock_t globalClock = clock();
+	deltaTime += float(globalClock - timer) / CLOCKS_PER_SEC;
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if((*it)->IsEnabled() == true) 

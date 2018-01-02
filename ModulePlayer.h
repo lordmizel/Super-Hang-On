@@ -40,7 +40,7 @@ public:
 
 	inline int GetSpeed() const { return speed; }
 	inline int GetMaxSpeedRunning() const { return maxSpeedRunning; }
-	int GetXPosition() const { return positionX; }
+	int GetXPosition() const { return (int)positionX; }
 	inline int GetAbsoluteX() const { return absoluteX; }
 
 	void AlterXPosition(float alt) { positionX += alt; }

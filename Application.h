@@ -60,6 +60,9 @@ public:
 private:
 
 	std::list<Module*> modules;
+
+	clock_t timer = 0;
+	float deltaTime = 0;
 };
 
 extern Application* App;

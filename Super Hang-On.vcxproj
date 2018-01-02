@@ -82,7 +82,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -120,11 +120,16 @@
     <IncludePath>C:\Users\Mizel\Documents\GitHub\Super Hang-On\Super Hang-On\SDL_gfx\include;C:\Users\Mizel\Documents\GitHub\Super Hang-On\Super Hang-On\SDL\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Mizel\Documents\GitHub\Super Hang-On\Super Hang-On\SDL_gfx\lib;C:\Users\Mizel\Documents\GitHub\Super Hang-On\Super Hang-On\SDL\libx86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Users\Mizel\Documents\GitHub\Super Hang-On\Super Hang-On\SDL_gfx\include;C:\Users\Mizel\Documents\GitHub\Super Hang-On\Super Hang-On\SDL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Mizel\Documents\GitHub\Super Hang-On\Super Hang-On\SDL_gfx\lib;C:\Users\Mizel\Documents\GitHub\Super Hang-On\Super Hang-On\SDL\libx86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2.lib;SDL2_gfx.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -145,10 +150,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2_gfx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

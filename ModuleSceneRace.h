@@ -12,6 +12,7 @@ struct atrezzo {
 	int hitBoxXOffset = 0;
 	int hitBoxWidth = 0;
 	bool small = false;
+	SDL_Rect hitBox;
 };
 
 struct rival {
@@ -22,6 +23,7 @@ struct rival {
 	float x = 0;
 	int hitBoxXOffset = 0;
 	int hitBoxWidth = 0;
+	SDL_Rect hitBox;
 };
 
 class ModuleSceneRace : public Module
@@ -114,6 +116,11 @@ protected:
 	rival* endPlayer;
 
 	vector<rival*> rivals;
+
+	Color* grass;
+	Color* rumble;
+	Color* rumble2;
+	Color* line;
 
 	std::string lapRecordsFile;
 

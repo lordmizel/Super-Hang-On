@@ -116,6 +116,11 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	rivals.push_back(rival4);
 	rivals.push_back(rival5);
 	rivals.push_back(endPlayer);
+
+	grass = new Color();
+	rumble = new Color();
+	rumble2 = new Color();
+	line = new Color();
 }
 
 
@@ -124,6 +129,11 @@ ModuleSceneRace::~ModuleSceneRace()
 	for (rival* p : rivals) {
 		delete p;
 	}
+
+	delete grass;
+	delete rumble;
+	delete rumble2;
+	delete line;
 }
 
 
@@ -265,10 +275,10 @@ void ModuleSceneRace::ManageRoad()
 	
 	for (int n = startPos; n < startPos + 200; n++) 
 	{
-		Color grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
-		Color rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
-		Color rumble2 = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.rumbleDark;
-		Color line = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.roadColor;
+		*grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
+		*rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
+		*rumble2 = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.rumbleDark;
+		*line = (n / 3) % 2 ? currentBiome.rumbleLight : currentBiome.roadColor;
 
 		Segment &current = lines[n%N];
 		current.project((int)(App->player->GetXPosition() - x), camH, seg_pos - (n >= N ? N * 100 : 0));
@@ -310,15 +320,15 @@ void ModuleSceneRace::ManageRoad()
 		{
 			if ((short)previous.Y != (short)current.Y) 
 			{
-				App->renderer->DrawPolygon(grass, SCREEN_WIDTH / 2, (short)previous.Y, SCREEN_WIDTH, SCREEN_WIDTH / 2, (short)current.Y, SCREEN_WIDTH);
+				App->renderer->DrawPolygon(*grass, SCREEN_WIDTH / 2, (short)previous.Y, SCREEN_WIDTH, SCREEN_WIDTH / 2, (short)current.Y, SCREEN_WIDTH);
 			}
 		}
 
-		App->renderer->DrawPolygon(rumble2, (short)previous.X, (short)previous.Y, (short)(previous.W*1.15), (short)current.X, (short)current.Y, (short)(current.W*1.15));
-		App->renderer->DrawPolygon(rumble, (short)previous.X, (short)previous.Y, (short)(previous.W*1.03), (short)current.X, (short)current.Y, (short)(current.W*1.03));
+		App->renderer->DrawPolygon(*rumble2, (short)previous.X, (short)previous.Y, (short)(previous.W*1.15), (short)current.X, (short)current.Y, (short)(current.W*1.15));
+		App->renderer->DrawPolygon(*rumble, (short)previous.X, (short)previous.Y, (short)(previous.W*1.03), (short)current.X, (short)current.Y, (short)(current.W*1.03));
 		
 		App->renderer->DrawPolygon(currentBiome.roadColor, (short)previous.X, (short)previous.Y, (short)previous.W, (short)current.X, (short)current.Y, (short)current.W);
-		App->renderer->DrawPolygon(line, (short)previous.X, (short)previous.Y, (short)(previous.W*0.05), (short)current.X, (short)current.Y, (short)(current.W*0.05));
+		App->renderer->DrawPolygon(*line, (short)previous.X, (short)previous.Y, (short)(previous.W*0.05), (short)current.X, (short)current.Y, (short)(current.W*0.05));
 	}
 
 	//Draw Objects and Rivals
@@ -412,7 +422,7 @@ void ModuleSceneRace::ManageRoad()
 		if (startPos > checkPoints[checkPointIndex])
 		{
 			showExtendedPlay = true;
-			App->player->timeLeftInRace.AddTime(25);
+			App->player->timeLeftInRace.AddTime(30);
 			extendedPlayTime.SetTime(2);
 			extendedPlayTime.Start();
 			App->score->CompareLapTime((int)(App->player->timeLeftInRace.GetTotalTimeElapsed() * 100));
@@ -426,11 +436,11 @@ void ModuleSceneRace::ManageRoad()
 	}
 
 	//Final Stretch Management
-	if (startPos > goalPoint - 500 && startPos < goalPoint - 250)
+	if (startPos > goalPoint - 700 && startPos < goalPoint - 300)
 	{
 		App->player->CenterMaxX(ROAD_WIDTH);
 	}
-	else if (startPos > goalPoint - 250)
+	else if (startPos > goalPoint - 300)
 	{
 		App->player->CenterMaxX(0);
 		for (unsigned int i = 0; i < rivals.size() - 1; ++i)

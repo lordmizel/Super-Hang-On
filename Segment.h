@@ -1,10 +1,8 @@
 #pragma once
 
 #include "Globals.h"
-//#include "ModuleSceneRace.h"
 #include "ModuleEuropeRace.h"
 #include "SDL\include\SDL.h"
-//#include "Rival.h"
 #include <vector>
 
 using namespace std;
@@ -80,15 +78,20 @@ public:
 			destW = object.sprite.w * scaling;
 		}
 		
-		SDL_Rect hitBox = { static_cast<int>(destX + object.hitBoxXOffset * scaling), 
+		object.hitBox = { static_cast<int>(destX + object.hitBoxXOffset * scaling),
 			static_cast<int>(destY + object.sprite.h * scaling - 10),
 			static_cast<int>(destW),
 			10 };
+
+		/*SDL_Rect hitBox = { static_cast<int>(destX + object.hitBoxXOffset * scaling), 
+			static_cast<int>(destY + object.sprite.h * scaling - 10),
+			static_cast<int>(destW),
+			10 };*/
 		
 		App->renderer->Blit(tex, (int)destX, (int)destY, &object.sprite, 0.f, false, false, scaling, scaling);
 
 		if (scaling >= 1) {
-			App->player->DetectCollision(hitBox, ModulePlayer::collision_types::OBSTACLE);
+			App->player->DetectCollision(object.hitBox, ModulePlayer::collision_types::OBSTACLE);
 		}
 	}
 
@@ -124,20 +127,22 @@ public:
 		else {
 			destW = racer->currentAnimation->GetCurrentFrame().w * scaling;
 		}
-		/*SDL_Rect drawSprite = { racer->currentAnimation->GetCurrentFrame().x,  }*/
 
-		SDL_Rect hitBox = { static_cast<int>(destX + racer->hitBoxXOffset * scaling),
+		racer->hitBox = { static_cast<int>(destX + racer->hitBoxXOffset * scaling),
 			static_cast<int>(destY + racer->currentAnimation->GetCurrentFrame().h * scaling - 10),
 			static_cast<int>(destW),
 			10 };
 
+		/*SDL_Rect hitBox = { static_cast<int>(destX + racer->hitBoxXOffset * scaling),
+			static_cast<int>(destY + racer->currentAnimation->GetCurrentFrame().h * scaling - 10),
+			static_cast<int>(destW),
+			10 };*/
 
-		
 		if(clip > destY)
 			App->renderer->Blit(tex, (int)destX, (int)destY, &racer->currentAnimation->GetCurrentFrame(), 0.f, false, false, scaling, scaling);
 
 		if (scaling >= 0.65) {
-			App->player->DetectCollision(hitBox, ModulePlayer::collision_types::RIVAL, destX + racer->currentAnimation->GetCurrentFrame().w * scaling);
+			App->player->DetectCollision(racer->hitBox, ModulePlayer::collision_types::RIVAL, destX + racer->currentAnimation->GetCurrentFrame().w * scaling);
 		}
 	}
 	

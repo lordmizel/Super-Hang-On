@@ -74,9 +74,9 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		segment.curve = 0;
 
 		//First part (0-1300) - Paris
-		if (i == 30) segment.atrezzos.push_back(make_pair(startSign, -3));
-		if (i == 30) segment.atrezzos.push_back(make_pair(rightLegOfSign, -3));
-		if (i == 29) segment.atrezzos.push_back(make_pair(semaphore, -2));
+		if (i == 30) segment.atrezzos.push_back(make_pair(startSign, -3.0f));
+		if (i == 30) segment.atrezzos.push_back(make_pair(rightLegOfSign, -3.0f));
+		if (i == 29) segment.atrezzos.push_back(make_pair(semaphore, -2.0f));
 
 		if (i > 300 && i < 700) segment.curve = 4;
 		if (i > 500 && i < 600) segment.curve = -1;
@@ -94,23 +94,23 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		for (int j = 50; j <= 1250; j += 60) {
 			if (i == j) {
 				segment.atrezzos.push_back(make_pair(retroLamp, -2.4f));
-				segment.atrezzos.push_back(make_pair(retroLamp, 2));
+				segment.atrezzos.push_back(make_pair(retroLamp, 2.0f));
 				break;
 			}
 		}
 		for (int j = 150; j <= 300; j += 50) {
 			if (i == j) {
-				segment.atrezzos.push_back(make_pair(arrowRight, -2));
+				segment.atrezzos.push_back(make_pair(arrowRight, -2.0f));
 				break;
 			}
 		}
-		if (i == 1025) segment.atrezzos.push_back(make_pair(streetMirror, -2));
-		if (i == 1025) segment.atrezzos.push_back(make_pair(streetMirror, -2));
-		if (i == 1175) segment.atrezzos.push_back(make_pair(phoneBooth, 2));
+		if (i == 1025) segment.atrezzos.push_back(make_pair(streetMirror, -2.0f));
+		if (i == 1025) segment.atrezzos.push_back(make_pair(streetMirror, -2.0f));
+		if (i == 1175) segment.atrezzos.push_back(make_pair(phoneBooth, 2.0f));
 		for (int j = 1250; j <= 1400; j += 40) {
 			if (i == j) {
-				segment.atrezzos.push_back(make_pair(discoNora, -2.5));
-				segment.atrezzos.push_back(make_pair(arrowLeft, 1.5));
+				segment.atrezzos.push_back(make_pair(discoNora, -2.5f));
+				segment.atrezzos.push_back(make_pair(arrowLeft, 1.5f));
 				break;
 			}
 		}
@@ -127,19 +127,19 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		if (i > 1550 && i < 2100) ChangeAltitude(altitudeVariation, 180.0f, i, 1550, 2100);
 		if (i > 2000 && i < 2500) ChangeAltitude(altitudeVariation, -20.0f, i, 2000, 2500);
 		if (i > 2600 && i < 2800) ChangeAltitude(altitudeVariation, -40.0f, i, 2600, 2800);
-		if (i > 3100 && i < 3300) ChangeAltitude(altitudeVariation, 80.0f, i, 3100, 3300);
+		if (i > 3100 && i < 3300) ChangeAltitude(altitudeVariation, 40.0f, i, 3100, 3300);
 
-		if (i == 1500) segment.atrezzos.push_back(make_pair(bridalStone, -4));
-		if (i == 1500) segment.atrezzos.push_back(make_pair(bridalStone, 2));
+		if (i == 1500) segment.atrezzos.push_back(make_pair(bridalStone, -4.0f));
+		if (i == 1500) segment.atrezzos.push_back(make_pair(bridalStone, 2.0f));
 		for (int j = 1520; j <= 1650; j += 30) {
 			if (i == j) {
-				segment.atrezzos.push_back(make_pair(streetMirror, 1.5));
+				segment.atrezzos.push_back(make_pair(streetMirror, 1.5f));
 				break;
 			}
 		}
 		for (int j = 1650; j <= 2400; j += 50) {
 			if (i == j) {
-				segment.atrezzos.push_back(make_pair(arrowRight, -2));
+				segment.atrezzos.push_back(make_pair(arrowRight, -2.0f));
 				break;
 			}
 		}
@@ -159,8 +159,8 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		}
 		for (int j = 2750; j < 2900; j += 40) {
 			if (i == j) {
-				segment.atrezzos.push_back(make_pair(morobare, -3.5));
-				segment.atrezzos.push_back(make_pair(morobare, 2));
+				segment.atrezzos.push_back(make_pair(morobare, -3.5f));
+				segment.atrezzos.push_back(make_pair(morobare, 2.0f));
 				break;
 			}
 		}
@@ -237,13 +237,13 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 
 		for (vector<int>::iterator it = checkPoints.begin(); it != checkPoints.end(); ++it) {
 			if (i == *it) {
-				segment.atrezzos.push_back(make_pair(checkSign, -3));
-				segment.atrezzos.push_back(make_pair(rightLegOfSign, -3));
+				segment.atrezzos.push_back(make_pair(checkSign, -3.0f));
+				segment.atrezzos.push_back(make_pair(rightLegOfSign, -3.0f));
 			}
 		}
 
-		if (i == goalPoint) { segment.atrezzos.push_back(make_pair(goalSign, -3)); }
-		if (i == goalPoint) { segment.atrezzos.push_back(make_pair(rightLegOfSign, -3)); }
+		if (i == goalPoint) { segment.atrezzos.push_back(make_pair(goalSign, -3.0f)); }
+		if (i == goalPoint) { segment.atrezzos.push_back(make_pair(rightLegOfSign, -3.0f)); }
 
 		if (i == goalPoint + 300) { segment.atrezzos.push_back(make_pair(crowd, -0.9f)); }
 		if (i == goalPoint + 296) { segment.atrezzos.push_back(make_pair(victoryPose, -0.1f)); }

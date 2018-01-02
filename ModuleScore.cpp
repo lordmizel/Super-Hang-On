@@ -136,7 +136,7 @@ void ModuleScore::SaveLapData()
 {
 	writeLapFile.open(lapFileName, std::ios::out | std::ios::trunc);
 
-	for (int i = 0; i < storedLaps.size(); i++) {
+	for (unsigned int i = 0; i < storedLaps.size(); i++) {
 		writeLapFile << storedLaps[i];
 		if (i < storedLaps.size() - 1) {
 			writeLapFile << ";";
