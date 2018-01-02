@@ -375,6 +375,7 @@ update_status ModulePlayer::Update()
 		if (gameOverTimer.IsExpired()) {
 			App->score->SaveLapData();
 			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
+			App->audio->PlayMusic("scoreboard.ogg", 0.0f);
 			state = SCORE_SCREEN;
 		}
 
@@ -428,6 +429,7 @@ update_status ModulePlayer::Update()
 			App->score->SaveLapData();
 			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
 			timeLeftInRace.Resume();
+			App->audio->PlayMusic("scoreboard.ogg", 0.0f);
 			state = SCORE_SCREEN;
 		}
 		break;

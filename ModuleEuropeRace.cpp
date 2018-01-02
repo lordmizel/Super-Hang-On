@@ -13,8 +13,10 @@
 ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 {
 	lapRecordsFile = "europelaps.txt";
+	trackProgressBar = { 17, 234, 112, 8 };
+	yellowBarLength = 188;
 
-	goalPoint = 9800;
+	goalPoint = 12200;
 
 	landscapeParis = { 8, 197, 320, 74 };
 	parisBuildings = { 336, 104, 320, 15 };
@@ -24,6 +26,8 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 	windmillVillage = { 335, 378, 320, 21 };
 	landscapeSunset = { 677, 251, 320, 39 };
 	sunsetBuildings = { 335, 333, 320, 16 };
+	landscapeCity = { 677,404,320,39 };
+	cityBuildings = { 335, 405,320,15 };
 
 	biomes.push_back(paris = biome(Color(160, 160, 160, 255), Color(128, 128, 128, 255),
 		Color(224, 224, 224, 255), Color(96, 96, 96, 255),
@@ -46,20 +50,21 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		Color(0, 0, 96, 255), Color(0, 0, 0, 225),
 		landscapeCity, cityBuildings));
 	
-	biomeBorders.push_back(1700);
-	biomeBorders.push_back(3900);
-	biomeBorders.push_back(6000);
-	biomeBorders.push_back(99999); //Needed to avoid bug
+	biomeBorders.push_back(1700);	//Alpine
+	biomeBorders.push_back(3900);	//Windmills
+	biomeBorders.push_back(6000);	//Sunset
+	biomeBorders.push_back(8500);	//City
+	biomeBorders.push_back(99999);	//Needed to avoid bug
 	
 	currentBiome = biomes[biomeIndex];
 
 	checkPoints.push_back(1300);
-	checkPoints.push_back(3000);
-	checkPoints.push_back(4700);
-	checkPoints.push_back(6400);
-	checkPoints.push_back(8100);
+	checkPoints.push_back(3300);
+	checkPoints.push_back(5600);
+	checkPoints.push_back(7900);
+	checkPoints.push_back(10000);
 
-	for (int i = 0; i <12000; i++)
+	for (int i = 0; i <13000; i++)
 	{
 		Segment segment;
 		segment.z = (float)i * SEGMENT_LENGTH;
@@ -68,7 +73,7 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 
 		segment.curve = 0;
 
-		//First part (0-1300)
+		//First part (0-1300) - Paris
 		if (i == 30) segment.atrezzos.push_back(make_pair(startSign, -3));
 		if (i == 30) segment.atrezzos.push_back(make_pair(rightLegOfSign, -3));
 		if (i == 29) segment.atrezzos.push_back(make_pair(semaphore, -2));
@@ -102,19 +107,6 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		if (i == 1025) segment.atrezzos.push_back(make_pair(streetMirror, -2));
 		if (i == 1025) segment.atrezzos.push_back(make_pair(streetMirror, -2));
 		if (i == 1175) segment.atrezzos.push_back(make_pair(phoneBooth, 2));
-
-
-		//Second part (1300 - 3000)
-		if (i > 1400 && i < 1500) segment.curve = -3;
-		if (i > 1600 && i < 1700) segment.curve = -3;
-		if (i > 1800 && i < 2500) segment.curve = 4;
-		if (i > 2500 && i < 2600) segment.curve = -4;
-		if (i > 2800 && i < 2900) segment.curve = 3;
-
-		if (i > 1550 && i < 2100) ChangeAltitude(altitudeVariation, 180.0f, i, 1550, 2100);
-		if (i > 2000 && i < 2500) ChangeAltitude(altitudeVariation, -20.0f, i, 2000, 2500);
-		if (i > 2600 && i < 2800) ChangeAltitude(altitudeVariation, -40.0f, i, 2600, 2800);
-
 		for (int j = 1250; j <= 1400; j += 40) {
 			if (i == j) {
 				segment.atrezzos.push_back(make_pair(discoNora, -2.5));
@@ -122,6 +114,21 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 				break;
 			}
 		}
+
+
+		//Second part (1300 - 3300) - Paris to Alpine
+		if (i > 1400 && i < 1500) segment.curve = -3;
+		if (i > 1600 && i < 1700) segment.curve = -3;
+		if (i > 1800 && i < 2500) segment.curve = 4;
+		if (i > 2500 && i < 2600) segment.curve = -1;
+		if (i > 2800 && i < 2900) segment.curve = 3;
+		if (i > 3200 && i < 3350) segment.curve = 3;
+
+		if (i > 1550 && i < 2100) ChangeAltitude(altitudeVariation, 180.0f, i, 1550, 2100);
+		if (i > 2000 && i < 2500) ChangeAltitude(altitudeVariation, -20.0f, i, 2000, 2500);
+		if (i > 2600 && i < 2800) ChangeAltitude(altitudeVariation, -40.0f, i, 2600, 2800);
+		if (i > 3100 && i < 3300) ChangeAltitude(altitudeVariation, 80.0f, i, 3100, 3300);
+
 		if (i == 1500) segment.atrezzos.push_back(make_pair(bridalStone, -4));
 		if (i == 1500) segment.atrezzos.push_back(make_pair(bridalStone, 2));
 		for (int j = 1520; j <= 1650; j += 30) {
@@ -157,45 +164,75 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 				break;
 			}
 		}
-
-
-		//Third Part (3000 - 4700)
-		if (i > 3200 && i < 3350) segment.curve = 3;
-		if (i > 3500 && i < 3650) segment.curve = -3;
-		if (i > 3900 && i < 4500) segment.curve = -4;
-
-		if (i > 3100 && i < 3300) ChangeAltitude(altitudeVariation, 80.0f, i, 3100, 3300);
-		if (i > 3300 && i < 3400) ChangeAltitude(altitudeVariation, -40.0f, i, 3300, 3400);
-		if (i > 3400 && i < 3600) ChangeAltitude(altitudeVariation, 130.0f, i, 3400, 3600);
-		if (i > 3600 && i < 3700) ChangeAltitude(altitudeVariation, -40.0f, i, 3600, 3700);
-		if (i > 3700 && i < 4200) ChangeAltitude(altitudeVariation, 130.0f, i, 3700, 4200);
-		if (i > 4200 && i < 4600) ChangeAltitude(altitudeVariation, -40.0f, i, 4200, 4600);
-
-
-		//Fourth part (4700 - 6400)
-		if (i > 4750 && i < 6350) segment.curve = 2;
-		if (i > 4800 && i < 5100) segment.curve = -2;
-		if (i > 5400 && i < 5800) segment.curve = -2;
-
-		if (i > 4800 && i < 5300) ChangeAltitude(altitudeVariation, -40.0f, i, 4800, 5300);
-		if (i > 5300 && i < 5800) ChangeAltitude(altitudeVariation, 40.0f, i, 5300, 5800);
-		if (i > 5800 && i < 6300) ChangeAltitude(altitudeVariation, 170.0f, i, 5800, 6300);
-		
-
-		for (int j = 3100; j < 3900; j += 30) {
+		for (int j = 3100; j < 3900; j += 40) {
 			if (i == j) {
 				segment.atrezzos.push_back(make_pair(smallTree, -6.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (-2.5f - (-6.0f))))));
 				segment.atrezzos.push_back(make_pair(smallTree, 2.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (6.0f - 2.0f)))));
 				break;
 			}
 		}
-		for (int j = 3100; j < 3900; j += 10) {
+		for (int j = 3100; j < 3900; j += 30) {
 			if (i == j) {
 				segment.atrezzos.push_back(make_pair(bigRock, -6.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (-2.5f - (-6.0f))))));
-				segment.atrezzos.push_back(make_pair(bigRock, 2.0f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (6.0f - 2.0f)))));
+				segment.atrezzos.push_back(make_pair(bigRock, 1.5f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (6.0f - 1.5f)))));
 				break;
 			}
 		}
+
+		//Third Part (3300 - 5600) - Alpine to Windmills
+		if (i > 3500 && i < 3650) segment.curve = -0.5f;
+		if (i > 3900 && i < 4100) segment.curve = -4;
+		if (i > 4750 && i < 6350) segment.curve = 2;
+		if (i > 4800 && i < 5100) segment.curve = -2;
+		if (i > 5400 && i < 5700) segment.curve = -2;
+
+		if (i > 3300 && i < 3400) ChangeAltitude(altitudeVariation, -40.0f, i, 3300, 3400);
+		if (i > 3700 && i < 4200) ChangeAltitude(altitudeVariation, 130.0f, i, 3700, 4200);
+		if (i > 4800 && i < 5300) ChangeAltitude(altitudeVariation, -40.0f, i, 4800, 5300);
+
+		for (int j = 4200; j <= 5500; j += 30) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(tallTree, -2.5f));
+				segment.atrezzos.push_back(make_pair(tallTree, 1.5f));
+				break;
+			}
+		}
+
+		//Fourth part (5600 - 7900) - Windmills to Sunset
+		if (i > 5600 && i < 5900) segment.curve = 2;
+		if (i > 5900 && i < 6200) segment.curve = -4;
+		if (i > 6400 && i < 6700) segment.curve = 0.5f;
+		if (i > 6700 && i < 7000) segment.curve = -0.5;
+		if (i > 7400 && i < 7800) segment.curve = 4;
+		
+		if (i > 5800 && i < 6300) ChangeAltitude(altitudeVariation, 170.0f, i, 5800, 6300);
+		if (i > 6500 && i < 7200) ChangeAltitude(altitudeVariation, 50.0f, i, 6500, 7200);
+
+		//Fifth part (7900 - 10200) - Sunset to City
+		if (i > 8000 && i < 8100) segment.curve = -0.5f;
+		if (i > 8100 && i < 8200) segment.curve = 0.5f;
+		if (i > 8200 && i < 8300) segment.curve = -3;
+		if (i > 8300 && i < 8400) segment.curve = 3;
+		if (i > 8700 && i < 8900) segment.curve = 4;
+		if (i > 9300 && i < 10000) segment.curve = -3;
+
+		if (i > 8300 && i < 8900) ChangeAltitude(altitudeVariation, 180.0f, i, 8300, 8900);
+
+		//Sixth part (10200 - 12200) - City
+		if (i > 10300 && i < 10700) segment.curve = -0.5f;
+		if (i > 10700 && i < 11000) segment.curve = 0.5f;
+		if (i > 11000 && i < 11400) segment.curve = 1;
+		if (i > 11400 && i < 11700) segment.curve = 3;
+		if (i > 11700 && i < 12000) segment.curve = -4;
+
+		for (int j = 10200; j <= 13000; j += 60) {
+			if (i == j) {
+				segment.atrezzos.push_back(make_pair(lampLeft, -2.0f));
+				segment.atrezzos.push_back(make_pair(lampRight, 1.0f));
+				break;
+			}
+		}
+		
 
 
 		for (vector<int>::iterator it = checkPoints.begin(); it != checkPoints.end(); ++it) {

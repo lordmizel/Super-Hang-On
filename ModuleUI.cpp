@@ -232,10 +232,26 @@ void ModuleUI::ShowLapTimes()
 
 void ModuleUI::ShowBonusPoints(int time)
 {
-	App->font_manager->DigitRendering(23, 2, SCREEN_WIDTH / 2 - bonusPointsTag.w - 56, SCREEN_HEIGHT / 2 - bonusPointsTag.h + 14, Color(255,255,255,255), false, true);
+	App->font_manager->DigitRendering(time, 2, SCREEN_WIDTH / 2 - bonusPointsTag.w - 56, SCREEN_HEIGHT / 2 - bonusPointsTag.h + 14, Color(255,255,255,255), false, true);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - bonusPointsTag.w, SCREEN_HEIGHT / 2 - bonusPointsTag.h, &bonusPointsTag, 0.0f, false, false, 2, 2);
-	App->font_manager->DigitRendering(23, 2, SCREEN_WIDTH / 2 + bonusPointsTag.w + 8, SCREEN_HEIGHT / 2 - bonusPointsTag.h + 14, Color(255, 255, 255, 255), false, true);
+	App->font_manager->DigitRendering(time, 2, SCREEN_WIDTH / 2 + bonusPointsTag.w + 8, SCREEN_HEIGHT / 2 - bonusPointsTag.h + 14, Color(255, 255, 255, 255), false, true);
 	App->font_manager->DigitRendering(0, 6, SCREEN_WIDTH / 2 + bonusPointsTag.w + 42, SCREEN_HEIGHT / 2 - bonusPointsTag.h + 26, Color(255, 255, 0, 255), true);
+}
+
+void ModuleUI::ShowProgressBar(SDL_Rect &bar, int &yellowBarTotal, int &goalPoint, int currentPos)
+{
+	int posX = SCREEN_WIDTH / 12 - 16;
+	int posY = SCREEN_HEIGHT / 17 * 4 - 20;
+	int yellowBarLength = yellowBarTotal * currentPos / goalPoint;
+	if (yellowBarLength > yellowBarTotal) 
+	{
+		yellowBarLength = yellowBarTotal;
+	}
+
+	SDL_Rect yellowBar = { posX + 20, posY + 6, yellowBarLength, 4 };
+	
+	App->renderer->DrawQuad(yellowBar, 255, 255, 0, 255, false);
+	App->renderer->Blit(graphics, posX, posY, &bar, 0.0f, false, false, 2, 2);
 }
 
 void ModuleUI::NameEntry() {

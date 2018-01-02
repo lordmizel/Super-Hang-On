@@ -43,7 +43,7 @@ public:
 	int GetXPosition() const { return positionX; }
 	inline int GetAbsoluteX() const { return absoluteX; }
 
-	void AlterXPosition(int alt) { positionX += alt; }
+	void AlterXPosition(float alt) { positionX += alt; }
 	void CenterMaxX(float max);
 
 	void DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x = 0.0f);
@@ -95,7 +95,7 @@ private:
 	int acceleration = 1;
 	int currentMaxSpeed;
 
-	int positionX = 0;
+	float positionX = 0;
 	int movementX = 50;
 	int absoluteX = 0;
 	int maxXPosition;

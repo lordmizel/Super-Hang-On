@@ -51,7 +51,7 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	semaphoreAnimation.frames.push_back({ 371, 422, 30, 72 });
 	semaphoreAnimation.frames.push_back({ 402, 422, 30, 72 });
 	semaphoreAnimation.frames.push_back({ 433, 422, 30, 72 });
-	semaphoreAnimation.speed = 0.007;
+	semaphoreAnimation.speed = 0.007f;
 	semaphoreAnimation.loop = false;
 	semaphore.sprite = { 433, 422, 30, 72 };
 
@@ -195,6 +195,10 @@ update_status ModuleSceneRace::Update()
 		extendedPlayTime.Update();
 	}
 
+	if (App->player->state != ModulePlayer::SCORE_SCREEN) {
+		App->ui->ShowProgressBar(trackProgressBar, yellowBarLength, goalPoint, pos / SEGMENT_LENGTH);
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -275,13 +279,13 @@ void ModuleSceneRace::ManageRoad()
 		{
 			if (current.curve > 0)
 			{
-				App->player->AlterXPosition(-App->player->GetSpeed() / 6);
+				App->player->AlterXPosition(-App->player->GetSpeed() / 3.5f * current.curve/6);
 				landscapePositionX -= App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX -= App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
 			else if(current.curve < 0) 
 			{
-				App->player->AlterXPosition(App->player->GetSpeed() / 6);
+				App->player->AlterXPosition(App->player->GetSpeed() / 3.5f * (-1)*current.curve/6);
 				landscapePositionX += App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX += App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
@@ -367,14 +371,14 @@ void ModuleSceneRace::ManageRoad()
 			{
 				// If the player overtakes this rival, then teleport the rival
 				// forward to make him appear again
-				rivals[i]->z += 200 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (300 - 200)));
+				rivals[i]->z += 200 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (450 - 200)));
 				// Random e [-0.8f, 0.8f]
 				rivals[i]->x = -0.8f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.8f - (-0.8f))));
 			}
-			else if (((int)rivals[i]->z > startPos + 500 && i < rivals.size() - 1 && App->player->state != ModulePlayer::GOING_TO_END) 
+			else if (((int)rivals[i]->z > startPos + 500 && i < rivals.size() - 1 && App->player->state != ModulePlayer::GOING_TO_END && App->player->state != ModulePlayer::RACING)
 				|| ((int)rivals[i]->z > startPos + 200 && i < rivals.size() - 1 && (App->player->state == ModulePlayer::CRASHING || App->player->state == ModulePlayer::RECOVERING))) {
 				
-				rivals[i]->z = startPos - 10;
+				rivals[i]->z = (float)(startPos - 10);
 				rivals[i]->x = -0.8f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.8f - (-0.8f))));
 			}
 		}
@@ -408,7 +412,7 @@ void ModuleSceneRace::ManageRoad()
 		if (startPos > checkPoints[checkPointIndex])
 		{
 			showExtendedPlay = true;
-			App->player->timeLeftInRace.AddTime(30);
+			App->player->timeLeftInRace.AddTime(25);
 			extendedPlayTime.SetTime(2);
 			extendedPlayTime.Start();
 			App->score->CompareLapTime((int)(App->player->timeLeftInRace.GetTotalTimeElapsed() * 100));
@@ -422,10 +426,14 @@ void ModuleSceneRace::ManageRoad()
 	}
 
 	//Final Stretch Management
-	if (startPos > goalPoint - 700 && startPos < goalPoint - 250)
+	if (startPos > goalPoint - 500 && startPos < goalPoint - 250)
 	{
 		App->player->CenterMaxX(ROAD_WIDTH);
-		for (int i = 0; i < rivals.size() - 1; ++i) 
+	}
+	else if (startPos > goalPoint - 250)
+	{
+		App->player->CenterMaxX(0);
+		for (unsigned int i = 0; i < rivals.size() - 1; ++i)
 		{
 			if ((int)rivals[i]->z > startPos) {
 				rivals[i]->speed = 2.5f;
@@ -435,18 +443,15 @@ void ModuleSceneRace::ManageRoad()
 			}
 		}
 	}
-	else if (startPos > goalPoint - 250)
-	{
-		App->player->CenterMaxX(0);
-	}
 
 	if (startPos > goalPoint && (App->player->state == ModulePlayer::RACING || App->player->state == ModulePlayer::OUT_OF_CONTROL))
 	{
-		endPlayer->z = ((startPos + 9) * SEGMENT_LENGTH) / 100;
+		endPlayer->z = (float)(((startPos + 9) * SEGMENT_LENGTH) / 100);
 		endPlayer->speed = 1.0f;
 		App->score->CompareLapTime((int)(App->player->timeLeftInRace.GetTotalTimeElapsed() * 100));
 		App->player->timePastGoal.SetTime(3.5f);
 		App->player->timePastGoal.Start();
+		App->audio->PlayMusic("goal.ogg", 0.0f);
 		App->player->state = ModulePlayer::PAST_GOAL;
 	}
 
@@ -498,7 +503,7 @@ void ModuleSceneRace::BiomeChange()
 	}
 	if (currentBiome.rumbleLight.g != biomes[biomeIndex].rumbleLight.g) 
 	{
-		currentBiome.rumbleLight.g < biomes[biomeIndex].rumbleLight.g ? currentBiome.grassLight.g += 2 : currentBiome.rumbleLight.g -= 2;
+		currentBiome.rumbleLight.g < biomes[biomeIndex].rumbleLight.g ? currentBiome.rumbleLight.g += 2 : currentBiome.rumbleLight.g -= 2;
 	}
 	if (currentBiome.rumbleLight.b != biomes[biomeIndex].rumbleLight.b) 
 	{
@@ -592,36 +597,36 @@ void ModuleSceneRace::ResetRace()
 
 	rival1->currentAnimation = &greenRivalTurnsLeft;
 	rival1->z = 11;
-	rival1->speed = 1.1;
+	rival1->speed = 1.1f;
 	rival1->x = -0.9f;
 	rival1->isYellow = true;
 
 	rival2->currentAnimation = &greenRivalStraight;
 	rival2->z = 14;
-	rival2->speed = 1.4;
+	rival2->speed = 1.4f;
 	rival2->x = -0.5f;
 
 	rival3->currentAnimation = &greenRivalStraight;
 	rival3->z = 17;
-	rival3->speed = 1.5;
-	rival3->x = -0.1;
+	rival3->speed = 1.5f;
+	rival3->x = -0.1f;
 	rival3->isYellow = true;
 
 	rival4->currentAnimation = &greenRivalStraight;
 	rival4->z = 14;
-	rival4->speed = 1.3;
+	rival4->speed = 1.3f;
 	rival4->x = 0.3f;
 
 	rival5->currentAnimation = &greenRivalStraight;
 	rival5->z = 11;
-	rival5->speed = 1.2;
+	rival5->speed = 1.2f;
 	rival5->x = 0.7f;
 	rival5->isYellow = true;
 
 	endPlayer->currentAnimation = &falsePlayer;
 	endPlayer->z = 0;
 	endPlayer->speed = 0;
-	endPlayer->x = -0.1;
+	endPlayer->x = -0.1f;
 
 	rival5->z = 11;
 	rival5->x = 0.7f;

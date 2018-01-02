@@ -18,6 +18,7 @@ public:
 	void ShowRankings();
 	void ShowLapTimes();
 	void ShowBonusPoints(int time);
+	void ShowProgressBar(SDL_Rect &bar, int &yellowBarTotal, int &goalPoint, int currentPos);
 
 	SDL_Texture* graphics;
 

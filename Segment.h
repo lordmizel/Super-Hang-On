@@ -53,7 +53,7 @@ public:
 		bool behindStuff;
 		float scaling;
 		if (object.small) {
-			scaling = W / SEGMENT_LENGTH *  0.65;
+			scaling = W / SEGMENT_LENGTH *  0.65f;
 		}
 		else {
 			scaling = W / SEGMENT_LENGTH * 2;

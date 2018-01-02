@@ -63,7 +63,7 @@ protected:
 	void ChangeAltitude(float &altitudeVariation, float targetVariation, int currentSegment, int startingSegment, int endSegment, int heldSegments = 0);
 
 	vector<biome> biomes;
-	int biomeIndex = 0;
+	unsigned int biomeIndex = 0;
 	biome currentBiome;
 	vector<int> biomeBorders;
 
@@ -116,6 +116,9 @@ protected:
 	vector<rival*> rivals;
 
 	std::string lapRecordsFile;
+
+	SDL_Rect trackProgressBar;
+	int yellowBarLength;
 
 private:
 	void ResetRace();
