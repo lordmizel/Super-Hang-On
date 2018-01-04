@@ -316,13 +316,10 @@ void ModuleSceneRace::ManageRoad()
 			previous = lines[(n - 1) % N];
 		}
 
-		int laneNumber = 10;
-		for (int i = laneNumber; i > 0; i--) 
+		
+		if ((short)previous.Y != (short)current.Y) 
 		{
-			if ((short)previous.Y != (short)current.Y) 
-			{
-				App->renderer->DrawPolygon(*grass, SCREEN_WIDTH / 2, (short)previous.Y, SCREEN_WIDTH, SCREEN_WIDTH / 2, (short)current.Y, SCREEN_WIDTH);
-			}
+			App->renderer->DrawPolygon(*grass, SCREEN_WIDTH / 2, (short)previous.Y, SCREEN_WIDTH, SCREEN_WIDTH / 2, (short)current.Y, SCREEN_WIDTH);
 		}
 
 		App->renderer->DrawPolygon(*rumble2, (short)previous.X, (short)previous.Y, (short)(previous.W*1.15), (short)current.X, (short)current.Y, (short)(current.W*1.15));
