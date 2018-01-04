@@ -176,8 +176,8 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
 	state = BEFORE_RACE;
-	graphics = App->textures->Load("bikes.png", 255, 0, 204);
-	crashes = App->textures->Load("falls.png", 224, 64, 32);
+	graphics = App->textures->Load("Game/bikes.png", 255, 0, 204);
+	crashes = App->textures->Load("Game/falls.png", 224, 64, 32);
 
 	position.x = SCREEN_WIDTH / 2 - 16 * 2;
 	position.y = SCREEN_HEIGHT - 73 * 2;
@@ -188,19 +188,19 @@ bool ModulePlayer::Start()
 	timeLeftInRace.SetTime(30);
 
 	if (collision == 0) {
-		collision = App->audio->LoadFx("collision.wav");
+		collision = App->audio->LoadFx("Game/collision.wav");
 	}
 
 	if (crash == 0) {
-		crash = App->audio->LoadFx("crash.wav");
+		crash = App->audio->LoadFx("Game/crash.wav");
 	}
 
 	if (scream == 0) {
-		scream = App->audio->LoadFx("wilhelm.wav");
+		scream = App->audio->LoadFx("Game/wilhelm.wav");
 	}
 
 	if (skid == 0) {
-		skid = App->audio->LoadFx("skid.wav");
+		skid = App->audio->LoadFx("Game/skid.wav");
 	}
 
 	ResetPlayer();
@@ -375,7 +375,7 @@ update_status ModulePlayer::Update()
 		if (gameOverTimer.IsExpired()) {
 			App->score->SaveLapData();
 			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
-			App->audio->PlayMusic("scoreboard.ogg", 0.0f);
+			App->audio->PlayMusic("Game/scoreboard.ogg", 0.0f);
 			state = SCORE_SCREEN;
 		}
 
@@ -429,7 +429,7 @@ update_status ModulePlayer::Update()
 			App->score->SaveLapData();
 			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
 			timeLeftInRace.Resume();
-			App->audio->PlayMusic("scoreboard.ogg", 0.0f);
+			App->audio->PlayMusic("Game/scoreboard.ogg", 0.0f);
 			state = SCORE_SCREEN;
 		}
 		break;

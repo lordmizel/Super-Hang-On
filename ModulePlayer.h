@@ -96,7 +96,7 @@ private:
 	int currentMaxSpeed;
 
 	float positionX = 0;
-	int movementX = 50;
+	int movementX = 60;
 	int absoluteX = 0;
 	int maxXPosition;
 

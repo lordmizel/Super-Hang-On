@@ -56,11 +56,11 @@ bool ModuleSceneMusic::Start()
 {
 	LOG("Loading space intro");
 
-	graphics = App->textures->Load("songs.png", 224, 160, 0);
+	graphics = App->textures->Load("Game/songs.png", 224, 160, 0);
 
-	App->audio->PlayMusic("outRideACrisis.ogg", 1.0f);
+	App->audio->PlayMusic("Game/outRideACrisis.ogg", 1.0f);
 	if (fx == 0)
-		fx = App->audio->LoadFx("rtype/starting.wav");
+		fx = App->audio->LoadFx("Game/rtype/starting.wav");
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -80,7 +80,7 @@ bool ModuleSceneMusic::CleanUp()
 	App->textures->Unload(graphics);
 
 	if (fx == 0)
-		fx = App->audio->LoadFx("rtype/starting.wav");
+		fx = App->audio->LoadFx("Game/rtype/starting.wav");
 
 	timer_.Update();
 
@@ -170,16 +170,16 @@ update_status ModuleSceneMusic::Update()
 		switch (selectedSong)
 		{
 		case SONG1:
-			App->audio->musicChosen = "outrideACrisis.ogg";
+			App->audio->musicChosen = "Game/outrideACrisis.ogg";
 			break;
 		case SONG2:
-			App->audio->musicChosen = "sprinter.ogg";
+			App->audio->musicChosen = "Game/sprinter.ogg";
 			break;
 		case SONG3:
-			App->audio->musicChosen = "winningRun.ogg";
+			App->audio->musicChosen = "Game/winningRun.ogg";
 			break;
 		case SONG4:
-			App->audio->musicChosen = "hardRoad.ogg";
+			App->audio->musicChosen = "Game/hardRoad.ogg";
 			break;
 		}
 
@@ -197,16 +197,16 @@ void ModuleSceneMusic::ChangeSongPlaying()
 	switch (selectedSong)
 	{
 	case SONG1:
-		App->audio->PlayMusic("outRideACrisis.ogg", 0.0f);
+		App->audio->PlayMusic("Game/outRideACrisis.ogg", 0.0f);
 		break;
 	case SONG2:
-		App->audio->PlayMusic("sprinter.ogg", 0.0f);
+		App->audio->PlayMusic("Game/sprinter.ogg", 0.0f);
 		break;
 	case SONG3:
-		App->audio->PlayMusic("winningRun.ogg", 0.0f);
+		App->audio->PlayMusic("Game/winningRun.ogg", 0.0f);
 		break;
 	case SONG4:
-		App->audio->PlayMusic("hardRoad.ogg", 0.0f);
+		App->audio->PlayMusic("Game/hardRoad.ogg", 0.0f);
 		break;
 	}
 }

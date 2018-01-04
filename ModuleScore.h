@@ -56,7 +56,7 @@ private:
 	int topScore;
 	int64_t current_time;
 
-	std::string fileName = "scores.txt";
+	std::string fileName = "Game/scores.txt";
 	std::ifstream readFile;
 	std::ofstream writeFile;
 

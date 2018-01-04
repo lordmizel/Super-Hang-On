@@ -56,7 +56,7 @@ ModuleUI::~ModuleUI()
 bool ModuleUI::Start() {
 	LOG("Loading UI");
 
-	graphics = App->textures->Load("bikes.png", 255, 0, 204);
+	graphics = App->textures->Load("Game/bikes.png", 255, 0, 204);
 
 	return true;
 }

@@ -116,11 +116,11 @@ bool ModuleSceneIntro::Start()
 {
 	LOG("Loading space intro");
 	
-	graphics = App->textures->Load("menu.png", 0, 0, 0);
+	graphics = App->textures->Load("Game/menu.png", 0, 0, 0);
 
 	//App->audio->PlayMusic("rtype/intro.ogg", 1.0f);
 	if(fx == 0)
-		fx = App->audio->LoadFx("rtype/starting.wav");
+		fx = App->audio->LoadFx("Game/rtype/starting.wav");
 
 	//App->renderer->camera.x = App->renderer->camera.y = 0;
 	

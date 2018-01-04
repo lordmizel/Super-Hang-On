@@ -73,8 +73,8 @@ bool ModuleFontManager::Start()
 {
 	LOG("Loading font manager");
 
-	graphics = App->textures->Load("bikes.png", 255, 0, 204);
-	graphics2 = App->textures->Load("songs.png", 224, 160, 0);
+	graphics = App->textures->Load("Game/bikes.png", 255, 0, 204);
+	graphics2 = App->textures->Load("Game/songs.png", 224, 160, 0);
 
 	return true;
 }

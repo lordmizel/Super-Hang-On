@@ -66,12 +66,12 @@ bool ModuleSceneMap::Start()
 	App->ui->Disable();
 	App->europe_race->Disable();
 
-	graphics = App->textures->Load("bikes.png", 255, 0, 204);
+	graphics = App->textures->Load("Game/bikes.png", 255, 0, 204);
 
-	App->audio->PlayMusic("opening.ogg", 1.0f);
+	App->audio->PlayMusic("Game/opening.ogg", 1.0f);
 
 	if (fx == 0)
-		fx = App->audio->LoadFx("rtype/starting.wav");
+		fx = App->audio->LoadFx("Game/rtype/starting.wav");
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -89,7 +89,7 @@ bool ModuleSceneMap::CleanUp()
 	App->textures->Unload(graphics);
 
 	if (fx == 0)
-		fx = App->audio->LoadFx("rtype/starting.wav");
+		fx = App->audio->LoadFx("Game/rtype/starting.wav");
 
 	return true;
 }

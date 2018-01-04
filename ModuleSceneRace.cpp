@@ -23,6 +23,7 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 	birdBird.sprite = { 3, 55, 76, 56 };
 	discoNora.sprite = { 87, 54, 64, 56 };
 	rustyDrum.sprite = { 159, 56, 44, 56 };
+	rustyDrum.small = true;
 	smallCacti.sprite = { 212, 89, 54, 57 };
 	bigRock.sprite = { 95, 117, 96, 56 };
 	bigRock.small = true;
@@ -142,9 +143,9 @@ bool ModuleSceneRace::Start()
 {
 	LOG("Loading race");
 
-	graphics = App->textures->Load("backgrounds.png", 255, 0, 204);
-	decoration = App->textures->Load("stuff.png", 255, 0, 255);
-	drivers = App->textures->Load("bikes.png", 255, 0, 204);
+	graphics = App->textures->Load("Game/backgrounds.png", 255, 0, 204);
+	decoration = App->textures->Load("Game/stuff.png", 255, 0, 255);
+	drivers = App->textures->Load("Game/bikes.png", 255, 0, 204);
 
 	landscapePositionY = (float)MAX_LANDSCAPE_ALTITUDE;
 
@@ -273,7 +274,7 @@ void ModuleSceneRace::ManageRoad()
 	App->renderer->Blit(graphics, (int)foregroundPositionX - SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, (int)foregroundPositionX + SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	
-	for (int n = startPos; n < startPos + 200; n++) 
+	for (int n = startPos; n < startPos + 150; n++) 
 	{
 		*grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
 		*rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
@@ -289,13 +290,13 @@ void ModuleSceneRace::ManageRoad()
 		{
 			if (current.curve > 0)
 			{
-				App->player->AlterXPosition(-App->player->GetSpeed() / 3.5f * current.curve/6);
+				App->player->AlterXPosition(-App->player->GetSpeed() / 3.0f * current.curve/6);
 				landscapePositionX -= App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX -= App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
 			else if(current.curve < 0) 
 			{
-				App->player->AlterXPosition(App->player->GetSpeed() / 3.5f * (-1)*current.curve/6);
+				App->player->AlterXPosition(App->player->GetSpeed() / 3.0f * (-1)*current.curve/6);
 				landscapePositionX += App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX += App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
@@ -332,7 +333,7 @@ void ModuleSceneRace::ManageRoad()
 	}
 
 	//Draw Objects and Rivals
-	for (int n = startPos + 199; n >= startPos; n--) {
+	for (int n = startPos + 174; n >= startPos; n--) {
 		if (!lines[n%N].atrezzos.empty()) {
 			for (unsigned int i = 0; i < lines[n%N].atrezzos.size(); i++) {
 				lines[n%N].DrawObject(lines[n%N].atrezzos[i].first, decoration, lines[n%N].atrezzos[i].second);
@@ -377,7 +378,7 @@ void ModuleSceneRace::ManageRoad()
 					lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers);
 				}
 			}
-			else if ((int)rivals[i]->z < startPos - 20 && i < rivals.size() - 1) 
+			else if ((int)rivals[i]->z < startPos - 20 && i < rivals.size() - 1 && rivals[i]->reincident == true) 
 			{
 				// If the player overtakes this rival, then teleport the rival
 				// forward to make him appear again
@@ -461,7 +462,7 @@ void ModuleSceneRace::ManageRoad()
 		App->score->CompareLapTime((int)(App->player->timeLeftInRace.GetTotalTimeElapsed() * 100));
 		App->player->timePastGoal.SetTime(3.5f);
 		App->player->timePastGoal.Start();
-		App->audio->PlayMusic("goal.ogg", 0.0f);
+		App->audio->PlayMusic("Game/goal.ogg", 0.0f);
 		App->player->state = ModulePlayer::PAST_GOAL;
 	}
 
@@ -621,6 +622,7 @@ void ModuleSceneRace::ResetRace()
 	rival3->speed = 1.5f;
 	rival3->x = -0.1f;
 	rival3->isYellow = true;
+	rival3->reincident = false;
 
 	rival4->currentAnimation = &greenRivalStraight;
 	rival4->z = 14;
