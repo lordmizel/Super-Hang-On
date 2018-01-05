@@ -32,3 +32,8 @@
 *.app
 
 Debug/*
+Release/*
+SDL/*
+SDL_gfx/*
+SDL_image/*
+SDL_mixer/*

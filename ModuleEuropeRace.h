@@ -11,7 +11,6 @@ public:
 	ModuleEuropeRace(bool active = true);
 	~ModuleEuropeRace();
 
-
 private:
 	float altitudeVariation = 0.0f;
 	float currentAltitude = 0.0f;
@@ -33,8 +32,6 @@ private:
 	SDL_Rect windmillVillage;
 	SDL_Rect landscapeCity;
 	SDL_Rect cityBuildings;
-
-	SDL_Rect landscapeGrassland;
 };
 
 #endif

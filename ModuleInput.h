@@ -47,18 +47,18 @@ public:
 	bool CleanUp();
 
 	// Check key states (includes mouse and joy buttons)
-	KeyState GetKey(int id) const
+	KeyState GetKey(const int id) const
 	{
 		return keyboard[id];
 	}
 
-	KeyState GetMouseButtonDown(int id) const
+	KeyState GetMouseButtonDown(const int id) const
 	{
 		return mouse_buttons[id - 1];
 	}
 
 	// Check for window events last frame
-	bool GetWindowEvent(EventWindow code) const;
+	bool GetWindowEvent(const EventWindow code) const;
 
 	// Get mouse / axis position
 	const iPoint& GetMouseMotion() const;

@@ -52,11 +52,15 @@ update_status ModuleRender::Update()
 {
 	// debug camera
 	int speed = 1;
-	if(App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	{
 		App->renderer->camera.x += speed;
+	}
 
-	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	{
 		App->renderer->camera.x -= speed;
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -82,7 +86,7 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, bool moveX, bool moveY, float scaledW, float scaledH, Color color)
+bool ModuleRender::Blit(SDL_Texture* texture, const int x, const int y, SDL_Rect* section, const float speed, const bool moveX, const bool moveY, const float scaledW, const float scaledH, const Color color)
 {
 	bool ret = true;
 	SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
@@ -112,7 +116,7 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 	return ret;
 }
 
-bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera)
+bool ModuleRender::DrawQuad(const SDL_Rect& rect, const Uint8 r, const Uint8 g, const Uint8 b, const Uint8 a, const bool use_camera)
 {
 	bool ret = true;
 
@@ -137,7 +141,7 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	return ret;
 }
 
-bool ModuleRender::DrawPolygon(Color c, short x1, short y1, short w1, short x2, short y2, short w2)
+bool ModuleRender::DrawPolygon(const Color c, const short x1, const short y1, const short w1, const short x2, const short y2, const short w2)
 {
 	short vx[4] = { x1 - w1, x2 - w2, x2 + w2, x1 + w1 };
 	short vy[4] = { y1, y2, y2, y1 };

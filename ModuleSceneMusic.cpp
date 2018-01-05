@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleFadeToBlack.h"
+#include "ModuleSceneMap.h"
 #include "ModuleSceneMusic.h"
 #include "ModuleFontManager.h"
 
@@ -44,8 +45,6 @@ ModuleSceneMusic::ModuleSceneMusic(bool active) : Module(active)
 	pressButton.frames.push_back({ 0, 0, 0, 0 });
 	pressButton.speed = 0.03f;
 
-	
-	
 }
 
 ModuleSceneMusic::~ModuleSceneMusic()
@@ -59,8 +58,9 @@ bool ModuleSceneMusic::Start()
 	graphics = App->textures->Load("Game/songs.png", 224, 160, 0);
 
 	App->audio->PlayMusic("Game/outRideACrisis.ogg", 1.0f);
-	if (fx == 0)
-		fx = App->audio->LoadFx("Game/rtype/starting.wav");
+	if (fx == 0) {
+		fx = App->audio->LoadFx("Game/starting.wav");
+	}
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -79,8 +79,11 @@ bool ModuleSceneMusic::CleanUp()
 
 	App->textures->Unload(graphics);
 
-	if (fx == 0)
-		fx = App->audio->LoadFx("Game/rtype/starting.wav");
+	if (fx == 0) 
+	{
+		fx = App->audio->LoadFx("Game/starting.wav");
+	}
+		
 
 	timer_.Update();
 
@@ -102,7 +105,8 @@ update_status ModuleSceneMusic::Update()
 
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
-	switch (selectedSong) {
+	switch (selectedSong) 
+	{
 	case SONG1:
 		song1.speed = animationSpeed;
 		song2.Reset();
@@ -141,7 +145,7 @@ update_status ModuleSceneMusic::Update()
 		break;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	if ((App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && App->fade->isFading() == false)
 	{
 		if (selectedSong != SONG1)
 		{
@@ -153,7 +157,7 @@ update_status ModuleSceneMusic::Update()
 		}
 		ChangeSongPlaying();
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
+	else if ((App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) && App->fade->isFading() == false)
 	{
 		if (selectedSong != SONG4)
 		{
@@ -184,7 +188,16 @@ update_status ModuleSceneMusic::Update()
 		}
 
 		App->audio->MusicFadeOut(1);
-		App->fade->FadeToBlack((Module*)App->europe_race, this);
+
+		switch (App->scene_map->GetSelectedCourse()) 
+		{
+		case (courseSelect::AFRICA):
+		case (courseSelect::ASIA):
+		case (courseSelect::AMERICA):
+		case (courseSelect::EUROPE):
+			App->fade->FadeToBlack((Module*)App->europe_race, this);
+			break;
+		}
 	}
 
 	timer_.Update();

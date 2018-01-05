@@ -23,7 +23,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-public:
+private:
 	menuNavigation selectedOption;
 	
 	SDL_Texture* graphics = nullptr;

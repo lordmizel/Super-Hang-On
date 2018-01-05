@@ -24,6 +24,9 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	int GetSelectedCourse() const { return courseSelect; }
+
+private:
 	SDL_Texture* graphics = nullptr;
 
 	SDL_Rect backdrop;

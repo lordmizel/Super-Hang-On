@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __SEGMENT_H__
+#define __SEGMENT_H__
 
 #include "Globals.h"
 #include "ModuleEuropeRace.h"
@@ -50,10 +51,12 @@ public:
 	{
 		bool behindStuff;
 		float scaling;
-		if (object.small) {
+		if (object.small) 
+		{
 			scaling = W / SEGMENT_LENGTH *  0.65f;
 		}
-		else {
+		else 
+		{
 			scaling = W / SEGMENT_LENGTH * 2;
 		}
 		float destY = Y - object.sprite.h * scaling;
@@ -62,19 +65,23 @@ public:
 		float destW;
 		
 		// Apply clipping only if needed (if the sprite must be cut)
-		if (destY + destH > clip) {
+		if (destY + destH > clip) 
+		{
 			behindStuff = true;
 			float clipH = destY + destH - clip;
 			object.sprite.h = (int)(object.sprite.h - object.sprite.h * clipH / destH);
 		}
-		else {
+		else 
+		{
 			behindStuff = false;
 		}
 
-		if (object.hitBoxWidth != 0) {
+		if (object.hitBoxWidth != 0)
+		{
 			destW = object.hitBoxWidth * scaling;
 		}
-		else {
+		else
+		{
 			destW = object.sprite.w * scaling;
 		}
 		
@@ -82,15 +89,11 @@ public:
 			static_cast<int>(destY + object.sprite.h * scaling - 10),
 			static_cast<int>(destW),
 			10 };
-
-		/*SDL_Rect hitBox = { static_cast<int>(destX + object.hitBoxXOffset * scaling), 
-			static_cast<int>(destY + object.sprite.h * scaling - 10),
-			static_cast<int>(destW),
-			10 };*/
 		
 		App->renderer->Blit(tex, (int)destX, (int)destY, &object.sprite, 0.f, false, false, scaling, scaling);
 
-		if (scaling >= 1) {
+		if (scaling >= 1) 
+		{
 			App->player->DetectCollision(object.hitBox, ModulePlayer::collision_types::OBSTACLE);
 		}
 	}
@@ -99,7 +102,8 @@ public:
 	{
 		bool behindStuff;
 		float virtualW = W;
-		if (virtualW > SCREEN_WIDTH / 2) {
+		if (virtualW > SCREEN_WIDTH / 2) 
+		{
 			virtualW = SCREEN_WIDTH / 2;
 		}
 		float scaling = virtualW / SEGMENT_LENGTH * 0.65f;
@@ -111,20 +115,26 @@ public:
 
 
 		// Apply clipping only if needed (if the sprite must be cut)
-		if (destY + destH > clip) {
+		//FULL DISCLAIMER: The clipping doesn't work with the rivals. I commented parts of the code because they actually made everything worse.
+		//Didn't find where the bug was.
+		if (destY + destH > clip)
+		{
 			behindStuff = true;
 			float clipH = destY + destH - clip;
 			//object.sprite.h = (int)(object.sprite.h - object.sprite.h * clipH / destH);
 			//racer->currentAnimation->GetCurrentFrame().h = (int)(/*racer->currentAnimation->GetCurrentFrame().h*/72 - 72/*racer->currentAnimation->GetCurrentFrame().h*/ * clipH / destH);
 		}
-		else {
+		else
+		{
 			behindStuff = false;
 		}
 
-		if (racer->hitBoxWidth != 0) {
+		if (racer->hitBoxWidth != 0)
+		{
 			destW = racer->hitBoxWidth * scaling;
 		}
-		else {
+		else
+		{
 			destW = racer->currentAnimation->GetCurrentFrame().w * scaling;
 		}
 
@@ -133,17 +143,17 @@ public:
 			static_cast<int>(destW),
 			10 };
 
-		/*SDL_Rect hitBox = { static_cast<int>(destX + racer->hitBoxXOffset * scaling),
-			static_cast<int>(destY + racer->currentAnimation->GetCurrentFrame().h * scaling - 10),
-			static_cast<int>(destW),
-			10 };*/
-
-		if(clip > destY)
+		if (clip > destY) 
+		{
 			App->renderer->Blit(tex, (int)destX, (int)destY, &racer->currentAnimation->GetCurrentFrame(), 0.f, false, false, scaling, scaling);
+		}
 
-		if (scaling >= 0.65) {
+		if (scaling >= 0.65)
+		{
 			App->player->DetectCollision(racer->hitBox, ModulePlayer::collision_types::RIVAL, destX + racer->currentAnimation->GetCurrentFrame().w * scaling);
 		}
 	}
 	
 };
+
+#endif

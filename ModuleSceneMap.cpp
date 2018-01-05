@@ -70,8 +70,10 @@ bool ModuleSceneMap::Start()
 
 	App->audio->PlayMusic("Game/opening.ogg", 1.0f);
 
-	if (fx == 0)
-		fx = App->audio->LoadFx("Game/rtype/starting.wav");
+	if (fx == 0) 
+	{
+		fx = App->audio->LoadFx("Game/starting.wav");
+	}
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -88,8 +90,10 @@ bool ModuleSceneMap::CleanUp()
 
 	App->textures->Unload(graphics);
 
-	if (fx == 0)
-		fx = App->audio->LoadFx("Game/rtype/starting.wav");
+	if (fx == 0) 
+	{
+		fx = App->audio->LoadFx("Game/starting.wav");
+	}
 
 	return true;
 }
@@ -127,7 +131,8 @@ update_status ModuleSceneMap::Update()
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pressButton.frames[0].w, SCREEN_HEIGHT / 7 * 6, &(pressButton.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 	
 	// Force the user to choose Europe
-	if (timer_.IsExpired() && App->fade->isFading() == false) {
+	if (timer_.IsExpired() && App->fade->isFading() == false)
+	{
 		App->fade->FadeToBlack((Module*)App->scene_music, this);
 	}
 
@@ -141,11 +146,12 @@ update_status ModuleSceneMap::Update()
 			App->audio->PlayFx(fx);
 			break;
 		case EUROPE:
+			courseSelect = EUROPE;
 			App->fade->FadeToBlack((Module*)App->scene_music, this);
 			break;
 		}
 	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) 
+	if ((App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN) && App->fade->isFading() == false) 
 	{
 		africa.Reset();
 		asia.Reset();
@@ -160,7 +166,7 @@ update_status ModuleSceneMap::Update()
 			courseSelect = EUROPE;
 		}
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) 
+	else if ((App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN) && App->fade->isFading() == false)
 	{
 		africa.Reset();
 		asia.Reset();

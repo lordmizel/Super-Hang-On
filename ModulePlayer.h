@@ -40,17 +40,17 @@ public:
 
 	inline int GetSpeed() const { return speed; }
 	inline int GetMaxSpeedRunning() const { return maxSpeedRunning; }
-	int GetXPosition() const { return (int)positionX; }
+	inline int GetXPosition() const { return (int)positionX; }
 	inline int GetAbsoluteX() const { return absoluteX; }
+	player_state GetPlayerState() const { return state; }
+	void SetPlayerState(const player_state newState) { state = newState; }
 
-	void AlterXPosition(float alt) { positionX += alt; }
-	void CenterMaxX(float max);
+	void AlterXPosition(const float alt) { positionX += alt; }
+	void CenterMaxX(const float max);
 
-	void DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x = 0.0f);
+	void DetectCollision(const SDL_Rect r, const collision_types typeOfCollision, const float x = 0.0f);
 	void Pause();
 	
-	player_state state;
-
 	iPoint position;
 	bool destroyed = false;
 
@@ -64,6 +64,7 @@ public:
 	bool raceEnded;
 
 private:
+	player_state state;
 
 	void ManageAnimations();
 	void ManageSpeed();

@@ -90,11 +90,12 @@ bool ModuleFontManager::CleanUp()
 	return true;
 }
 
-void ModuleFontManager::DigitRendering(int numberToRender, int numDigits, int x, int y, Color color, bool fillWithZero, bool big)
+void ModuleFontManager::DigitRendering(const int numberToRender, const int numDigits, const int x, const int y, const Color color, const bool fillWithZero, const bool big)
 {
 	int numberThreshold = 1;
 
-	for (int i = 0; i < numDigits - 1; i++) {
+	for (int i = 0; i < numDigits - 1; i++) 
+	{
 		numberThreshold *= 10;
 	}
 
@@ -102,12 +103,16 @@ void ModuleFontManager::DigitRendering(int numberToRender, int numDigits, int x,
 	int digitPositionX = 0;
 	bool numberInRange = false;
 
-	for (int dig = numDigits; dig > 0; dig--) {
-		if (helper < numberThreshold && !numberInRange && dig > 1) {
-			if (!fillWithZero) {
+	for (int dig = numDigits; dig > 0; dig--) 
+	{
+		if (helper < numberThreshold && !numberInRange && dig > 1) 
+		{
+			if (!fillWithZero) 
+			{
 				App->renderer->Blit(graphics, x + digitPositionX, y, &blankSpace, 0.0f, false, false, 2, 2);
 			}
-			else {
+			else 
+			{
 				PrintDigit(0, x + digitPositionX, y, color, big);
 			}
 		}
@@ -123,25 +128,29 @@ void ModuleFontManager::DigitRendering(int numberToRender, int numDigits, int x,
 	}
 }
 
-void ModuleFontManager::StringRendering(string stringToRender, int x, int y, Color color) {
+void ModuleFontManager::StringRendering(const string stringToRender, const int x, const int y, const Color color) 
+{
 	int digitPositionX = 0;
-	for (unsigned int c = 0; c < stringToRender.size(); c++) {
+	for (unsigned int c = 0; c < stringToRender.size(); c++) 
+	{
 		App->font_manager->PrintChar(stringToRender.at(c), x + digitPositionX, y, color);
 		digitPositionX += 16;
 	}
 }
 
-void ModuleFontManager::PrintDigit(int digit, int x, int y, Color color, bool big)
+void ModuleFontManager::PrintDigit(const int digit, const int x, const int y, const Color color, const bool big)
 {
-	if (!big) {
+	if (!big) 
+	{
 		App->renderer->Blit(graphics, x, y, &numbers[digit], 0.0f, false, false, 2, 2, color);
 	}
-	else {
+	else 
+	{
 		App->renderer->Blit(graphics2, x, y, &numbersBig[digit], 0.0f, false, false, 2, 2, color);
 	}
 }
 
-void ModuleFontManager::PrintChar(char c, int x, int y, Color color) 
+void ModuleFontManager::PrintChar(const char c, const int x, const int y, const Color color)
 {
 	App->renderer->Blit(graphics, x, y, &characters[c], 0.0f, false, false, 2, 2, color);
 }

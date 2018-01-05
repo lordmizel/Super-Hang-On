@@ -127,7 +127,8 @@ ModuleSceneRace::ModuleSceneRace(bool active) : Module(active)
 
 ModuleSceneRace::~ModuleSceneRace()
 {
-	for (rival* p : rivals) {
+	for (rival* p : rivals) 
+	{
 		delete p;
 	}
 
@@ -157,6 +158,9 @@ bool ModuleSceneRace::Start()
 
 	semaphoreAnimation.Reset();
 
+	countdown = App->audio->LoadFx("Game/count.wav");
+	App->audio->PlayFx(countdown);
+
 	ResetRace();
 
 	return true;
@@ -167,18 +171,19 @@ update_status ModuleSceneRace::Update()
 {
 	time_t now = time(NULL);
 	int seconds = static_cast<int>(difftime(g_timer, now));
-	if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) 
+	if (App->player->GetPlayerState() != ModulePlayer::PAUSE && App->player->GetPlayerState() != ModulePlayer::GAME_OVER && App->player->GetPlayerState() != ModulePlayer::SCORE_SCREEN)
 	{
 		if (seconds != 0) 
 		{
 			pos += static_cast<int>(App->player->GetSpeed() / 1.5f);
-			if (App->player->state != ModulePlayer::GOING_TO_END) {
+			if (App->player->GetPlayerState() != ModulePlayer::GOING_TO_END)
+			{
 				App->score->UpdateScore(App->player->GetSpeed());
 			}
 		}
 	}
 
-	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex] && App->player->state != BEFORE_RACE)
+	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex] && App->player->GetPlayerState() != BEFORE_RACE)
 	{
 		if (biomeIndex < biomes.size() - 1) 
 		{
@@ -188,13 +193,14 @@ update_status ModuleSceneRace::Update()
 
 	App->renderer->DrawQuad(skyBox, currentBiome.skyColor.r, currentBiome.skyColor.g, currentBiome.skyColor.b, 255, false);
 
-	if (App->player->state == RACING) {
+	if (App->player->GetPlayerState() == RACING)
+	{
 		BiomeChange();
 	}
 
 	ManageRoad();
 
-	if (App->player->state == BEFORE_RACE) 
+	if (App->player->GetPlayerState() == BEFORE_RACE)
 	{
 		App->renderer->Blit(decoration, 98, SCREEN_HEIGHT - semaphoreAnimation.GetCurrentFrame().h * 4 - 21, &semaphoreAnimation.GetCurrentFrame(), 0.0f, false, false, 2.266f, 2.266f);
 	}
@@ -206,7 +212,8 @@ update_status ModuleSceneRace::Update()
 		extendedPlayTime.Update();
 	}
 
-	if (App->player->state != ModulePlayer::SCORE_SCREEN) {
+	if (App->player->GetPlayerState() != ModulePlayer::SCORE_SCREEN)
+	{
 		App->ui->ShowProgressBar(trackProgressBar, yellowBarLength, goalPoint, pos / SEGMENT_LENGTH);
 	}
 
@@ -274,7 +281,7 @@ void ModuleSceneRace::ManageRoad()
 	App->renderer->Blit(graphics, (int)foregroundPositionX - SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, (int)foregroundPositionX + SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	
-	for (int n = startPos; n < startPos + 150; n++) 
+	for (int n = startPos; n < startPos + 200; n++) 
 	{
 		*grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
 		*rumble = (n / 3) % 2 ? currentBiome.rumbleDark : currentBiome.rumbleLight;
@@ -286,17 +293,17 @@ void ModuleSceneRace::ManageRoad()
 		x += dx;
 		dx += current.curve;
 
-		if (n == startPos && App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) 
+		if (n == startPos && App->player->GetPlayerState() != ModulePlayer::PAUSE && App->player->GetPlayerState() != ModulePlayer::GAME_OVER && App->player->GetPlayerState() != ModulePlayer::SCORE_SCREEN)
 		{
 			if (current.curve > 0)
 			{
-				App->player->AlterXPosition(-App->player->GetSpeed() / 3.0f * current.curve/6);
+				App->player->AlterXPosition(-App->player->GetSpeed() / 3.0f * current.curve/4.5f);
 				landscapePositionX -= App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX -= App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
 			else if(current.curve < 0) 
 			{
-				App->player->AlterXPosition(App->player->GetSpeed() / 3.0f * (-1)*current.curve/6);
+				App->player->AlterXPosition(App->player->GetSpeed() / 3.0f * (-1)*current.curve/4.5f);
 				landscapePositionX += App->player->GetSpeed() / (float)landscapeParallaxFactor;
 				foregroundPositionX += App->player->GetSpeed() / (float)foregroundParallaxFactor;
 			}
@@ -330,9 +337,12 @@ void ModuleSceneRace::ManageRoad()
 	}
 
 	//Draw Objects and Rivals
-	for (int n = startPos + 174; n >= startPos; n--) {
-		if (!lines[n%N].atrezzos.empty()) {
-			for (unsigned int i = 0; i < lines[n%N].atrezzos.size(); i++) {
+	for (int n = startPos + 174; n >= startPos; n--) 
+	{
+		if (!lines[n%N].atrezzos.empty()) 
+		{
+			for (unsigned int i = 0; i < lines[n%N].atrezzos.size(); i++) 
+			{
 				lines[n%N].DrawObject(lines[n%N].atrezzos[i].first, decoration, lines[n%N].atrezzos[i].second);
 			}
 		}
@@ -375,7 +385,7 @@ void ModuleSceneRace::ManageRoad()
 					lines[(int)rivals[i]->z % N].DrawRival(rivals[i], drivers);
 				}
 			}
-			else if ((int)rivals[i]->z < startPos - 20 && i < rivals.size() - 1 && rivals[i]->reincident == true) 
+			else if ((int)rivals[i]->z < startPos - 20 && i < rivals.size() - 1) 
 			{
 				// If the player overtakes this rival, then teleport the rival
 				// forward to make him appear again
@@ -383,10 +393,10 @@ void ModuleSceneRace::ManageRoad()
 				// Random e [-0.8f, 0.8f]
 				rivals[i]->x = -0.8f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.8f - (-0.8f))));
 			}
-			else if (((int)rivals[i]->z > startPos + 500 && i < rivals.size() - 1 && App->player->state != ModulePlayer::GOING_TO_END && App->player->state != ModulePlayer::RACING)
-				|| ((int)rivals[i]->z > startPos + 200 && i < rivals.size() - 1 && (App->player->state == ModulePlayer::CRASHING || App->player->state == ModulePlayer::RECOVERING))) {
-				
-				rivals[i]->z = (float)(startPos - 10);
+			else if (((int)rivals[i]->z > startPos + 500 && i < rivals.size() - 1 && App->player->GetPlayerState() != ModulePlayer::GOING_TO_END && App->player->GetPlayerState() != ModulePlayer::RACING)
+				|| ((int)rivals[i]->z > startPos + 200 && i < rivals.size() - 1 && App->player->GetPlayerState() == ModulePlayer::CRASHING))
+			{
+				rivals[i]->z = (float)(startPos - 5);
 				rivals[i]->x = -0.8f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.8f - (-0.8f))));
 			}
 		}
@@ -394,7 +404,7 @@ void ModuleSceneRace::ManageRoad()
 
 	for (unsigned int i = 0; i < rivals.size(); i++) 
 	{
-		if (App->player->state != ModulePlayer::PAUSE && App->player->state != ModulePlayer::BEFORE_RACE && App->player->state != ModulePlayer::GAME_OVER && App->player->state != ModulePlayer::SCORE_SCREEN) 
+		if (App->player->GetPlayerState() != ModulePlayer::PAUSE && App->player->GetPlayerState() != ModulePlayer::BEFORE_RACE && App->player->GetPlayerState() != ModulePlayer::GAME_OVER && App->player->GetPlayerState() != ModulePlayer::SCORE_SCREEN)
 		{
 			rivals[i]->z += rivals[i]->speed;
 			rivals[i]->currentAnimation->speed = 0.2f;
@@ -417,10 +427,10 @@ void ModuleSceneRace::ManageRoad()
 	//CheckPoint Management
 	if (checkPointIndex != checkPoints.size())
 	{
-		if (startPos > checkPoints[checkPointIndex])
+		if (seg_pos / SEGMENT_LENGTH > checkPoints[checkPointIndex])
 		{
 			showExtendedPlay = true;
-			App->player->timeLeftInRace.AddTime(30);
+			App->player->timeLeftInRace.AddTime(20);
 			extendedPlayTime.SetTime(2);
 			extendedPlayTime.Start();
 			App->score->CompareLapTime((int)(App->player->timeLeftInRace.GetTotalTimeElapsed() * 100));
@@ -443,16 +453,18 @@ void ModuleSceneRace::ManageRoad()
 		App->player->CenterMaxX(0);
 		for (unsigned int i = 0; i < rivals.size() - 1; ++i)
 		{
-			if ((int)rivals[i]->z > startPos) {
+			if ((int)rivals[i]->z > startPos)
+			{
 				rivals[i]->speed = 2.5f;
 			}
-			else {
+			else
+			{
 				rivals[i]->speed = 1.0f;
 			}
 		}
 	}
 
-	if (startPos > goalPoint && (App->player->state == ModulePlayer::RACING || App->player->state == ModulePlayer::OUT_OF_CONTROL))
+	if (startPos > goalPoint && (App->player->GetPlayerState() == ModulePlayer::RACING || App->player->GetPlayerState() == ModulePlayer::OUT_OF_CONTROL))
 	{
 		endPlayer->z = (float)(((startPos + 9) * SEGMENT_LENGTH) / 100);
 		endPlayer->speed = 1.0f;
@@ -460,17 +472,17 @@ void ModuleSceneRace::ManageRoad()
 		App->player->timePastGoal.SetTime(3.5f);
 		App->player->timePastGoal.Start();
 		App->audio->PlayMusic("Game/goal.ogg", 0.0f);
-		App->player->state = ModulePlayer::PAST_GOAL;
+		App->player->SetPlayerState(ModulePlayer::PAST_GOAL);
 	}
 
-	if (startPos > goalPoint + 284 && App->player->state == ModulePlayer::GOING_TO_END) 
+	if (startPos > goalPoint + 284 && App->player->GetPlayerState() == ModulePlayer::GOING_TO_END)
 	{
 		startPos = goalPoint + 284;
 		endPlayer->z = 0;
 		endPlayer->speed = 0;
 		App->player->timeEndScene.SetTime(2);
 		App->player->timeEndScene.Start();
-		App->player->state = ModulePlayer::END_SCENE;
+		App->player->SetPlayerState(ModulePlayer::END_SCENE);
 	}
 }
 
@@ -619,7 +631,6 @@ void ModuleSceneRace::ResetRace()
 	rival3->speed = 1.5f;
 	rival3->x = -0.1f;
 	rival3->isYellow = true;
-	rival3->reincident = false;
 
 	rival4->currentAnimation = &greenRivalStraight;
 	rival4->z = 14;

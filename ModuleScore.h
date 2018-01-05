@@ -29,21 +29,21 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	int GetTopScore() { return scoreEntries[0].score; }
-	int GetScore() { return currentScore.score; }
-	int GetStage() { return currentScore.stage; }
-	std::pair<int, int> GetLapTimes() { return std::make_pair(storedLaps[checkPointsPassed-1], currentLaps[checkPointsPassed-1]); }
+	int GetTopScore() const { return scoreEntries[0].score; }
+	int GetScore() const { return currentScore.score; }
+	int GetStage() const { return currentScore.stage; }
+	std::pair<int, int> GetLapTimes() const { return std::make_pair(storedLaps[checkPointsPassed-1], currentLaps[checkPointsPassed-1]); }
 
-	void setTime(int64_t t) { current_time = t; }
+	void setTime(const int64_t t) { current_time = t; }
 
-	void UpdateScore(int deltaScore) { currentScore.score += deltaScore; }
+	void UpdateScore(const int deltaScore) { currentScore.score += deltaScore; }
 
-	void ValidateScoreEntry(double totalTime);
+	void ValidateScoreEntry(const double totalTime);
 	void SaveScoreEntry();
 	void ResetScore();
-	void OpenLapData(std::string &file);
+	void OpenLapData(const std::string &file);
 	void SaveLapData();
-	void CompareLapTime(int currentTime);
+	void CompareLapTime(const int currentTime);
 
 	std::vector<scoreEntry> scoreEntries;
 	int entryInScoreTable = NULL;

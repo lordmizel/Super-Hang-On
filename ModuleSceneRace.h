@@ -24,7 +24,6 @@ struct rival {
 	int hitBoxXOffset = 0;
 	int hitBoxWidth = 0;
 	SDL_Rect hitBox;
-	bool reincident = true;
 };
 
 class ModuleSceneRace : public Module
@@ -52,7 +51,7 @@ public:
 	~ModuleSceneRace();
 
 	bool Start();
-	update_status Update(/*float deltaTime*/);
+	update_status Update();
 	bool CleanUp();
 
 	vector<Segment> lines;
@@ -165,6 +164,8 @@ private:
 	Animation extendedPlayTag;
 	bool showExtendedPlay;
 	Timer extendedPlayTime;
+
+	uint countdown = 0;
 };
 
 #endif

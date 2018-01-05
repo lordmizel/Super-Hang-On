@@ -119,8 +119,10 @@ bool ModuleSceneIntro::Start()
 	graphics = App->textures->Load("Game/menu.png", 0, 0, 0);
 
 	//App->audio->PlayMusic("rtype/intro.ogg", 1.0f);
-	if(fx == 0)
-		fx = App->audio->LoadFx("Game/rtype/starting.wav");
+	if (fx == 0)
+	{
+		fx = App->audio->LoadFx("Game/starting.wav");
+	}
 
 	//App->renderer->camera.x = App->renderer->camera.y = 0;
 	
@@ -140,12 +142,15 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	if (currentMovingLetter < 7) {
-		for (int i = 0; i < 7; i++) {
+	if (currentMovingLetter < 7) 
+	{
+		for (int i = 0; i < 7; i++)
+		{
 			App->renderer->Blit(graphics, currentLetterPosition[i], SCREEN_HEIGHT / 4, &titleLetters[i], 0.0f, false, false, 2, 2);
 		}
 		currentLetterPosition[currentMovingLetter] -= letterSpeed;
-		if (currentLetterPosition[currentMovingLetter] < letterPositions[currentMovingLetter]) {
+		if (currentLetterPosition[currentMovingLetter] < letterPositions[currentMovingLetter])
+		{
 			currentLetterPosition[currentMovingLetter] = letterPositions[currentMovingLetter];
 			currentMovingLetter++;
 		}
@@ -154,9 +159,11 @@ update_status ModuleSceneIntro::Update()
 	{
 		App->renderer->Blit(graphics, SCREEN_WIDTH / 10, 57, &(superHangOn.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 
-		if (selectedOption == NEW_GAME || selectedOption == PASSWORD) {
+		if (selectedOption == NEW_GAME || selectedOption == PASSWORD)
+		{
 			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions1.w, SCREEN_HEIGHT / 2, &menuOptions1, 0.0f, false, false, 2, 2);
-			if (selectedOption == NEW_GAME) {
+			if (selectedOption == NEW_GAME)
+			{
 				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions1.w - 12, SCREEN_HEIGHT / 2, &(arrow.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 			}
 			else if (selectedOption == PASSWORD) 
@@ -167,7 +174,8 @@ update_status ModuleSceneIntro::Update()
 		else if (selectedOption == ARCADE_MODE || selectedOption == ORIGINAL_MODE)
 		{
 			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions2.w, SCREEN_HEIGHT / 2, &menuOptions2, 0.0f, false, false, 2, 2);
-			if (selectedOption == ARCADE_MODE) {
+			if (selectedOption == ARCADE_MODE) 
+			{
 				App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - menuOptions2.w - 12, SCREEN_HEIGHT / 2, &(arrow.GetCurrentFrame()), 0.0f, false, false, 2, 2);
 			}
 			else if (selectedOption == ORIGINAL_MODE)
@@ -181,7 +189,8 @@ update_status ModuleSceneIntro::Update()
 
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN /*&& App->fade->isFading() == false*/)
 		{
-			switch (selectedOption) {
+			switch (selectedOption) 
+			{
 			case NEW_GAME:
 				selectedOption = ARCADE_MODE;
 				break;
@@ -198,7 +207,8 @@ update_status ModuleSceneIntro::Update()
 		}
 		if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 		{
-			switch (selectedOption) {
+			switch (selectedOption) 
+			{
 			case NEW_GAME:
 				selectedOption = PASSWORD;
 				break;

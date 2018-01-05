@@ -53,7 +53,8 @@ ModuleUI::~ModuleUI()
 {
 }
 
-bool ModuleUI::Start() {
+bool ModuleUI::Start() 
+{
 	LOG("Loading UI");
 
 	graphics = App->textures->Load("Game/bikes.png", 255, 0, 204);
@@ -61,7 +62,8 @@ bool ModuleUI::Start() {
 	return true;
 }
 
-bool ModuleUI::CleanUp() {
+bool ModuleUI::CleanUp()
+{
 	LOG("Unloading score graphics");
 
 	App->textures->Unload(graphics);
@@ -69,12 +71,15 @@ bool ModuleUI::CleanUp() {
 	return true;
 }
 
-void ModuleUI::ShowUI() {
+void ModuleUI::ShowUI() 
+{
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 - 16, SCREEN_HEIGHT / 17 - 4, &topTag, 0.0f, false, false, 2, 2);
-	if (App->score->GetTopScore() > App->score->GetScore()) {
+	if (App->score->GetTopScore() > App->score->GetScore()) 
+	{
 		App->font_manager->DigitRendering(App->score->GetTopScore(), 8, SCREEN_WIDTH / 12 * 2, SCREEN_HEIGHT / 17, Color(255, 0, 0, 255));
 	}
-	else {
+	else 
+	{
 		App->font_manager->DigitRendering(App->score->GetScore(), 8, SCREEN_WIDTH / 12 * 2, SCREEN_HEIGHT / 17, Color(255, 0, 0, 255));
 	}
 
@@ -89,7 +94,8 @@ void ModuleUI::ShowUI() {
 	App->font_manager->DigitRendering(App->score->GetStage(), 2, SCREEN_WIDTH / 12 * 3, SCREEN_HEIGHT / 17 * 2 + 12);
 	
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 7, SCREEN_HEIGHT / 17 * 2 - 4, &speedText, 0.0f, false, false, 2, 2);
-	if (App->player->state != ModulePlayer::GOING_TO_END) {
+	if (App->player->GetPlayerState() != ModulePlayer::GOING_TO_END)
+	{
 		if (App->player->GetSpeed() >= App->player->GetMaxSpeedRunning())
 		{
 			App->font_manager->DigitRendering(App->player->GetSpeed(), 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4, Color(255, 0, 0, 255));
@@ -99,21 +105,25 @@ void ModuleUI::ShowUI() {
 			App->font_manager->DigitRendering(App->player->GetSpeed(), 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4);
 		}
 	}
-	else {
+	else
+	{
 		App->font_manager->DigitRendering(0, 3, SCREEN_WIDTH / 12 * 9 + 8, SCREEN_HEIGHT / 17 * 2 - 4);
 	}
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 12 * 9 + 8 + 16 * 3, SCREEN_HEIGHT / 17 * 2 - 4, &kmText, 0.0f, false, false, 2, 2);
 
-	if (App->player->state == ModulePlayer::PAUSE) {
+	if (App->player->GetPlayerState() == ModulePlayer::PAUSE)
+	{
 		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - pauseTag.w, SCREEN_HEIGHT / 2 - pauseTag.h, &pauseTag, 0.0f, false, false, 2, 2);
 	}
 
-	if (App->player->state == ModulePlayer::GAME_OVER) {
+	if (App->player->GetPlayerState() == ModulePlayer::GAME_OVER)
+	{
 		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - gameOverTag.w, SCREEN_HEIGHT / 2 - gameOverTag.h, &gameOverTag, 0.0f, false, false, 2, 2);
 	}
 }
 
-void ModuleUI::ShowRankings() {
+void ModuleUI::ShowRankings()
+{
 
 	int rankNumber = 0;
 
@@ -140,7 +150,8 @@ void ModuleUI::ShowRankings() {
 
 	for (int i = 0; i < sizeof(topRanks) / sizeof(topRanks[0]); i++)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false && readyToCloseScreen == true) {
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->fade->isFading() == false && readyToCloseScreen == true)
+		{
 			nameEntered = false;
 			characterIndex = 0;
 			nameCharacterIndex = 0;
@@ -150,7 +161,8 @@ void ModuleUI::ShowRankings() {
 		int posY = SCREEN_HEIGHT / 13 * (4 + Ymultiplier);
 		Color entryColor = { 255, 255, 255, 255 };
 
-		if (i == App->score->entryInScoreTable && App->score->scoreIsHighEnough == true && nameEntered == false) {
+		if (i == App->score->entryInScoreTable && App->score->scoreIsHighEnough == true && nameEntered == false) 
+		{
 			entryColor = { 255, 0, 0, 255 };
 
 			//Rank column
@@ -198,12 +210,14 @@ void ModuleUI::ShowRankings() {
 		Ymultiplier++;
 	}
 
-	if (App->score->scoreIsHighEnough == false && nameEntered == false) {
+	if (App->score->scoreIsHighEnough == false && nameEntered == false)
+	{
 		App->font_manager->StringRendering("YOU.", SCREEN_WIDTH / 8 - topRanks[0].w / 2, SCREEN_HEIGHT / 13 * (4 + Ymultiplier), { 255, 0, 0, 255 });
 		App->font_manager->DigitRendering(App->score->currentScore.score, 8, SCREEN_WIDTH / 7 * 2 - 54, SCREEN_HEIGHT / 13 * (4 + Ymultiplier), { 255, 0, 0, 255 });
 	}
 
-	if (App->score->scoreIsHighEnough == true && nameEntered == false) {
+	if (App->score->scoreIsHighEnough == true && nameEntered == false)
+	{
 		NameEntry();
 	}
 }
@@ -230,7 +244,7 @@ void ModuleUI::ShowLapTimes()
 	App->renderer->Blit(graphics, posX - lapTimesTag.w * 2 + 16, posY, &lapTimesTag, 0.0f, false, false, 2, 2);
 }
 
-void ModuleUI::ShowBonusPoints(int time)
+void ModuleUI::ShowBonusPoints(const int time)
 {
 	App->font_manager->DigitRendering(time, 2, SCREEN_WIDTH / 2 - bonusPointsTag.w - 56, SCREEN_HEIGHT / 2 - bonusPointsTag.h + 14, Color(255,255,255,255), false, true);
 	App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - bonusPointsTag.w, SCREEN_HEIGHT / 2 - bonusPointsTag.h, &bonusPointsTag, 0.0f, false, false, 2, 2);
@@ -254,14 +268,16 @@ void ModuleUI::ShowProgressBar(SDL_Rect &bar, int &yellowBarTotal, int &goalPoin
 	App->renderer->Blit(graphics, posX, posY, &bar, 0.0f, false, false, 2, 2);
 }
 
-void ModuleUI::NameEntry() {
-	
+void ModuleUI::NameEntry()
+{
 	Color color;
 	int positionX = SCREEN_WIDTH / 7;
 	string nameEntryString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ.</";
 
-	for (unsigned int i = 0; i < nameEntryString.size(); i++) {
-		if (i == characterIndex) {
+	for (unsigned int i = 0; i < nameEntryString.size(); i++) 
+	{
+		if (i == characterIndex) 
+		{
 			color = { 255, 0, 0, 255 };
 		}
 		else
@@ -274,19 +290,23 @@ void ModuleUI::NameEntry() {
 
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_DOWN)
 	{
-		if (characterIndex == nameEntryString.size() - 1) {
+		if (characterIndex == nameEntryString.size() - 1)
+		{
 			characterIndex = 0;
 		}
-		else {
+		else
+		{
 			characterIndex++;
 		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
 	{
-		if (characterIndex == 0) {
+		if (characterIndex == 0)
+		{
 			characterIndex = nameEntryString.size() - 1;
 		}
-		else {
+		else
+		{
 			characterIndex--;
 		}
 	}
@@ -301,14 +321,16 @@ void ModuleUI::NameEntry() {
 		}
 		else if (characterIndex == nameEntryString.size() - 2)
 		{
-			if (nameCharacterIndex != 0) {
+			if (nameCharacterIndex != 0)
+			{
 				App->score->currentScore.name[nameCharacterIndex - 1] = ' ';
 				nameCharacterIndex--;
 			}
 		}
 		else
 		{
-			if (nameCharacterIndex < 3) {
+			if (nameCharacterIndex < 3) 
+			{
 				App->score->currentScore.name[nameCharacterIndex] = nameEntryString[characterIndex];
 				nameCharacterIndex++;
 			}

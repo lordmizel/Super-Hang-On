@@ -27,11 +27,15 @@ update_status ModuleFadeToBlack::Update()
 		Uint32 now = SDL_GetTicks() - start_time;
 		float normalized = (float) now / (float) total_time;
 		
-		if(normalized > 1.0f)
+		if (normalized > 1.0f) 
+		{
 			normalized = 1.0f;
+		}
 		
-		if(fading_in == false)
+		if (fading_in == false) 
+		{
 			normalized = 1.0f - normalized;
+		}
 
 		SDL_SetRenderDrawColor(App->renderer->renderer, 0, 0, 0, (Uint8) (normalized * 255.0f));
 		SDL_RenderFillRect(App->renderer->renderer, NULL);
@@ -65,7 +69,7 @@ update_status ModuleFadeToBlack::Update()
 }
 
 // Fade to black. At mid point deactivate one module, then activate the other
-void ModuleFadeToBlack::FadeToBlack(Module* module_on, Module* module_off, float time)
+void ModuleFadeToBlack::FadeToBlack(Module* module_on, Module* module_off, const float time)
 {
 	fading_in = (module_off != nullptr) ? true : false;
 	start_time = SDL_GetTicks();

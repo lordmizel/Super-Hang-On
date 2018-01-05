@@ -61,8 +61,10 @@ bool Application::Init()
 {
 	bool ret = true;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it) 
+	{
 		ret = (*it)->Init(); // we init everything, even if not anabled
+	}
 
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
 	{
@@ -84,17 +86,29 @@ update_status Application::Update()
 	clock_t globalClock = clock();
 	deltaTime += float(globalClock - timer) / CLOCKS_PER_SEC;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		if((*it)->IsEnabled() == true) 
+	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it) 
+	{
+		if ((*it)->IsEnabled() == true) 
+		{
 			ret = (*it)->PreUpdate();
+		}
+	}
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		if((*it)->IsEnabled() == true) 
+	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it) 
+	{
+		if ((*it)->IsEnabled() == true) 
+		{
 			ret = (*it)->Update();
+		}
+	}
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
-		if((*it)->IsEnabled() == true) 
+	for (list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it) 
+	{
+		if ((*it)->IsEnabled() == true) 
+		{
 			ret = (*it)->PostUpdate();
+		}
+	}
 
 	return ret;
 }
@@ -103,9 +117,13 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
-	for(list<Module*>::reverse_iterator it = modules.rbegin(); it != modules.rend() && ret; ++it)
-		if((*it)->IsEnabled() == true) 
+	for (list<Module*>::reverse_iterator it = modules.rbegin(); it != modules.rend() && ret; ++it) 
+	{
+		if ((*it)->IsEnabled() == true) 
+		{
 			ret = (*it)->CleanUp();
+		}
+	}
 
 	return ret;
 }

@@ -187,19 +187,23 @@ bool ModulePlayer::Start()
 
 	timeLeftInRace.SetTime(30);
 
-	if (collision == 0) {
+	if (collision == 0) 
+	{
 		collision = App->audio->LoadFx("Game/collision.wav");
 	}
 
-	if (crash == 0) {
+	if (crash == 0) 
+	{
 		crash = App->audio->LoadFx("Game/crash.wav");
 	}
 
-	if (scream == 0) {
+	if (scream == 0) 
+	{
 		scream = App->audio->LoadFx("Game/wilhelm.wav");
 	}
 
-	if (skid == 0) {
+	if (skid == 0) 
+	{
 		skid = App->audio->LoadFx("Game/skid.wav");
 	}
 
@@ -229,18 +233,28 @@ update_status ModulePlayer::Update()
 		}
 		else if (speed > currentMaxSpeed)
 		{
-			speed = speed - acceleration;
+			if (braking) 
+			{
+				speed = speed - acceleration * 2;
+			}
+			else 
+			{
+				speed = speed - acceleration;
+			}
+			
 		}
 	}
 
-	switch (state) {
+	switch (state) 
+	{
 	case(BEFORE_RACE):
 		current_animation = &forward;
 		
 		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - forward.frames[0].w, position.y, &forward.frames[0], 0.0f, false, false, 2, 2);
 		
 		timeWaitingAtStart.Update();
-		if (timeWaitingAtStart.IsExpired()) {
+		if (timeWaitingAtStart.IsExpired()) 
+		{
 			timeLeftInRace.Start();
 			App->audio->PlayMusic(App->audio->musicChosen, 0.0f);
 			state = RACING;
@@ -249,49 +263,63 @@ update_status ModulePlayer::Update()
 
 	case(RACING):
 
-		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) 
+		{
 			Pause();
 		}
 
-		if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) {
+		if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) 
+		{
 			positionX -= movementX / 2;
-			if (positionX > -maxXPosition) {
+			if (positionX > -maxXPosition) 
+			{
 				absoluteX -= movementX / 2;
 			}
 		}
-		else if (current_animation == &leanedLeft || current_animation == &leanedLeftBraking) {
+		else if (current_animation == &leanedLeft || current_animation == &leanedLeftBraking) 
+		{
 			positionX -= movementX;
-			if (positionX > -maxXPosition) {
+			if (positionX > -maxXPosition) 
+			{
 				absoluteX -= movementX;
 			}
 		}
-		else if (current_animation == &leaningRight || current_animation == &unLeanRight || current_animation == &leaningRightBraking || current_animation == &unLeanRightBraking) {
+		else if (current_animation == &leaningRight || current_animation == &unLeanRight || current_animation == &leaningRightBraking || current_animation == &unLeanRightBraking) 
+		{
 			positionX += movementX / 2;
-			if (positionX < maxXPosition) {
+			if (positionX < maxXPosition) 
+			{
 				absoluteX += movementX / 2;
 			}
 		}
-		else if (current_animation == &leanedRight || current_animation == &leanedRightBraking) {
+		else if (current_animation == &leanedRight || current_animation == &leanedRightBraking) 
+		{
 			positionX += movementX;
-			if (positionX < maxXPosition) {
+			if (positionX < maxXPosition) 
+			{
 				absoluteX += movementX;
 			}
 		}
 
-		if (positionX > maxXPosition) {
+		if (positionX > maxXPosition) 
+		{
 			positionX = (float)maxXPosition;
 		}
-		if (positionX < -maxXPosition) {
+		if (positionX < -maxXPosition) 
+		{
 			positionX = -(float)maxXPosition;
 		}
 
-		if (positionX > ROAD_WIDTH) {
+		if (positionX > ROAD_WIDTH) 
+		{
 			offRoad = true;
 		}
-		else if (positionX < -ROAD_WIDTH) {
+		else if (positionX < -ROAD_WIDTH) 
+		{
 			offRoad = true;
 		}
-		else {
+		else 
+		{
 			offRoad = false;
 		}
 
@@ -303,34 +331,41 @@ update_status ModulePlayer::Update()
 		break;
 
 	case(CRASHING):
-		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) 
+		{
 			Pause();
 		}
 
-		if (speed > 200 && current_animation != &smallCrash) {
+		if (speed > 200 && current_animation != &smallCrash) 
+		{
 			current_animation = &bigCrash;
 		}
-		else if (current_animation != &bigCrash){
+		else if (current_animation != &bigCrash)
+		{
 			current_animation = &smallCrash;
 		}
 		
-		if (speed > 80) {
+		if (speed > 80) 
+		{
 			speed = 80;
 			current_animation->Reset();
 		}
 		currentMaxSpeed = 0;
 		App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w + 50, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
-		if (current_animation->GetCurrentFrame().x == current_animation->frames[current_animation->frames.size() - 1].x && current_animation->GetCurrentFrame().y == current_animation->frames[current_animation->frames.size() - 1].y) {
+		if (current_animation->GetCurrentFrame().x == current_animation->frames[current_animation->frames.size() - 1].x && current_animation->GetCurrentFrame().y == current_animation->frames[current_animation->frames.size() - 1].y) 
+		{
 			state = RECOVERING;
 		}
 		break;
 
 	case(RECOVERING):
 		speed = 0;
-		if (positionX > 0) {
+		if (positionX > 0) 
+		{
 			positionX -= 30;
 		}
-		else if (positionX < 0) {
+		else if (positionX < 0) 
+		{
 			positionX += 30;
 		}
 		if(positionX > -30 && positionX < 30)
@@ -340,31 +375,37 @@ update_status ModulePlayer::Update()
 			state = RACING;
 		}
 
-		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) 
+		{
 			Pause();
 		}
 
 		break;
 
 	case(OUT_OF_CONTROL):
-		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) {
+		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+		{
 			Pause();
 		}
 
-		if (speed > 90) {
+		if (speed > 90) 
+		{
 			speed = 90;
 		}
 		currentMaxSpeed = 90;
-		if (deviateRight) {
+		if (deviateRight)
+		{
 			current_animation = &leanedRight;
 			positionX += 20;
 		}
-		else {
+		else 
+		{
 			current_animation = &leanedLeft;
 			positionX -= 20;
 		}
 		timeOutOfControl.Update();
-		if (timeOutOfControl.IsExpired()) {
+		if (timeOutOfControl.IsExpired()) 
+		{
 			state = RACING;
 		}
 		App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
@@ -372,33 +413,39 @@ update_status ModulePlayer::Update()
 
 	case(GAME_OVER):
 		gameOverTimer.Update();
-		if (gameOverTimer.IsExpired()) {
+		if (gameOverTimer.IsExpired()) 
+		{
 			App->score->SaveLapData();
 			App->score->ValidateScoreEntry(timeLeftInRace.GetTotalTimeElapsed());
 			App->audio->PlayMusic("Game/scoreboard.ogg", 0.0f);
 			state = SCORE_SCREEN;
 		}
 
-		if (previousState == CRASHING) {
+		if (previousState == CRASHING) 
+		{
 			App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w + 50, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		}
-		else {
+		else 
+		{
 			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		}
 		break;
 
 	case(SCORE_SCREEN):
-		if (!raceHasEnded) {
+		if (!raceHasEnded) 
+		{
 			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		}
 		break;
 
 	case(PAST_GOAL):
 		speed = 0;
-		if (positionX > 0) {
+		if (positionX > 0)
+		{
 			positionX -= 30;
 		}
-		else if (positionX < 0) {
+		else if (positionX < 0)
+		{
 			positionX += 30;
 		}
 		if (positionX > -30 && positionX < 30)
@@ -410,17 +457,20 @@ update_status ModulePlayer::Update()
 		timeLeftInRace.Pause();
 
 		timePastGoal.Update();
-		if (timePastGoal.IsExpired()) {
+		if (timePastGoal.IsExpired())
+		{
 			App->score->currentScore.score = App->score->currentScore.score + (int)timeLeftInRace.GetRemainingTime() * 1000000;
 			raceEnded = true;
 			state = GOING_TO_END;
 		}
 		break;
+
 	case(GOING_TO_END):
 		speed = 200;
 		App->ui->ShowBonusPoints((int)timeLeftInRace.GetRemainingTime());
 		raceHasEnded = true;
 		break;
+
 	case(END_SCENE):
 		speed = 0;
 		timeEndScene.Update();
@@ -433,6 +483,7 @@ update_status ModulePlayer::Update()
 			state = SCORE_SCREEN;
 		}
 		break;
+
 	case(PAUSE):
 		if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 		{
@@ -442,10 +493,12 @@ update_status ModulePlayer::Update()
 			timeLeftInRace.Resume();
 		}
 
-		if (previousState == CRASHING) {
+		if (previousState == CRASHING) 
+		{
 			App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w + 50, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		}
-		else {
+		else 
+		{
 			App->renderer->Blit(graphics, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, position.y, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		}
 		
@@ -455,7 +508,8 @@ update_status ModulePlayer::Update()
 	if (state == RACING || state == CRASHING || state == RECOVERING || state == OUT_OF_CONTROL) 
 	{
 		timeLeftInRace.Update();
-		if (timeLeftInRace.IsExpired()) {
+		if (timeLeftInRace.IsExpired())
+		{
 			gameOverTimer.SetTime(5);
 			gameOverTimer.Start();
 			current_animation->speed = 0.0f;
@@ -472,11 +526,12 @@ update_status ModulePlayer::Update()
 		App->ui->ShowRankings();
 	}
 
-	collider = { SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w, SCREEN_HEIGHT - 50, current_animation->GetCurrentFrame().w * 2, 50 };
+	collider = { SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w + 40, SCREEN_HEIGHT - 50, (current_animation->GetCurrentFrame().w - 40) * 2, 50 };
 	return UPDATE_CONTINUE;
 }
 
-void ModulePlayer::ManageSpeed() {
+void ModulePlayer::ManageSpeed() 
+{
 	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
 	{
 		braking = true;
@@ -522,7 +577,8 @@ void ModulePlayer::ManageSpeed() {
 	}
 }
 
-void ModulePlayer::ManageAnimations() {
+void ModulePlayer::ManageAnimations() 
+{
 	//This is a nightmare
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
@@ -643,29 +699,37 @@ void ModulePlayer::ManageAnimations() {
 	}
 }
 
-void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision, float x)
+void ModulePlayer::DetectCollision(const SDL_Rect r, const collision_types typeOfCollision, const float x)
 {
 	collision_types type = typeOfCollision;
-	if (state == RACING || state == OUT_OF_CONTROL) {
-		if (!(collider.x > r.x + r.w || collider.x + collider.w < r.x || collider.y > r.y + r.h || collider.y + collider.h < r.y)) {
-			switch (type) {
+	if (state == RACING || state == OUT_OF_CONTROL)
+	{
+		if (!(collider.x > r.x + r.w || collider.x + collider.w < r.x || collider.y > r.y + r.h || collider.y + collider.h < r.y))
+		{
+			switch (type)
+			{
 			case OBSTACLE:
-				if (speed > 200) {
+				if (speed > 200) 
+				{
 					App->audio->PlayFx(crash, 0);
 					App->audio->PlayFx(scream, 0);
 				}
-				else {
+				else 
+				{
 					App->audio->PlayFx(crash, 0);
 				}
 				state = CRASHING;
 				break;
+
 			case RIVAL:
 				timeOutOfControl.SetTime(1);
 				timeOutOfControl.Start();
-				if (x < SCREEN_WIDTH / 2) {
+				if (x < SCREEN_WIDTH / 2)
+				{
 					deviateRight = true;
 				}
-				else {
+				else
+				{
 					deviateRight = false;
 				}
 				App->audio->PlayFx(collision, 0);
@@ -677,7 +741,7 @@ void ModulePlayer::DetectCollision(SDL_Rect r, collision_types typeOfCollision, 
 	}
 }
 
-void ModulePlayer::CenterMaxX(float max)
+void ModulePlayer::CenterMaxX(const float max)
 {
 	if (maxXPosition > max)
 	{
@@ -689,7 +753,8 @@ void ModulePlayer::CenterMaxX(float max)
 	}
 }
 
-void ModulePlayer::Pause() {
+void ModulePlayer::Pause() 
+{
 	previousAnimationSpeed = current_animation->speed;
 	current_animation->speed = 0.0f;
 	previousState = state;
@@ -697,7 +762,8 @@ void ModulePlayer::Pause() {
 	state = PAUSE;
 }
 
-void ModulePlayer::ResetPlayer() {
+void ModulePlayer::ResetPlayer() 
+{
 	maxXPosition = ROAD_WIDTH * 4;
 	raceHasEnded = false;
 	positionX = 0;

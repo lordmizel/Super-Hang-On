@@ -58,8 +58,10 @@ bool ModuleAudio::CleanUp()
 		Mix_FreeMusic(music);
 	}
 
-	for(vector<Mix_Chunk*>::iterator it = fx.begin(); it != fx.end(); ++it)
+	for (vector<Mix_Chunk*>::iterator it = fx.begin(); it != fx.end(); ++it) 
+	{
 		Mix_FreeChunk(*it);
+	}
 
 	fx.clear();
 	Mix_CloseAudio();
@@ -69,7 +71,7 @@ bool ModuleAudio::CleanUp()
 }
 
 // Play a music file
-bool ModuleAudio::PlayMusic(const char* path, float fade_time)
+bool ModuleAudio::PlayMusic(const char* path, const float fade_time)
 {
 	bool ret = true;
 
@@ -139,7 +141,7 @@ unsigned int ModuleAudio::LoadFx(const char* path)
 }
 
 // Play WAV
-bool ModuleAudio::PlayFx(unsigned int id, int repeat)
+bool ModuleAudio::PlayFx(const unsigned int id, const int repeat) const
 {
 	bool ret = false;
 
@@ -152,7 +154,7 @@ bool ModuleAudio::PlayFx(unsigned int id, int repeat)
 	return ret;
 }
 
-bool ModuleAudio::PauseFx(unsigned int id)
+bool ModuleAudio::PauseFx(const unsigned int id) const
 {
 	bool ret = false;
 
@@ -165,7 +167,7 @@ bool ModuleAudio::PauseFx(unsigned int id)
 	return ret;
 }
 
-void ModuleAudio::MusicFadeOut(float fade_time) {
+void ModuleAudio::MusicFadeOut(const float fade_time) const {
 	if (music != nullptr)
 	{
 		if (fade_time > 0.0f)

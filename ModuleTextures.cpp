@@ -43,8 +43,10 @@ bool ModuleTextures::CleanUp()
 {
 	LOG("Freeing textures and Image library");
 
-	for(list<SDL_Texture*>::iterator it = textures.begin(); it != textures.end(); ++it)
+	for (list<SDL_Texture*>::iterator it = textures.begin(); it != textures.end(); ++it) 
+	{
 		SDL_DestroyTexture(*it);
+	}
 
 	textures.clear();
 	return true;

@@ -15,11 +15,11 @@ public:
 	bool Start();
 	bool CleanUp();
 
-	void StringRendering(std::string stringToRender, int x, int y, Color color = Color(255, 255, 255, 255));
-	void DigitRendering(int numberToRender, int numDigits, int x, int y, Color color = Color(255, 255, 255, 255), bool fillWithZero = false, bool big = false);
+	void StringRendering(const std::string stringToRender, const int x, const int y, const Color color = Color(255, 255, 255, 255));
+	void DigitRendering(const int numberToRender, const int numDigits, const int x, const int y, const Color color = Color(255, 255, 255, 255), const bool fillWithZero = false, const bool big = false);
 
-	void PrintDigit(int digit, int x, int y, Color color, bool big);
-	void PrintChar(char c, int x, int y, Color color);
+	void PrintDigit(const int digit, const int x, const int y, const Color color, const bool big);
+	void PrintChar(const char c, const int x, const int y, const Color color);
 
 	std::map<char, SDL_Rect> characters;
 

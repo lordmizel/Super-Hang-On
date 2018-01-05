@@ -21,12 +21,7 @@ public:
 	int hitBoxXOffset = 0;
 	int hitBoxWidth = 0;
 
-	//Segment containedIn;
-
-	void Advance() {
-		z += speed;
-	}
-
+	void Advance() { z += speed; }
 
 };
 

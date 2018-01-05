@@ -24,6 +24,7 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+private:
 	SDL_Texture* graphics = nullptr;
 
 	SDL_Rect backdrop;
@@ -39,7 +40,6 @@ public:
 	float animationSpeed;
 	uint fx = 0;
 
-private:
 	void ChangeSongPlaying();
 
 	Timer timer_;
