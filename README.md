@@ -38,7 +38,7 @@ Some of the turns are way too tight to be taken at full velocity, but if you man
 ## Other Info
 
 <b>Author:</b> Daniel Romero Aylagas <br /><br />
-<b>Repository:</b> https://github.com/lordmizel/Super-Hang-On<br /><br />
-<b>Webpage:</b> https://lordmizel.github.io/Super-Hang-On/<br /><br />
-<b>Release:</b> https://github.com/lordmizel/Super-Hang-On/releases<br /><br />
-<b>License:</b> GNU General Public License 2.0 (https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+<b>Project Webpage:</b> [Here](https://lordmizel.github.io/Super-Hang-On/)<br /><br />
+<b>Repository:</b> [Here](https://github.com/lordmizel/Super-Hang-On)<br /><br />
+<b>Release:</b> [Here](https://github.com/lordmizel/Super-Hang-On/releases)<br /><br />
+<b>License:</b> [GNU General Public License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) 
