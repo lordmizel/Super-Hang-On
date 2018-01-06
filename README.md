@@ -10,6 +10,7 @@ The game, while not as popular as other similar titles like OutRun, is still con
 ## What this Tribute Is
 
 The tribute contains a demo of what could be a fully playable stage in Super Hang-On. It contains sprites and music straight from the game, but the sound effects are not the same.<br />
+In order to play, the player must choose Arcade Mode and the Europe course. All other options are currently blocked.<br />
 Since the project is just for demonstration purposes, the stage is actually shorter than a real Super Hang-On course. Even though the game tells you the avaliable track (Europe) has 18 sections, in reality it only has 6. Each section is also much shorter than those in the real game.<br />
 Besides this, the game is fully playable and keeps track of the score records, as well as each individual segment time.<br />
 
@@ -39,3 +40,5 @@ Some of the turns are way too tight to be taken at full velocity, but if you man
 <b>Author:</b> Daniel Romero Aylagas <br /><br />
 <b>Repository:</b> https://github.com/lordmizel/Super-Hang-On<br /><br />
 <b>Webpage:</b> https://lordmizel.github.io/Super-Hang-On/<br /><br />
+<b>Release:</b> https://github.com/lordmizel/Super-Hang-On/releases<br /><br />
+<b>License:</b> GNU General Public License 2.0 (https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
