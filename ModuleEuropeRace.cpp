@@ -247,7 +247,7 @@ ModuleEuropeRace::ModuleEuropeRace(bool active) : ModuleSceneRace(active)
 		if (i > 8300 && i < 8400) segment.curve = 3;
 		
 		if (i > 6700 && i < 7200) ChangeAltitude(altitudeVariation, 50.0f, i, 6500, 7200);
-		if (i > 7900 && i < 8200) ChangeAltitude(altitudeVariation, -40.0f, i, 7900, 8200);
+		if (i > 7900 && i < 8200) ChangeAltitude(altitudeVariation, -10.0f, i, 7900, 8200);
 		if (i > 8300 && i < 8900) ChangeAltitude(altitudeVariation, 180.0f, i, 8300, 8900);
 
 		for (int j = 6500; j <= 6600; j += 20) {

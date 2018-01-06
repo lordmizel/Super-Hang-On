@@ -171,18 +171,17 @@ update_status ModuleSceneRace::Update()
 {
 	time_t now = time(NULL);
 	int seconds = static_cast<int>(difftime(g_timer, now));
+
+	//Get info about camera position so the road can be rendered accordingly
 	if (App->player->GetPlayerState() != ModulePlayer::PAUSE && App->player->GetPlayerState() != ModulePlayer::GAME_OVER && App->player->GetPlayerState() != ModulePlayer::SCORE_SCREEN)
 	{
 		if (seconds != 0) 
 		{
 			pos += static_cast<int>(App->player->GetSpeed() / 1.5f);
-			if (App->player->GetPlayerState() != ModulePlayer::GOING_TO_END)
-			{
-				App->score->UpdateScore(App->player->GetSpeed());
-			}
 		}
 	}
 
+	//Check if biome should change (player has passed the biome border)
 	if (seg_pos / SEGMENT_LENGTH > biomeBorders[biomeIndex] && App->player->GetPlayerState() != BEFORE_RACE)
 	{
 		if (biomeIndex < biomes.size() - 1) 
@@ -191,30 +190,36 @@ update_status ModuleSceneRace::Update()
 		}
 	}
 
+	//Draw skybox
 	App->renderer->DrawQuad(skyBox, currentBiome.skyColor.r, currentBiome.skyColor.g, currentBiome.skyColor.b, 255, false);
 
+	//Draw road and manage objects
+	ManageRoad();
+
+	//Change biome colors
 	if (App->player->GetPlayerState() == RACING)
 	{
 		BiomeChange();
 	}
 
-	ManageRoad();
-
+	//Render semaphore
 	if (App->player->GetPlayerState() == BEFORE_RACE)
 	{
 		App->renderer->Blit(decoration, 98, SCREEN_HEIGHT - semaphoreAnimation.GetCurrentFrame().h * 4 - 21, &semaphoreAnimation.GetCurrentFrame(), 0.0f, false, false, 2.266f, 2.266f);
 	}
 
+	//Render course progress bar
+	if (App->player->GetPlayerState() != ModulePlayer::SCORE_SCREEN)
+	{
+		App->ui->ShowProgressBar(trackProgressBar, yellowBarLength, goalPoint, pos / SEGMENT_LENGTH);
+	}
+
+	//Show extended play tag
 	if (showExtendedPlay) 
 	{
 		App->ui->ShowLapTimes();
 		App->renderer->Blit(drivers, SCREEN_WIDTH / 2 - extendedPlayTag.frames[0].w, SCREEN_HEIGHT / 2 - extendedPlayTag.frames[0].h - 16, &extendedPlayTag.GetCurrentFrame(), 0.0f, false, false, 2, 2);
 		extendedPlayTime.Update();
-	}
-
-	if (App->player->GetPlayerState() != ModulePlayer::SCORE_SCREEN)
-	{
-		App->ui->ShowProgressBar(trackProgressBar, yellowBarLength, goalPoint, pos / SEGMENT_LENGTH);
 	}
 
 	return UPDATE_CONTINUE;
@@ -255,6 +260,7 @@ void ModuleSceneRace::ManageRoad()
 	int camH = (int)(1500 + lines[startPos].y);
 	float maxy = SCREEN_HEIGHT;
 
+	//Control parallax
 	if ((int)landscapePositionX < -SCREEN_WIDTH) 
 	{
 		landscapePositionX = landscapePositionX + SCREEN_WIDTH;
@@ -273,6 +279,7 @@ void ModuleSceneRace::ManageRoad()
 		foregroundPositionX = foregroundPositionX - SCREEN_WIDTH;
 	}
 
+	//Render backgrounds
 	App->renderer->Blit(graphics, (int)landscapePositionX, (int)landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, (int)landscapePositionX - SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, (int)landscapePositionX + SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background1.h * 2 + 2, &currentBiome.background1, 0.0f, false, false, 2, 2);
@@ -281,6 +288,7 @@ void ModuleSceneRace::ManageRoad()
 	App->renderer->Blit(graphics, (int)foregroundPositionX - SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	App->renderer->Blit(graphics, (int)foregroundPositionX + SCREEN_WIDTH, (int)landscapePositionY - currentBiome.background2.h * 2 + 2, &currentBiome.background2, 0.0f, false, false, 2, 2);
 	
+	//Draw terrain
 	for (int n = startPos; n < startPos + 200; n++) 
 	{
 		*grass = (n / 3) % 2 ? currentBiome.grassDark : currentBiome.grassLight;
@@ -336,9 +344,10 @@ void ModuleSceneRace::ManageRoad()
 		App->renderer->DrawPolygon(*line, (short)previous.X, (short)previous.Y, (short)(previous.W*0.05), (short)current.X, (short)current.Y, (short)(current.W*0.05));
 	}
 
-	//Draw Objects and Rivals
-	for (int n = startPos + 174; n >= startPos; n--) 
+	//Manage Objects and Rivals in each road segment
+	for (int n = startPos + 199; n >= startPos; n--) 
 	{
+		// Objects
 		if (!lines[n%N].atrezzos.empty()) 
 		{
 			for (unsigned int i = 0; i < lines[n%N].atrezzos.size(); i++) 
@@ -346,6 +355,8 @@ void ModuleSceneRace::ManageRoad()
 				lines[n%N].DrawObject(lines[n%N].atrezzos[i].first, decoration, lines[n%N].atrezzos[i].second);
 			}
 		}
+
+		// Rivals
 		for (unsigned int i = 0; i < rivals.size(); i++) 
 		{
 			if (n%N == (int)rivals[i]->z % N && (int)rivals[i]->z % N > startPos) 
@@ -401,7 +412,7 @@ void ModuleSceneRace::ManageRoad()
 			}
 		}
 	}
-
+	//Move rivals
 	for (unsigned int i = 0; i < rivals.size(); i++) 
 	{
 		if (App->player->GetPlayerState() != ModulePlayer::PAUSE && App->player->GetPlayerState() != ModulePlayer::BEFORE_RACE && App->player->GetPlayerState() != ModulePlayer::GAME_OVER && App->player->GetPlayerState() != ModulePlayer::SCORE_SCREEN)
@@ -464,6 +475,7 @@ void ModuleSceneRace::ManageRoad()
 		}
 	}
 
+	//Goal post management
 	if (startPos > goalPoint && (App->player->GetPlayerState() == ModulePlayer::RACING || App->player->GetPlayerState() == ModulePlayer::OUT_OF_CONTROL))
 	{
 		endPlayer->z = (float)(((startPos + 9) * SEGMENT_LENGTH) / 100);

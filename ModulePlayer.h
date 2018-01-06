@@ -68,6 +68,7 @@ private:
 
 	void ManageAnimations();
 	void ManageSpeed();
+	void ManagePositionX();
 
 	void ResetPlayer();
 

@@ -225,6 +225,7 @@ bool ModulePlayer::CleanUp()
 
 update_status ModulePlayer::Update()
 {
+	//Change speed depending on max velocity
 	if (state == RACING || state == CRASHING || state == OUT_OF_CONTROL) 
 	{
 		if (speed < currentMaxSpeed)
@@ -233,7 +234,7 @@ update_status ModulePlayer::Update()
 		}
 		else if (speed > currentMaxSpeed)
 		{
-			if (braking) 
+			if (braking == true || offRoad == true) 
 			{
 				speed = speed - acceleration * 2;
 			}
@@ -268,60 +269,7 @@ update_status ModulePlayer::Update()
 			Pause();
 		}
 
-		if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking) 
-		{
-			positionX -= movementX / 2;
-			if (positionX > -maxXPosition) 
-			{
-				absoluteX -= movementX / 2;
-			}
-		}
-		else if (current_animation == &leanedLeft || current_animation == &leanedLeftBraking) 
-		{
-			positionX -= movementX;
-			if (positionX > -maxXPosition) 
-			{
-				absoluteX -= movementX;
-			}
-		}
-		else if (current_animation == &leaningRight || current_animation == &unLeanRight || current_animation == &leaningRightBraking || current_animation == &unLeanRightBraking) 
-		{
-			positionX += movementX / 2;
-			if (positionX < maxXPosition) 
-			{
-				absoluteX += movementX / 2;
-			}
-		}
-		else if (current_animation == &leanedRight || current_animation == &leanedRightBraking) 
-		{
-			positionX += movementX;
-			if (positionX < maxXPosition) 
-			{
-				absoluteX += movementX;
-			}
-		}
-
-		if (positionX > maxXPosition) 
-		{
-			positionX = (float)maxXPosition;
-		}
-		if (positionX < -maxXPosition) 
-		{
-			positionX = -(float)maxXPosition;
-		}
-
-		if (positionX > ROAD_WIDTH) 
-		{
-			offRoad = true;
-		}
-		else if (positionX < -ROAD_WIDTH) 
-		{
-			offRoad = true;
-		}
-		else 
-		{
-			offRoad = false;
-		}
+		ManagePositionX();
 
 		ManageSpeed();
 
@@ -350,7 +298,9 @@ update_status ModulePlayer::Update()
 			speed = 80;
 			current_animation->Reset();
 		}
+
 		currentMaxSpeed = 0;
+
 		App->renderer->Blit(crashes, SCREEN_WIDTH / 2 - current_animation->GetCurrentFrame().w + 50, SCREEN_HEIGHT - current_animation->GetCurrentFrame().h * 2, &(current_animation->GetCurrentFrame()), 0.0f, false, false, 2, 2);
 		if (current_animation->GetCurrentFrame().x == current_animation->frames[current_animation->frames.size() - 1].x && current_animation->GetCurrentFrame().y == current_animation->frames[current_animation->frames.size() - 1].y) 
 		{
@@ -505,6 +455,8 @@ update_status ModulePlayer::Update()
 		break;
 	}
 	
+	//Stuff that takes action for more than one state
+
 	if (state == RACING || state == CRASHING || state == RECOVERING || state == OUT_OF_CONTROL) 
 	{
 		timeLeftInRace.Update();
@@ -515,6 +467,11 @@ update_status ModulePlayer::Update()
 			current_animation->speed = 0.0f;
 			state = GAME_OVER;
 		}
+	}
+
+	if (state != PAUSE && state != GAME_OVER && state != SCORE_SCREEN)
+	{
+		App->score->UpdateScore(App->player->GetSpeed());
 	}
 
 	if (state != SCORE_SCREEN)
@@ -577,12 +534,74 @@ void ModulePlayer::ManageSpeed()
 	}
 }
 
+void ModulePlayer::ManagePositionX()
+{
+	if (current_animation == &leaningLeft || current_animation == &unLeanLeft || current_animation == &leaningLeftBraking || current_animation == &unLeanLeftBraking)
+	{
+		positionX -= movementX / 2;
+		if (positionX > -maxXPosition)
+		{
+			absoluteX -= movementX / 2;
+		}
+	}
+	else if (current_animation == &leanedLeft || current_animation == &leanedLeftBraking)
+	{
+		positionX -= movementX;
+		if (positionX > -maxXPosition)
+		{
+			absoluteX -= movementX;
+		}
+	}
+	else if (current_animation == &leaningRight || current_animation == &unLeanRight || current_animation == &leaningRightBraking || current_animation == &unLeanRightBraking)
+	{
+		positionX += movementX / 2;
+		if (positionX < maxXPosition)
+		{
+			absoluteX += movementX / 2;
+		}
+	}
+	else if (current_animation == &leanedRight || current_animation == &leanedRightBraking)
+	{
+		positionX += movementX;
+		if (positionX < maxXPosition)
+		{
+			absoluteX += movementX;
+		}
+	}
+
+	//Control maximum distance the player can go from the road
+	if (positionX > maxXPosition)
+	{
+		positionX = (float)maxXPosition;
+	}
+	if (positionX < -maxXPosition)
+	{
+		positionX = -(float)maxXPosition;
+	}
+
+	//Control if player is offroad
+	if (positionX > ROAD_WIDTH)
+	{
+		offRoad = true;
+	}
+	else if (positionX < -ROAD_WIDTH)
+	{
+		offRoad = true;
+	}
+	else
+	{
+		offRoad = false;
+	}
+}
+
 void ModulePlayer::ManageAnimations() 
 {
 	//This is a nightmare
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		if ((current_animation != &unLeanRight && current_animation != &unLeanRightBraking) && (current_animation->GetCurrentFrame().x == leaningLeft.frames[leaningLeft.frames.size() - 1].x || current_animation->GetCurrentFrame().x == leaningLeftBraking.frames[leaningLeftBraking.frames.size() - 1].x) || current_animation == &leanedLeft || current_animation == &leanedLeftBraking)
+		if ((current_animation != &unLeanRight && current_animation != &unLeanRightBraking) && (current_animation->GetCurrentFrame().x == leaningLeft.frames[leaningLeft.frames.size() - 1].x 
+			|| current_animation->GetCurrentFrame().x == leaningLeftBraking.frames[leaningLeftBraking.frames.size() - 1].x) 
+			|| current_animation == &leanedLeft || current_animation == &leanedLeftBraking)
 		{
 			if (braking)
 			{
@@ -609,7 +628,9 @@ void ModulePlayer::ManageAnimations()
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		if ((current_animation != &unLeanLeft && current_animation != &unLeanLeftBraking) && (current_animation->GetCurrentFrame().x == leaningRight.frames[leaningRight.frames.size() - 1].x || current_animation->GetCurrentFrame().x == leaningRightBraking.frames[leaningRightBraking.frames.size() - 1].x) || current_animation == &leanedRight || current_animation == &leanedRightBraking)
+		if ((current_animation != &unLeanLeft && current_animation != &unLeanLeftBraking) && (current_animation->GetCurrentFrame().x == leaningRight.frames[leaningRight.frames.size() - 1].x 
+			|| current_animation->GetCurrentFrame().x == leaningRightBraking.frames[leaningRightBraking.frames.size() - 1].x) 
+			|| current_animation == &leanedRight || current_animation == &leanedRightBraking)
 		{
 			if (braking)
 			{
